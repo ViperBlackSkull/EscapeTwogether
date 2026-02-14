@@ -2,10 +2,16 @@
 	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
 	import { browser } from '$app/environment';
 	import { Application, Container, Graphics, Text } from 'pixi.js';
+	import { ParticleManager, PARTICLE_PRESETS } from '$lib/effects/ParticleSystem';
 
 	let canvasContainer: HTMLDivElement;
 	let app: Application | null = null;
 	let resizeObserver: ResizeObserver | null = null;
+	let particleManager: ParticleManager | null = null;
+	let particleContainer: Container | null = null;
+
+	// Current room for theming particles
+	export let currentRoom: 'attic' | 'clock_tower' | 'garden' = 'attic';
 
 	// Touch state for mobile interactions
 	let touchStartPos = { x: 0, y: 0 };
@@ -459,45 +465,111 @@
 	function createAmbientEffects(container: Container) {
 		if (!app) return;
 
-		// Create floating particles - fewer on mobile for performance
-		const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-		const particleCount = isMobile ? 5 : 10;
-		const particles: Graphics[] = [];
+		// Create particle container for layering
+		particleContainer = new Container();
+		particleContainer.label = 'particleContainer';
+		container.addChild(particleContainer);
 
-		for (let i = 0; i < particleCount; i++) {
-			const particle = new Graphics();
-			particle.setFillStyle({ color: 0xd4a574, alpha: 0.3 });
-			particle.circle(0, 0, Math.random() * 3 + 1);
-			particle.fill();
+		// Initialize particle manager
+		particleManager = new ParticleManager(particleContainer);
 
-			particle.x = Math.random() * app.screen.width;
-			particle.y = Math.random() * app.screen.height;
+		// Create room-specific ambient particles
+		setupRoomParticles();
 
-			particles.push(particle);
-			container.addChild(particle);
+		// Add particle update to ticker
+		app.ticker.add(() => {
+			if (particleManager) {
+				particleManager.update(app!.ticker.deltaTime / 60); // Normalize to 60fps
+			}
+		});
+	}
+
+	// Setup room-specific particle effects
+	function setupRoomParticles() {
+		if (!particleManager || !app) return;
+
+		// Clear existing emitters
+		particleManager.destroy();
+
+		// Get screen dimensions
+		const width = app.screen.width;
+		const height = app.screen.height;
+
+		// Create ambient emitter based on current room
+		switch (currentRoom) {
+			case 'attic':
+				// Dust motes floating in light beams
+				const dustEmitter = particleManager.createEmitter('dust', 'dustMotes');
+				dustEmitter.setPosition(width * 0.3, height * 0.2);
+				dustEmitter.start();
+
+				// Candle flicker effect in corner
+				const candleEmitter = particleManager.createEmitter('candle', 'candleFlicker');
+				candleEmitter.setPosition(width - 100, height - 150);
+				candleEmitter.start();
+				break;
+
+			case 'clock_tower':
+				// Gear sparkles
+				const sparkleEmitter = particleManager.createEmitter('gearSparkles', 'gearSparkles');
+				sparkleEmitter.setPosition(width / 2, height / 2);
+				sparkleEmitter.start();
+				break;
+
+			case 'garden':
+				// Fireflies
+				const fireflyEmitter = particleManager.createEmitter('fireflies', 'fireflies');
+				fireflyEmitter.setPosition(width / 2, height / 2);
+				fireflyEmitter.start();
+				break;
+		}
+	}
+
+	// Expose methods for triggering effects
+	export function triggerPuzzleSolve(x?: number, y?: number) {
+		if (!particleManager || !app) return;
+
+		const posX = x ?? app.screen.width / 2;
+		const posY = y ?? app.screen.height / 2;
+
+		particleManager.emitEffect('puzzleSparkles', { x: posX, y: posY }, 30);
+		dispatch('effect', { type: 'puzzleSolve', x: posX, y: posY });
+	}
+
+	export function triggerVictory() {
+		if (!particleManager || !app) return;
+
+		const width = app.screen.width;
+		const height = app.screen.height;
+
+		// Emit confetti from multiple points
+		for (let i = 0; i < 5; i++) {
+			setTimeout(() => {
+				if (particleManager) {
+					particleManager.emitEffect('confetti', {
+						x: Math.random() * width,
+						y: 0
+					}, 30);
+				}
+			}, i * 200);
 		}
 
-		// Animate particles
-		let time = 0;
-		app.ticker.add(() => {
-			time += 0.01;
-			particles.forEach((particle, index) => {
-				particle.y += Math.sin(time + index) * 0.2;
-				particle.x += Math.cos(time + index * 0.5) * 0.1;
+		dispatch('effect', { type: 'victory' });
+	}
 
-				// Wrap around screen
-				if (particle.y > app!.screen.height) particle.y = 0;
-				if (particle.y < 0) particle.y = app!.screen.height;
-				if (particle.x > app!.screen.width) particle.x = 0;
-				if (particle.x < 0) particle.x = app!.screen.width;
-			});
-		});
+	export function changeRoom(newRoom: 'attic' | 'clock_tower' | 'garden') {
+		currentRoom = newRoom;
+		setupRoomParticles();
 	}
 
 	onDestroy(() => {
 		if (resizeObserver) {
 			resizeObserver.disconnect();
 			resizeObserver = null;
+		}
+		if (particleManager) {
+			particleManager.destroy();
+			particleManager = null;
 		}
 		if (app) {
 			app.destroy(true, { children: true, texture: true });
