@@ -1,0 +1,29 @@
+{
+  "name": "ai-playtester",
+  "version": "1.0.0",
+  "description": "Autonomous AI testing agent for EscapeTogether game",
+  "main": "dist/playtester.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node playtester.ts",
+    "test": "ts-node playtester.ts",
+    "dev": "nodemon --exec ts-node playtester.ts"
+  },
+  "keywords": [
+    "testing",
+    "ai",
+    "game",
+    "automation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
