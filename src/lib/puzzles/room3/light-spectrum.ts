@@ -7,7 +7,7 @@
 import type { PuzzleDefinition, PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
 
 // Color types for light spectrum
-export type LightColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'indigo' | 'violet' | 'white';
+export type LightColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'indigo' | 'violet' | 'white' | 'cyan' | 'magenta';
 
 // Prism state
 export interface Prism {
@@ -404,7 +404,9 @@ function getLightHint(color: LightColor): string {
 		blue: 'Cool and calm, like a clear sky',
 		indigo: 'Deep and mysterious, twilight\'s edge',
 		violet: 'Royal and romantic, dusk\'s embrace',
-		white: 'Pure and complete, all colors combined'
+		white: 'Pure and complete, all colors combined',
+		cyan: 'Fresh and vibrant, like tropical waters',
+		magenta: 'Bold and romantic, like a sunset rose'
 	};
 	return hints[color];
 }

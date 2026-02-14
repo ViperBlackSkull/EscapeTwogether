@@ -10,7 +10,7 @@
 import type { PuzzleDefinition, RoomId } from '$lib/types';
 
 // Import all puzzle modules
-export { seedPacketsPuzzle, seedPacketsPuzzle as default } from './seed-packets';
+export { seedPacketsPuzzle } from './seed-packets';
 export type {
 	SeedPacket,
 	PlantingCondition,

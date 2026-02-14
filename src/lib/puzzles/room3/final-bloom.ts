@@ -302,7 +302,7 @@ export function plantSeed(state: FinalBloomState): {
 		};
 	}
 
-	const newStagesCompleted = [...state.data.stagesCompleted, 'seed_stage'];
+	const newStagesCompleted: StageType[] = [...state.data.stagesCompleted, 'seed_stage'];
 	let newState: FinalBloomState = {
 		...state,
 		data: {
@@ -378,7 +378,7 @@ export function confirmWatering(state: FinalBloomState): {
 		};
 	}
 
-	const newStagesCompleted = [...state.data.stagesCompleted, 'water_stage'];
+	const newStagesCompleted: StageType[] = [...state.data.stagesCompleted, 'water_stage'];
 	let newState: FinalBloomState = {
 		...state,
 		data: {
@@ -467,7 +467,7 @@ export function confirmLighting(state: FinalBloomState): {
 		};
 	}
 
-	const newStagesCompleted = [...state.data.stagesCompleted, 'light_stage'];
+	const newStagesCompleted: StageType[] = [...state.data.stagesCompleted, 'light_stage'];
 	let newState: FinalBloomState = {
 		...state,
 		data: {
@@ -546,7 +546,7 @@ export function confirmPollination(state: FinalBloomState): {
 		};
 	}
 
-	const newStagesCompleted = [...state.data.stagesCompleted, 'pollinate_stage'];
+	const newStagesCompleted: StageType[] = [...state.data.stagesCompleted, 'pollinate_stage'];
 	let newState: FinalBloomState = {
 		...state,
 		data: {
@@ -627,7 +627,7 @@ export function touchBloomPetal(
 
 	if (allComplete) {
 		// Complete the puzzle!
-		const newStagesCompleted = [...state.data.stagesCompleted, 'bloom_stage'];
+		const newStagesCompleted: StageType[] = [...state.data.stagesCompleted, 'bloom_stage'];
 		newState = {
 			...newState,
 			solved: true,

@@ -115,15 +115,19 @@ const HINTS: PuzzleHint[] = [
 // Calculate resulting temperature from valve levels
 export function calculateTemperature(hotLevel: number, coldLevel: number): number {
 	// Hot water is 100 degrees, cold is 0
-	// Temperature is weighted average
+	// Temperature is weighted average based on proportion of hot vs cold
 	const total = hotLevel + coldLevel;
 	if (total === 0) return 50; // Room temperature if no flow
 
-	const hotContribution = (hotLevel / 100) * 100; // Hot maxes at 100 degrees
-	const coldContribution = (coldLevel / 100) * 0; // Cold is 0 degrees
+	// Simple weighted average: hot contributes 100deg, cold contributes 0deg
+	// Ratio determines the final temp
+	const hotRatio = hotLevel / total;
+	// Base temp from mixing, scaled by flow rate
+	const mixTemp = hotRatio * 100;
+	// Add room temperature influence for lower flow
+	const roomInfluence = ((100 - total) / 100) * 50;
 
-	// Weighted average based on total flow
-	return (hotContribution * hotLevel + coldContribution * coldLevel + 50 * (100 - total)) / 100;
+	return (mixTemp * (total / 100)) + roomInfluence;
 }
 
 // Check if temperature is within plant's acceptable range
@@ -243,12 +247,13 @@ export function confirmTemperature(state: WaterFlowState): {
 			newState.data.completedPlants.push(activePlant.id);
 		}
 
+		// Reset valves after each successful watering
+		newState.data.hotValve = { ...state.data.hotValve, level: 0 };
+		newState.data.coldValve = { ...state.data.coldValve, level: 0 };
+
 		// Move to next plant if available
 		if (newState.data.activePlantIndex < 3) {
 			newState.data.activePlantIndex++;
-			// Reset valves for next plant
-			newState.data.hotValve = { ...state.data.hotValve, level: 0 };
-			newState.data.coldValve = { ...state.data.coldValve, level: 0 };
 		}
 
 		// Check if all plants complete
