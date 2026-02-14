@@ -27,6 +27,17 @@ app.get('/health', (req, res) => {
 interface PlayerSocket extends Socket {
   playerId?: string;
   playerName?: string;
+  roomCode?: string;
+}
+
+// Chat message interface
+interface ChatMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  message: string;
+  timestamp: Date;
+  roomCode: string;
 }
 
 io.on('connection', (socket: PlayerSocket) => {
@@ -118,6 +129,49 @@ io.on('connection', (socket: PlayerSocket) => {
       });
 
       roomManager.removePlayer(socket.playerId!);
+    }
+  });
+
+  // Handle send-message event (chat)
+  socket.on('send-message', (data: { message: string; roomCode: string }) => {
+    try {
+      const { message, roomCode } = data;
+
+      if (!message || typeof message !== 'string') {
+        return; // Silently ignore invalid messages
+      }
+
+      if (!socket.playerName || !socket.playerId) {
+        return; // Player not properly identified
+      }
+
+      // Verify player is in this room
+      const room = roomManager.getRoom(roomCode);
+      if (!room) {
+        return; // Room doesn't exist
+      }
+
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        return; // Player not in this room
+      }
+
+      // Create chat message
+      const chatMessage: ChatMessage = {
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        senderId: socket.playerId,
+        senderName: socket.playerName,
+        message: message.trim(),
+        timestamp: new Date(),
+        roomCode: roomCode
+      };
+
+      console.log(`Chat message in room ${roomCode} from ${socket.playerName}: ${message}`);
+
+      // Broadcast to all players in the room (including sender)
+      io.to(roomCode).emit('receive-message', chatMessage);
+    } catch (error) {
+      console.error('Error handling message:', error);
     }
   });
 });
