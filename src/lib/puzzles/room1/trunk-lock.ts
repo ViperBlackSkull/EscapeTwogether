@@ -5,6 +5,9 @@
 import type { PuzzleState, PuzzleHint, PuzzleDefinition, PlayerRole } from '$lib/types';
 import { ROOM1_PUZZLE_IDS } from './ids';
 
+// Re-export puzzle ID for test compatibility
+export { ROOM1_PUZZLE_IDS };
+
 // Symbol options for the dials (romantic/nostalgic symbols)
 export type DialSymbol =
 	| 'heart'
