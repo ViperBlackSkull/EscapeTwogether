@@ -1,0 +1,641 @@
+{
+  "repo": "ViperBlackSkull/EscapeTwogether",
+  "issues": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70],
+  "current_index": 0,
+  "task_graph": {
+    "tasks": [
+      {
+        "id": "task-001",
+        "github_issue_number": 1,
+        "title": "Create SvelteKit project structure with TypeScript",
+        "feature": "Project Setup",
+        "dependencies": [],
+        "status": "todo"
+      },
+      {
+        "id": "task-002",
+        "github_issue_number": 2,
+        "title": "Install and configure Tailwind CSS",
+        "feature": "Project Setup",
+        "dependencies": ["task-001"],
+        "status": "todo"
+      },
+      {
+        "id": "task-003",
+        "github_issue_number": 3,
+        "title": "Install PixiJS for canvas rendering",
+        "feature": "Project Setup",
+        "dependencies": ["task-001"],
+        "status": "todo"
+      },
+      {
+        "id": "task-004",
+        "github_issue_number": 4,
+        "title": "Install Socket.IO client library",
+        "feature": "Project Setup",
+        "dependencies": ["task-001"],
+        "status": "todo"
+      },
+      {
+        "id": "task-005",
+        "github_issue_number": 5,
+        "title": "Create base TypeScript type definitions",
+        "feature": "Type System",
+        "dependencies": ["task-001"],
+        "status": "todo"
+      },
+      {
+        "id": "task-006",
+        "github_issue_number": 6,
+        "title": "Set up Node.js backend with Express",
+        "feature": "Backend Setup",
+        "dependencies": [],
+        "status": "todo"
+      },
+      {
+        "id": "task-007",
+        "github_issue_number": 7,
+        "title": "Install Socket.IO server",
+        "feature": "Backend Setup",
+        "dependencies": ["task-006"],
+        "status": "todo"
+      },
+      {
+        "id": "task-008",
+        "github_issue_number": 8,
+        "title": "Create room management system",
+        "feature": "Backend Core",
+        "dependencies": ["task-007"],
+        "status": "todo"
+      },
+      {
+        "id": "task-009",
+        "github_issue_number": 9,
+        "title": "Create landing page UI",
+        "feature": "Frontend UI",
+        "dependencies": ["task-001", "task-002"],
+        "status": "todo"
+      },
+      {
+        "id": "task-010",
+        "github_issue_number": 10,
+        "title": "Implement create room client flow",
+        "feature": "Room Management",
+        "dependencies": ["task-008", "task-009"],
+        "status": "todo"
+      },
+      {
+        "id": "task-011",
+        "github_issue_number": 11,
+        "title": "Implement join room client flow",
+        "feature": "Room Management",
+        "dependencies": ["task-008", "task-009"],
+        "status": "todo"
+      },
+      {
+        "id": "task-012",
+        "github_issue_number": 12,
+        "title": "Create lobby page with waiting state",
+        "feature": "Room Management",
+        "dependencies": ["task-010"],
+        "status": "todo"
+      },
+      {
+        "id": "task-013",
+        "github_issue_number": 13,
+        "title": "Implement WebSocket connection on client",
+        "feature": "Real-time Communication",
+        "dependencies": ["task-004", "task-012"],
+        "status": "todo"
+      },
+      {
+        "id": "task-014",
+        "github_issue_number": 14,
+        "title": "Broadcast player joined event",
+        "feature": "Real-time Communication",
+        "dependencies": ["task-013"],
+        "status": "todo"
+      },
+      {
+        "id": "task-015",
+        "github_issue_number": 15,
+        "title": "Create game page layout structure",
+        "feature": "Game UI",
+        "dependencies": ["task-014"],
+        "status": "todo"
+      },
+      {
+        "id": "task-016",
+        "github_issue_number": 16,
+        "title": "Create PixiJS canvas component",
+        "feature": "Game Rendering",
+        "dependencies": ["task-003", "task-015"],
+        "status": "todo"
+      },
+      {
+        "id": "task-017",
+        "github_issue_number": 17,
+        "title": "Implement shared game state store",
+        "feature": "State Management",
+        "dependencies": ["task-005", "task-014"],
+        "status": "todo"
+      },
+      {
+        "id": "task-018",
+        "github_issue_number": 18,
+        "title": "Implement role assignment system",
+        "feature": "Game Mechanics",
+        "dependencies": ["task-017"],
+        "status": "todo"
+      },
+      {
+        "id": "task-019",
+        "github_issue_number": 19,
+        "title": "Create text chat component",
+        "feature": "Communication Tools",
+        "dependencies": ["task-015"],
+        "status": "todo"
+      },
+      {
+        "id": "task-020",
+        "github_issue_number": 20,
+        "title": "Implement chat message WebSocket events",
+        "feature": "Communication Tools",
+        "dependencies": ["task-019"],
+        "status": "todo"
+      },
+      {
+        "id": "task-021",
+        "github_issue_number": 21,
+        "title": "Create ping system UI and logic",
+        "feature": "Communication Tools",
+        "dependencies": ["task-016"],
+        "status": "todo"
+      },
+      {
+        "id": "task-022",
+        "github_issue_number": 22,
+        "title": "Implement shared cursor tracking",
+        "feature": "Communication Tools",
+        "dependencies": ["task-016"],
+        "status": "todo"
+      },
+      {
+        "id": "task-023",
+        "github_issue_number": 23,
+        "title": "Create photo mode component",
+        "feature": "Communication Tools",
+        "dependencies": ["task-016"],
+        "status": "todo"
+      },
+      {
+        "id": "task-024",
+        "github_issue_number": 24,
+        "title": "Implement inventory system UI",
+        "feature": "Inventory",
+        "dependencies": ["task-015"],
+        "status": "todo"
+      },
+      {
+        "id": "task-025",
+        "github_issue_number": 25,
+        "title": "Implement hint system UI",
+        "feature": "Hint System",
+        "dependencies": ["task-015"],
+        "status": "todo"
+      },
+      {
+        "id": "task-026",
+        "github_issue_number": 26,
+        "title": "Create save system with localStorage",
+        "feature": "Save System",
+        "dependencies": ["task-017"],
+        "status": "todo"
+      },
+      {
+        "id": "task-027",
+        "github_issue_number": 27,
+        "title": "Create room 1 (Attic) background assets",
+        "feature": "Room 1 - The Attic",
+        "dependencies": ["task-016"],
+        "status": "todo"
+      },
+      {
+        "id": "task-028",
+        "github_issue_number": 28,
+        "title": "Implement torn photographs puzzle (Room 1, Puzzle 1)",
+        "feature": "Room 1 - The Attic",
+        "dependencies": ["task-027"],
+        "status": "todo"
+      },
+      {
+        "id": "task-029",
+        "github_issue_number": 29,
+        "title": "Implement music box puzzle (Room 1, Puzzle 2)",
+        "feature": "Room 1 - The Attic",
+        "dependencies": ["task-027"],
+        "status": "todo"
+      },
+      {
+        "id": "task-030",
+        "github_issue_number": 30,
+        "title": "Implement love letter cipher puzzle (Room 1, Puzzle 3)",
+        "feature": "Room 1 - The Attic",
+        "dependencies": ["task-027"],
+        "status": "todo"
+      },
+      {
+        "id": "task-031",
+        "github_issue_number": 31,
+        "title": "Implement trunk lock puzzle (Room 1, Puzzle 4)",
+        "feature": "Room 1 - The Attic",
+        "dependencies": ["task-027"],
+        "status": "todo"
+      },
+      {
+        "id": "task-032",
+        "github_issue_number": 32,
+        "title": "Implement secret message puzzle (Room 1, Puzzle 5)",
+        "feature": "Room 1 - The Attic",
+        "dependencies": ["task-027"],
+        "status": "todo"
+      },
+      {
+        "id": "task-033",
+        "github_issue_number": 33,
+        "title": "Create room 1 completion and transition",
+        "feature": "Room 1 - The Attic",
+        "dependencies": ["task-028", "task-029", "task-030", "task-031", "task-032"],
+        "status": "todo"
+      },
+      {
+        "id": "task-034",
+        "github_issue_number": 34,
+        "title": "Create room 2 (Clock Tower) background assets",
+        "feature": "Room 2 - Clock Tower",
+        "dependencies": ["task-016"],
+        "status": "todo"
+      },
+      {
+        "id": "task-035",
+        "github_issue_number": 35,
+        "title": "Implement pendulum puzzle (Room 2, Puzzle 1)",
+        "feature": "Room 2 - Clock Tower",
+        "dependencies": ["task-034"],
+        "status": "todo"
+      },
+      {
+        "id": "task-036",
+        "github_issue_number": 36,
+        "title": "Implement gear alignment puzzle (Room 2, Puzzle 2)",
+        "feature": "Room 2 - Clock Tower",
+        "dependencies": ["task-034"],
+        "status": "todo"
+      },
+      {
+        "id": "task-037",
+        "github_issue_number": 37,
+        "title": "Implement bell codes puzzle (Room 2, Puzzle 3)",
+        "feature": "Room 2 - Clock Tower",
+        "dependencies": ["task-034"],
+        "status": "todo"
+      },
+      {
+        "id": "task-038",
+        "github_issue_number": 38,
+        "title": "Implement clock face puzzle (Room 2, Puzzle 4)",
+        "feature": "Room 2 - Clock Tower",
+        "dependencies": ["task-034"],
+        "status": "todo"
+      },
+      {
+        "id": "task-039",
+        "github_issue_number": 39,
+        "title": "Implement windup key puzzle (Room 2, Puzzle 5)",
+        "feature": "Room 2 - Clock Tower",
+        "dependencies": ["task-034"],
+        "status": "todo"
+      },
+      {
+        "id": "task-040",
+        "github_issue_number": 40,
+        "title": "Implement midnight chime puzzle (Room 2, Puzzle 6)",
+        "feature": "Room 2 - Clock Tower",
+        "dependencies": ["task-034"],
+        "status": "todo"
+      },
+      {
+        "id": "task-041",
+        "github_issue_number": 41,
+        "title": "Create room 2 completion and transition",
+        "feature": "Room 2 - Clock Tower",
+        "dependencies": ["task-035", "task-036", "task-037", "task-038", "task-039", "task-040"],
+        "status": "todo"
+      },
+      {
+        "id": "task-042",
+        "github_issue_number": 42,
+        "title": "Create room 3 (Garden Conservatory) background assets",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-016"],
+        "status": "todo"
+      },
+      {
+        "id": "task-043",
+        "github_issue_number": 43,
+        "title": "Implement seed packets puzzle (Room 3, Puzzle 1)",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-042"],
+        "status": "todo"
+      },
+      {
+        "id": "task-044",
+        "github_issue_number": 44,
+        "title": "Implement water flow puzzle (Room 3, Puzzle 2)",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-042"],
+        "status": "todo"
+      },
+      {
+        "id": "task-045",
+        "github_issue_number": 45,
+        "title": "Implement light spectrum puzzle (Room 3, Puzzle 3)",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-042"],
+        "status": "todo"
+      },
+      {
+        "id": "task-046",
+        "github_issue_number": 46,
+        "title": "Implement hybridization puzzle (Room 3, Puzzle 4)",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-042"],
+        "status": "todo"
+      },
+      {
+        "id": "task-047",
+        "github_issue_number": 47,
+        "title": "Implement trellis puzzle (Room 3, Puzzle 5)",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-042"],
+        "status": "todo"
+      },
+      {
+        "id": "task-048",
+        "github_issue_number": 48,
+        "title": "Implement bloom timing puzzle (Room 3, Puzzle 6)",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-042"],
+        "status": "todo"
+      },
+      {
+        "id": "task-049",
+        "github_issue_number": 49,
+        "title": "Implement final bloom puzzle (Room 3, Puzzle 7) - Water Stage",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-042"],
+        "status": "todo"
+      },
+      {
+        "id": "task-050",
+        "github_issue_number": 50,
+        "title": "Implement final bloom puzzle - Light Stage",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-049"],
+        "status": "todo"
+      },
+      {
+        "id": "task-051",
+        "github_issue_number": 51,
+        "title": "Implement final bloom puzzle - Pollinate Stage",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-050"],
+        "status": "todo"
+      },
+      {
+        "id": "task-052",
+        "github_issue_number": 52,
+        "title": "Implement final bloom puzzle - Bloom Stage (Finale)",
+        "feature": "Room 3 - Garden Conservatory",
+        "dependencies": ["task-051"],
+        "status": "todo"
+      },
+      {
+        "id": "task-053",
+        "github_issue_number": 53,
+        "title": "Create game victory screen",
+        "feature": "Game Completion",
+        "dependencies": ["task-052"],
+        "status": "todo"
+      },
+      {
+        "id": "task-054",
+        "github_issue_number": 54,
+        "title": "Set up Zhipu AI (z.ai) API service",
+        "feature": "AI Customizer",
+        "dependencies": ["task-006"],
+        "status": "todo"
+      },
+      {
+        "id": "task-055",
+        "github_issue_number": 55,
+        "title": "Create couple profile onboarding flow",
+        "feature": "AI Customizer",
+        "dependencies": ["task-009"],
+        "status": "todo"
+      },
+      {
+        "id": "task-056",
+        "github_issue_number": 56,
+        "title": "Implement photo upload and storage",
+        "feature": "AI Customizer",
+        "dependencies": ["task-055"],
+        "status": "todo"
+      },
+      {
+        "id": "task-057",
+        "github_issue_number": 57,
+        "title": "Create AI difficulty tuning system",
+        "feature": "AI Customizer",
+        "dependencies": ["task-054"],
+        "status": "todo"
+      },
+      {
+        "id": "task-058",
+        "github_issue_number": 58,
+        "title": "Implement personalized content generation",
+        "feature": "AI Customizer",
+        "dependencies": ["task-056"],
+        "status": "todo"
+      },
+      {
+        "id": "task-059",
+        "github_issue_number": 59,
+        "title": "Create adaptive hint system",
+        "feature": "AI Customizer",
+        "dependencies": ["task-057"],
+        "status": "todo"
+      },
+      {
+        "id": "task-060",
+        "github_issue_number": 60,
+        "title": "Implement communication coach",
+        "feature": "AI Customizer",
+        "dependencies": ["task-057"],
+        "status": "todo"
+      },
+      {
+        "id": "task-061",
+        "github_issue_number": 61,
+        "title": "Create AI debug monitor panel",
+        "feature": "AI Customizer",
+        "dependencies": ["task-057"],
+        "status": "todo"
+      },
+      {
+        "id": "task-062",
+        "github_issue_number": 62,
+        "title": "Add particle effects system",
+        "feature": "Visual Polish",
+        "dependencies": ["task-016"],
+        "status": "todo"
+      },
+      {
+        "id": "task-063",
+        "github_issue_number": 63,
+        "title": "Add sound effects and music",
+        "feature": "Audio",
+        "dependencies": ["task-015"],
+        "status": "todo"
+      },
+      {
+        "id": "task-064",
+        "github_issue_number": 64,
+        "title": "Implement mobile touch controls",
+        "feature": "Mobile Support",
+        "dependencies": ["task-015"],
+        "status": "todo"
+      },
+      {
+        "id": "task-065",
+        "github_issue_number": 65,
+        "title": "Add accessibility features",
+        "feature": "Accessibility",
+        "dependencies": ["task-015"],
+        "status": "todo"
+      },
+      {
+        "id": "task-066",
+        "github_issue_number": 66,
+        "title": "Implement pause/resume functionality",
+        "feature": "Game State",
+        "dependencies": ["task-017"],
+        "status": "todo"
+      },
+      {
+        "id": "task-067",
+        "github_issue_number": 67,
+        "title": "Add WebSocket reconnection handling",
+        "feature": "Real-time Communication",
+        "dependencies": ["task-013"],
+        "status": "todo"
+      },
+      {
+        "id": "task-068",
+        "github_issue_number": 68,
+        "title": "Create end-to-end test suite",
+        "feature": "Testing",
+        "dependencies": ["task-053"],
+        "status": "todo"
+      },
+      {
+        "id": "task-069",
+        "github_issue_number": 69,
+        "title": "Performance optimization and profiling",
+        "feature": "Optimization",
+        "dependencies": ["task-062"],
+        "status": "todo"
+      },
+      {
+        "id": "task-070",
+        "github_issue_number": 70,
+        "title": "Deploy frontend and backend",
+        "feature": "Deployment",
+        "dependencies": ["task-068"],
+        "status": "todo"
+      }
+    ],
+    "execution_order": [
+      "task-001",
+      "task-002",
+      "task-003",
+      "task-004",
+      "task-005",
+      "task-006",
+      "task-007",
+      "task-008",
+      "task-009",
+      "task-010",
+      "task-011",
+      "task-012",
+      "task-013",
+      "task-014",
+      "task-015",
+      "task-016",
+      "task-017",
+      "task-018",
+      "task-019",
+      "task-020",
+      "task-021",
+      "task-022",
+      "task-023",
+      "task-024",
+      "task-025",
+      "task-026",
+      "task-027",
+      "task-028",
+      "task-029",
+      "task-030",
+      "task-031",
+      "task-032",
+      "task-033",
+      "task-034",
+      "task-035",
+      "task-036",
+      "task-037",
+      "task-038",
+      "task-039",
+      "task-040",
+      "task-041",
+      "task-042",
+      "task-043",
+      "task-044",
+      "task-045",
+      "task-046",
+      "task-047",
+      "task-048",
+      "task-049",
+      "task-050",
+      "task-051",
+      "task-052",
+      "task-053",
+      "task-054",
+      "task-055",
+      "task-056",
+      "task-057",
+      "task-058",
+      "task-059",
+      "task-060",
+      "task-061",
+      "task-062",
+      "task-063",
+      "task-064",
+      "task-065",
+      "task-066",
+      "task-067",
+      "task-068",
+      "task-069",
+      "task-070"
+    ]
+  }
+}

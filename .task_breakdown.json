@@ -1,0 +1,1591 @@
+{
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Create SvelteKit project structure with TypeScript",
+      "feature": "Project Setup",
+      "dependencies": [],
+      "description": "Initialize SvelteKit project with TypeScript configuration, set up basic folder structure (routes, lib, components)",
+      "acceptance_criteria": [
+        "SvelteKit project created with npm create svelte@latest",
+        "TypeScript enabled in configuration",
+        "Folder structure includes: src/routes, src/lib, src/components, static",
+        "Project runs locally with npm run dev"
+      ],
+      "test_steps": [
+        "Run npm create svelte@latest escapetogether",
+        "Select TypeScript option during setup",
+        "Verify folder structure exists",
+        "Run npm run dev and confirm dev server starts"
+      ]
+    },
+    {
+      "id": "task-002",
+      "title": "Install and configure Tailwind CSS",
+      "feature": "Project Setup",
+      "dependencies": ["task-001"],
+      "description": "Install Tailwind CSS and its dependencies, configure tailwind.config.js with custom color palette from spec",
+      "acceptance_criteria": [
+        "Tailwind CSS installed via npm",
+        "tailwind.config.js includes custom colors (Deep Navy, Dusty Rose, Antique Gold, Warm Amber, Soft Teal)",
+        "PostCSS configuration set up",
+        "Tailwind directives added to global CSS file"
+      ],
+      "test_steps": [
+        "Run npm install -D tailwindcss postcss autoprefixer",
+        "Initialize Tailwind config",
+        "Add custom colors from spec to tailwind.config.js",
+        "Create app.css or global.css with Tailwind directives",
+        "Verify Tailwind classes work in a test component"
+      ]
+    },
+    {
+      "id": "task-003",
+      "title": "Install PixiJS for canvas rendering",
+      "feature": "Project Setup",
+      "dependencies": ["task-001"],
+      "description": "Install PixiJS and TypeScript definitions for WebGL-accelerated 2D rendering",
+      "acceptance_criteria": [
+        "PixiJS installed via npm",
+        "@types/pixi.js installed for TypeScript support",
+        "Basic PixiJS application can be created and rendered to canvas"
+      ],
+      "test_steps": [
+        "Run npm install pixi.js",
+        "Run npm install -D @types/pixi.js",
+        "Create test PixiJS Application instance",
+        "Verify it compiles without TypeScript errors"
+      ]
+    },
+    {
+      "id": "task-004",
+      "title": "Install Socket.IO client library",
+      "feature": "Project Setup",
+      "dependencies": ["task-001"],
+      "description": "Install Socket.IO client for real-time WebSocket communication",
+      "acceptance_criteria": [
+        "socket.io-client installed",
+        "TypeScript definitions available",
+        "Can import and create Socket.IO client instance"
+      ],
+      "test_steps": [
+        "Run npm install socket.io-client",
+        "Create test client connection in code",
+        "Verify TypeScript compilation succeeds"
+      ]
+    },
+    {
+      "id": "task-005",
+      "title": "Create base TypeScript type definitions",
+      "feature": "Type System",
+      "dependencies": ["task-001"],
+      "description": "Create TypeScript interfaces for core game state, players, puzzles, and AI customization",
+      "acceptance_criteria": [
+        "gameState interface defined with all required fields",
+        "Player interface with id, name, role, connected, inventory",
+        "PuzzleState base interface",
+        "CoupleProfile interface",
+        "AICustomizations interface",
+        "All types exported from src/lib/types.ts"
+      ],
+      "test_steps": [
+        "Create src/lib/types.ts file",
+        "Define GameState, Player, PuzzleState interfaces",
+        "Define CoupleProfile and AICustomizations interfaces",
+        "Verify no TypeScript errors when importing types"
+      ]
+    },
+    {
+      "id": "task-006",
+      "title": "Set up Node.js backend with Express",
+      "feature": "Backend Setup",
+      "dependencies": [],
+      "description": "Create separate backend directory with Node.js Express server for WebSocket and API handling",
+      "acceptance_criteria": [
+        "Backend directory created (server/ or backend/)",
+        "Express server configured",
+        "TypeScript enabled for backend",
+        "Server runs on specified port (default 3001)"
+      ],
+      "test_steps": [
+        "Create server directory",
+        "Run npm init -y in server directory",
+        "Install express and typescript",
+        "Create basic Express server that listens on port 3001",
+        "Verify server starts without errors"
+      ]
+    },
+    {
+      "id": "task-007",
+      "title": "Install Socket.IO server",
+      "feature": "Backend Setup",
+      "dependencies": ["task-006"],
+      "description": "Install and configure Socket.IO server for WebSocket communication",
+      "acceptance_criteria": [
+        "socket.io installed in backend",
+        "Socket.IO server attached to Express HTTP server",
+        "Basic connection handler logs new connections"
+      ],
+      "test_steps": [
+        "Run npm install socket.io in server directory",
+        "Attach Socket.IO to Express server",
+        "Add connection event listener",
+        "Start server and verify no errors"
+      ]
+    },
+    {
+      "id": "task-008",
+      "title": "Create room management system",
+      "feature": "Backend Core",
+      "dependencies": ["task-007"],
+      "description": "Implement room code generation, room storage, and player join/leave logic",
+      "acceptance_criteria": [
+        "Room code generator creates 4-character codes (excludes 0/O, 1/I/l)",
+        "Rooms stored in memory with players array",
+        "Join room validates room exists and isn't full",
+        "Room expiration after 24 hours"
+      ],
+      "test_steps": [
+        "Create RoomManager class",
+        "Implement generateRoomCode() function",
+        "Implement createRoom() and joinRoom() functions",
+        "Add unit tests for room code generation",
+        "Verify join rejects invalid codes"
+      ]
+    },
+    {
+      "id": "task-009",
+      "title": "Create landing page UI",
+      "feature": "Frontend UI",
+      "dependencies": ["task-001", "task-002"],
+      "description": "Build landing page with Create Room and Join Room buttons, input for player name and room code",
+      "acceptance_criteria": [
+        "Landing page at root route (/)",
+        "Player name input field",
+        "Create Room button",
+        "Join Room section with room code input",
+        "Styled with Tailwind using spec color palette"
+      ],
+      "test_steps": [
+        "Create src/routes/+page.svelte",
+        "Add HTML form for player name and room code",
+        "Style with Tailwind classes",
+        "Test responsive layout on mobile and desktop"
+      ]
+    },
+    {
+      "id": "task-010",
+      "title": "Implement create room client flow",
+      "feature": "Room Management",
+      "dependencies": ["task-008", "task-009"],
+      "description": "Connect create room button to backend API, receive room code, redirect to lobby",
+      "acceptance_criteria": [
+        "Clicking Create Room sends request to backend",
+        "Backend creates room and returns room code",
+        "Client stores room code and player ID",
+        "Redirect to game lobby page"
+      ],
+      "test_steps": [
+        "Add click handler to Create Room button",
+        "Make fetch request to /api/room/create",
+        "Store returned room code and player ID",
+        "Navigate to lobby page",
+        "Verify room code is displayed"
+      ]
+    },
+    {
+      "id": "task-011",
+      "title": "Implement join room client flow",
+      "feature": "Room Management",
+      "dependencies": ["task-008", "task-009"],
+      "description": "Connect join room button to backend API, handle room not found and full room errors",
+      "acceptance_criteria": [
+        "Clicking Join Room validates room code input",
+        "Request sent to /api/room/join",
+        "Handle success: store player ID, redirect to lobby",
+        "Handle errors: display 'Room not found' or 'Room full' messages"
+      ],
+      "test_steps": [
+        "Add click handler to Join Room button",
+        "Validate room code format (4 characters)",
+        "Make fetch request to /api/room/join",
+        "Test with invalid room code",
+        "Test with full room (2 players already)",
+        "Verify error messages display correctly"
+      ]
+    },
+    {
+      "id": "task-012",
+      "title": "Create lobby page with waiting state",
+      "feature": "Room Management",
+      "dependencies": ["task-010"],
+      "description": "Build lobby page showing room code, player name, waiting for second player message",
+      "acceptance_criteria": [
+        "Lobby page displays room code prominently",
+        "Shows current player's name",
+        "Shows 'Waiting for second player...' message",
+        "Room code can be copied to clipboard"
+      ],
+      "test_steps": [
+        "Create src/routes/lobby/+page.svelte",
+        "Display room code in large, readable format",
+        "Add copy button for room code",
+        "Show waiting state message",
+        "Test copy functionality"
+      ]
+    },
+    {
+      "id": "task-013",
+      "title": "Implement WebSocket connection on client",
+      "feature": "Real-time Communication",
+      "dependencies": ["task-004", "task-012"],
+      "description": "Connect Socket.IO client from lobby page, handle connection and reconnection",
+      "acceptance_criteria": [
+        "Socket.IO client connects to backend on lobby page",
+        "Connection includes room code and player ID",
+        "Reconnection handled automatically on disconnect",
+        "Connection status displayed to user"
+      ],
+      "test_steps": [
+        "Import socket.io-client in lobby component",
+        "Create socket connection on mount",
+        "Send authentication with room code and player ID",
+        "Add connection status indicator",
+        "Test reconnection on server restart"
+      ]
+    },
+    {
+      "id": "task-014",
+      "title": "Broadcast player joined event",
+      "feature": "Real-time Communication",
+      "dependencies": ["task-013"],
+      "description": "Server broadcasts 'player_joined' event when second player connects, both players transition to game",
+      "acceptance_criteria": [
+        "Server emits 'player_joined' when room has 2 players",
+        "Lobby page listens for 'player_joined' event",
+        "Both players redirected to game page when room is ready",
+        "Player names displayed to both players"
+      ],
+      "test_steps": [
+        "Add player_joined event emitter in backend",
+        "Listen for player_joined in lobby component",
+        "Test with two browser windows joining same room",
+        "Verify both players see transition to game"
+      ]
+    },
+    {
+      "id": "task-015",
+      "title": "Create game page layout structure",
+      "feature": "Game UI",
+      "dependencies": ["task-014"],
+      "description": "Build main game page layout with room view, role indicator, tools panel, inventory, and chat",
+      "acceptance_criteria": [
+        "Game page at /game route",
+        "Layout matches spec diagram: room view, role indicator, tools, inventory, chat",
+        "Responsive design works on mobile and desktop",
+        "Uses spec color palette"
+      ],
+      "test_steps": [
+        "Create src/routes/game/+page.svelte",
+        "Build HTML structure matching spec layout",
+        "Style with Tailwind CSS",
+        "Test on desktop (1920x1080) and mobile (375x667)",
+        "Verify all sections visible"
+      ]
+    },
+    {
+      "id": "task-016",
+      "title": "Create PixiJS canvas component",
+      "feature": "Game Rendering",
+      "dependencies": ["task-003", "task-015"],
+      "description": "Build reusable PixiJS canvas component for rendering room views and objects",
+      "acceptance_criteria": [
+        "Svelte component wraps PixiJS Application",
+        "Canvas resizes responsively",
+        "Component accepts sprite/texture props",
+        "Stage renders at 60fps"
+      ],
+      "test_steps": [
+        "Create src/lib/components/PixiCanvas.svelte",
+        "Initialize PixiJS Application on mount",
+        "Add resize handler for responsive canvas",
+        "Render test sprite to verify",
+        "Check performance with browser dev tools"
+      ]
+    },
+    {
+      "id": "task-017",
+      "title": "Implement shared game state store",
+      "feature": "State Management",
+      "dependencies": ["task-005", "task-014"],
+      "description": "Create Svelte store for synchronized game state that updates via WebSocket events",
+      "acceptance_criteria": [
+        "Svelte writable store holds gameState object",
+        "Store updates when 'state_update' WebSocket event received",
+        "Components can subscribe to store changes",
+        "State persists to localStorage on changes"
+      ],
+      "test_steps": [
+        "Create src/lib/stores/gameState.ts",
+        "Initialize Svelte store with default state",
+        "Add WebSocket listener for state_update events",
+        "Subscribe to store in a component",
+        "Verify store updates trigger component re-renders"
+      ]
+    },
+    {
+      "id": "task-018",
+      "title": "Implement role assignment system",
+      "feature": "Game Mechanics",
+      "dependencies": ["task-017"],
+      "description": "Assign Explorer/Analyst roles to players, swap roles between puzzles",
+      "acceptance_criteria": [
+        "Player A assigned Explorer for first puzzle",
+        "Player B assigned Analyst for first puzzle",
+        "Roles swap when puzzle completes",
+        "Role indicator displays current role and capabilities"
+      ],
+      "test_steps": [
+        "Add role field to player state",
+        "Implement assignRoles() function",
+        "Swap roles on puzzle_solved event",
+        "Update role indicator UI to show current role",
+        "Test role swap between puzzles"
+      ]
+    },
+    {
+      "id": "task-019",
+      "title": "Create text chat component",
+      "feature": "Communication Tools",
+      "dependencies": ["task-015"],
+      "description": "Build chat panel with message input, message history, and player attribution",
+      "acceptance_criteria": [
+        "Chat panel displays in game UI",
+        "Messages show sender name and timestamp",
+        "Input field for typing messages",
+        "Chat history scrolls to latest message",
+        "System messages (reconnect, etc.) styled differently"
+      ],
+      "test_steps": [
+        "Create src/lib/components/ChatPanel.svelte",
+        "Style with Tailwind to match spec",
+        "Bind input to send message event",
+        "Display messages from shared_state.chat_messages",
+        "Test message sending between two players"
+      ]
+    },
+    {
+      "id": "task-020",
+      "title": "Implement chat message WebSocket events",
+      "feature": "Communication Tools",
+      "dependencies": ["task-019"],
+      "description": "Send and receive chat messages via WebSocket, store in game state",
+      "acceptance_criteria": [
+        "Client sends 'chat_message' event with text",
+        "Server broadcasts to both players in room",
+        "Messages stored in shared_state.chat_messages",
+        "Max 50 messages, oldest removed"
+      ],
+      "test_steps": [
+        "Add sendChatMessage() function",
+        "Emit 'chat_message' event to server",
+        "Server broadcasts to room",
+        "Client receives and adds to game state",
+        "Test sending messages between players"
+      ]
+    },
+    {
+      "id": "task-021",
+      "title": "Create ping system UI and logic",
+      "feature": "Communication Tools",
+      "dependencies": ["task-016"],
+      "description": "Allow players to click objects to highlight them for partner, show ping on both screens",
+      "acceptance_criteria": [
+        "Click on interactive object triggers ping",
+        "Soft glow appears on partner's screen at object location",
+        "Ping fades after 5 seconds",
+        "Ping shows which player created it"
+      ],
+      "test_steps": [
+        "Add click handler to PixiJS sprites",
+        "Emit 'ping' event with target object and player",
+        "Server broadcasts 'ping_active' event",
+        "Render glow effect on partner's canvas",
+        "Test ping between two players"
+      ]
+    },
+    {
+      "id": "task-022",
+      "title": "Implement shared cursor tracking",
+      "feature": "Communication Tools",
+      "dependencies": ["task-016"],
+      "description": "Track and display partner's cursor position in real-time on room view",
+      "acceptance_criteria": [
+        "Cursor position sent every 100ms while active",
+        "Partner's cursor rendered as soft light on room view",
+        "Cursor fades after 2 seconds of inactivity",
+        "Cursor indicator shows which player (A or B)"
+      ],
+      "test_steps": [
+        "Add mousemove listener to canvas",
+        "Emit cursor position via WebSocket",
+        "Receive and store partner's cursor position",
+        "Render partner cursor on PixiJS canvas",
+        "Test cursor tracking between players"
+      ]
+    },
+    {
+      "id": "task-023",
+      "title": "Create photo mode component",
+      "feature": "Communication Tools",
+      "dependencies": ["task-016"],
+      "description": "Implement camera tool to capture room screenshot, share with partner, allow annotations",
+      "acceptance_criteria": [
+        "Camera button in tools panel",
+        "Clicking captures canvas as base64 image",
+        "Photo appears in shared photos panel",
+        "Both players can annotate with drawing tools",
+        "Max 10 photos per room"
+      ],
+      "test_steps": [
+        "Add camera tool button to UI",
+        "Implement canvas.toDataURL() for screenshot",
+        "Create photos panel component",
+        "Add drawing tools (pen, highlighter, eraser)",
+        "Test photo capture and sharing"
+      ]
+    },
+    {
+      "id": "task-024",
+      "title": "Implement inventory system UI",
+      "feature": "Inventory",
+      "dependencies": ["task-015"],
+      "description": "Build inventory panel showing player's items and partner's item count",
+      "acceptance_criteria": [
+        "Inventory shows up to 12 items per player",
+        "Items display as icons with tooltips",
+        "Clicking item shows details and Use button",
+        "Partner's inventory shows item count only",
+        "Items are puzzle-specific (cleared on room complete)"
+      ],
+      "test_steps": [
+        "Create InventoryPanel.svelte component",
+        "Display items from player.inventory array",
+        "Add click handler for item details",
+        "Show partner's inventory count",
+        "Test with sample items"
+      ]
+    },
+    {
+      "id": "task-025",
+      "title": "Implement hint system UI",
+      "feature": "Hint System",
+      "dependencies": ["task-015"],
+      "description": "Create hint button and display tiered hints based on puzzle progress",
+      "acceptance_criteria": [
+        "Hint button shows remaining hints (X/3)",
+        "Clicking requests hint from system",
+        "Tiered hints reveal progressively more information",
+        "Hints appear as toast notifications",
+        "Hints added to notes panel for reference"
+      ],
+      "test_steps": [
+        "Add hint button to game UI",
+        "Implement hint display component",
+        "Create hint trigger logic based on attempts/time",
+        "Test hint progression through tiers",
+        "Verify hints added to notes panel"
+      ]
+    },
+    {
+      "id": "task-026",
+      "title": "Create save system with localStorage",
+      "feature": "Save System",
+      "dependencies": ["task-017"],
+      "description": "Implement auto-save every 30 seconds and manual save to localStorage with 3 save slots",
+      "acceptance_criteria": [
+        "Game state saved to localStorage every 30 seconds",
+        "Manual save button saves to selected slot",
+        "3 save slots available",
+        "Load game restores full state",
+        "Saves persist across browser sessions"
+      ],
+      "test_steps": [
+        "Implement saveGame(slotNumber) function",
+        "Add auto-save interval (30 seconds)",
+        "Create save/load UI in settings menu",
+        "Test saving and loading game state",
+        "Verify data persists after browser close/reopen"
+      ]
+    },
+    {
+      "id": "task-027",
+      "title": "Create room 1 (Attic) background assets",
+      "feature": "Room 1 - The Attic",
+      "dependencies": ["task-016"],
+      "description": "Create or load painted background images for Attic room with golden hour atmosphere",
+      "acceptance_criteria": [
+        "Attic background image created or sourced",
+        "Image matches spec aesthetic (warm, nostalgic, dusty)",
+        "Loaded as PixiJS texture",
+        "Displays correctly in game canvas"
+      ],
+      "test_steps": [
+        "Create or source background image",
+        "Place in static/assets/rooms/ directory",
+        "Load as PixiJS sprite texture",
+        "Render to canvas",
+        "Verify visual quality matches spec"
+      ]
+    },
+    {
+      "id": "task-028",
+      "title": "Implement torn photographs puzzle (Room 1, Puzzle 1)",
+      "feature": "Room 1 - The Attic",
+      "dependencies": ["task-027"],
+      "description": "Build puzzle where Player A sees photo pieces, Player B sees frame outlines, must match them",
+      "acceptance_criteria": [
+        "Player A: 9 draggable photo pieces visible",
+        "Player B: 9 frame outlines with corner clues",
+        "Pieces lock when placed correctly for 3 seconds",
+        "Puzzle completes when all 9 pieces placed",
+        "Completion reveals grandmother's young photo"
+      ],
+      "test_steps": [
+        "Create torn_photos puzzle state",
+        "Render photo pieces for Player A",
+        "Render frame outlines for Player B",
+        "Implement drag and drop for pieces",
+        "Test correct placement locking",
+        "Verify puzzle completion trigger"
+      ]
+    },
+    {
+      "id": "task-029",
+      "title": "Implement music box puzzle (Room 1, Puzzle 2)",
+      "feature": "Room 1 - The Attic",
+      "dependencies": ["task-027"],
+      "description": "Build puzzle where Player A has gears and slots, Player B has assembly diagram",
+      "acceptance_criteria": [
+        "Player A: 5 loose gears (3 correct, 2 distractors), 3 slots",
+        "Player B: Assembly diagram showing gear sizes and materials",
+        "Gears lock when placed correctly",
+        "Music box plays when all 3 gears placed",
+        "Visual and audio feedback on completion"
+      ],
+      "test_steps": [
+        "Create music_box puzzle state",
+        "Render gears and slots for Player A",
+        "Render assembly diagram for Player B",
+        "Implement gear placement logic",
+        "Test gear validation (teeth count, material)",
+        "Verify music box animation on completion"
+      ]
+    },
+    {
+      "id": "task-030",
+      "title": "Implement love letter cipher puzzle (Room 1, Puzzle 3)",
+      "feature": "Room 1 - The Attic",
+      "dependencies": ["task-027"],
+      "description": "Build puzzle where Player A has candle, Player B has UV light, must activate together to reveal letters",
+      "acceptance_criteria": [
+        "Player A: Candle toggle button, paper with invisible ink",
+        "Player B: UV light toggle button",
+        "Letters reveal only when BOTH lights active",
+        "8 letters spell 'ROSALIND'",
+        "Completion unlocks next puzzle"
+      ],
+      "test_steps": [
+        "Create love_letter_cipher puzzle state",
+        "Render candle and UV light controls",
+        "Implement letter reveal logic (both lights required)",
+        "Track revealed letters",
+        "Test puzzle completion when all letters found"
+      ]
+    },
+    {
+      "id": "task-031",
+      "title": "Implement trunk lock puzzle (Room 1, Puzzle 4)",
+      "feature": "Room 1 - The Attic",
+      "dependencies": ["task-027"],
+      "description": "Build coordination puzzle where Player A controls dials 1&3, Player B controls dials 2&4, must set simultaneously",
+      "acceptance_criteria": [
+        "Player A: Dials 1 and 3 (left side)",
+        "Player B: Dials 2 and 4 (right side)",
+        "All 4 dials must be correct simultaneously for 3 seconds",
+        "Progress bar shows synchronization duration",
+        "Unlock animation when puzzle solved"
+      ],
+      "test_steps": [
+        "Create trunk_lock puzzle state",
+        "Render dials for each player",
+        "Implement dial rotation controls",
+        "Check if all dials correct every frame",
+        "Track all_correct_duration",
+        "Test completion when held for 3 seconds"
+      ]
+    },
+    {
+      "id": "task-032",
+      "title": "Implement secret message puzzle (Room 1, Puzzle 5)",
+      "feature": "Room 1 - The Attic",
+      "dependencies": ["task-027"],
+      "description": "Build description/memory puzzle where players find hidden letters on objects to spell 'MARIE+JAMES'",
+      "acceptance_criteria": [
+        "10 objects in room with hidden letters",
+        "Player A sees objects with proximity glow",
+        "Player B has 'Grandparents' Favorites' hint list",
+        "Letters revealed when Player A examines objects",
+        "Players enter names to complete puzzle"
+      ],
+      "test_steps": [
+        "Create secret_message puzzle state",
+        "Place 10 objects in room with letters",
+        "Implement proximity detection for Player A",
+        "Render favorites list for Player B",
+        "Track discovered letters",
+        "Test name submission and validation"
+      ]
+    },
+    {
+      "id": "task-033",
+      "title": "Create room 1 completion and transition",
+      "feature": "Room 1 - The Attic",
+      "dependencies": ["task-028", "task-029", "task-030", "task-031", "task-032"],
+      "description": "Implement emotional beat animation when room 1 completes, transition to room 2",
+      "acceptance_criteria": [
+        "All 5 puzzles solved triggers room_complete event",
+        "10-second emotional beat animation plays",
+        "Grandmother's WWII secret revealed (codebreaker medal)",
+        "Continue to Next Room button appears",
+        "Both players must click to advance"
+      ],
+      "test_steps": [
+        "Check all puzzles solved condition",
+        "Trigger room_complete event",
+        "Play emotional beat animation",
+        "Show grandmother's story text",
+        "Display continue button",
+        "Test transition to room 2"
+      ]
+    },
+    {
+      "id": "task-034",
+      "title": "Create room 2 (Clock Tower) background assets",
+      "feature": "Room 2 - Clock Tower",
+      "dependencies": ["task-016"],
+      "description": "Create or load painted background images for Clock Tower room with moonlight atmosphere",
+      "acceptance_criteria": [
+        "Clock Tower background image created or sourced",
+        "Image matches spec aesthetic (mysterious, romantic, gears)",
+        "Loaded as PixiJS texture",
+        "Displays correctly in game canvas"
+      ],
+      "test_steps": [
+        "Create or source background image",
+        "Place in static/assets/rooms/ directory",
+        "Load as PixiJS sprite texture",
+        "Render to canvas",
+        "Verify visual quality matches spec"
+      ]
+    },
+    {
+      "id": "task-035",
+      "title": "Implement pendulum puzzle (Room 2, Puzzle 1)",
+      "feature": "Room 2 - Clock Tower",
+      "dependencies": ["task-034"],
+      "description": "Build coordination puzzle where Player A controls swing speed, Player B controls direction",
+      "acceptance_criteria": [
+        "Player A: Swing speed slider (slow to fast)",
+        "Player B: Direction button (left/right)",
+        "Ball moves based on pendulum physics",
+        "Guide ball through maze to goal",
+        "Must stay in goal for 2 seconds to complete"
+      ],
+      "test_steps": [
+        "Create pendulum puzzle state",
+        "Implement pendulum physics for ball movement",
+        "Render speed slider for Player A",
+        "Render direction controls for Player B",
+        "Add maze obstacles",
+        "Test goal detection and 2-second hold"
+      ]
+    },
+    {
+      "id": "task-036",
+      "title": "Implement gear alignment puzzle (Room 2, Puzzle 2)",
+      "feature": "Room 2 - Clock Tower",
+      "dependencies": ["task-034"],
+      "description": "Build description puzzle where Player A sees front of gears, Player B sees back with alignment marks",
+      "acceptance_criteria": [
+        "Player A: Gear mechanism from front (teeth visible)",
+        "Player B: Gear mechanism from back (alignment marks)",
+        "Players must communicate to align all marks",
+        "Connected gears move together",
+        "All marks aligned for 2 seconds completes puzzle"
+      ],
+      "test_steps": [
+        "Create gear_alignment puzzle state",
+        "Render gears from front view for Player A",
+        "Render gears from back view for Player B",
+        "Implement gear rotation controls",
+        "Connect linked gears (rotation affects others)",
+        "Test alignment detection and completion"
+      ]
+    },
+    {
+      "id": "task-037",
+      "title": "Implement bell codes puzzle (Room 2, Puzzle 3)",
+      "feature": "Room 2 - Clock Tower",
+      "dependencies": ["task-034"],
+      "description": "Build instruction puzzle where Player A operates telegraph, Player B has codebook",
+      "acceptance_criteria": [
+        "Player A: Telegraph key button (tap for Morse code)",
+        "Player B: Codebook with character mappings",
+        "Tap duration determines dot (<250ms) or dash (>400ms)",
+        "Transmit 'LOVE ETERNAL' message",
+        "Visual feedback on tap duration"
+      ],
+      "test_steps": [
+        "Create bell_codes puzzle state",
+        "Implement Morse code timing detection",
+        "Render telegraph key for Player A",
+        "Render codebook for Player B",
+        "Build message from taps",
+        "Test message validation against target"
+      ]
+    },
+    {
+      "id": "task-038",
+      "title": "Implement clock face puzzle (Room 2, Puzzle 4)",
+      "feature": "Room 2 - Clock Tower",
+      "dependencies": ["task-034"],
+      "description": "Build perspective puzzle where both players see same clock from opposite sides (reflections)",
+      "acceptance_criteria": [
+        "Player A sees: 3:15 (hour hand at 3, minute at 3)",
+        "Player B sees: 8:45 (hour hand at 9, minute at 9)",
+        "Both are mirror reflections",
+        "Players must enter true time: 12:00 or 00:00",
+        "Both players must enter correct time"
+      ],
+      "test_steps": [
+        "Create clock_face puzzle state",
+        "Render clock from Player A's perspective",
+        "Render clock from Player B's perspective (mirrored)",
+        "Add time input controls",
+        "Validate both players enter correct time",
+        "Test puzzle completion"
+      ]
+    },
+    {
+      "id": "task-039",
+      "title": "Implement windup key puzzle (Room 2, Puzzle 5)",
+      "feature": "Room 2 - Clock Tower",
+      "dependencies": ["task-034"],
+      "description": "Build coordination puzzle where both players turn keys at same speed and direction",
+      "acceptance_criteria": [
+        "Player A: Left key control",
+        "Player B: Right key control",
+        "Both must turn at same speed (15% tolerance)",
+        "Both must turn in same direction (CW or CCW)",
+        "Maintain for 5 seconds to complete",
+        "Progress bar shows synchronization"
+      ],
+      "test_steps": [
+        "Create windup_key puzzle state",
+        "Render key controls for each player",
+        "Track rotation speed and direction",
+        "Calculate speed difference",
+        "Track synchronized_duration",
+        "Test completion conditions"
+      ]
+    },
+    {
+      "id": "task-040",
+      "title": "Implement midnight chime puzzle (Room 2, Puzzle 6)",
+      "feature": "Room 2 - Clock Tower",
+      "dependencies": ["task-034"],
+      "description": "Build memory/coordination puzzle where players recreate bell sequence together",
+      "acceptance_criteria": [
+        "6-note sequence plays (reduced from 9)",
+        "3 playthroughs before input required",
+        "Visual notes appear on screen during playthroughs",
+        "Player A plays high bells, Player B plays low bells",
+        "Players alternate in sequence"
+      ],
+      "test_steps": [
+        "Create midnight_chime puzzle state",
+        "Implement sequence playback with audio",
+        "Render visual notes during playthroughs",
+        "Create input phase after playthroughs",
+        "Render bell racks for each player",
+        "Validate note sequence",
+        "Test puzzle completion"
+      ]
+    },
+    {
+      "id": "task-041",
+      "title": "Create room 2 completion and transition",
+      "feature": "Room 2 - Clock Tower",
+      "dependencies": ["task-035", "task-036", "task-037", "task-038", "task-039", "task-040"],
+      "description": "Implement emotional beat animation when room 2 completes, transition to room 3",
+      "acceptance_criteria": [
+        "All 6 puzzles solved triggers room_complete event",
+        "10-second emotional beat animation plays",
+        "Clock chimes midnight, lovers' reunion shown",
+        "Hidden engagement ring revealed",
+        "Continue to Next Room button appears"
+      ],
+      "test_steps": [
+        "Check all puzzles solved condition",
+        "Trigger room_complete event",
+        "Play midnight chime animation",
+        "Show lovers' story text",
+        "Display engagement ring reveal",
+        "Test transition to room 3"
+      ]
+    },
+    {
+      "id": "task-042",
+      "title": "Create room 3 (Garden Conservatory) background assets",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-016"],
+      "description": "Create or load painted background images for Garden Conservatory with dawn light atmosphere",
+      "acceptance_criteria": [
+        "Garden Conservatory background image created or sourced",
+        "Image matches spec aesthetic (hopeful, alive, lush greens)",
+        "Loaded as PixiJS texture",
+        "Displays correctly in game canvas"
+      ],
+      "test_steps": [
+        "Create or source background image",
+        "Place in static/assets/rooms/ directory",
+        "Load as PixiJS sprite texture",
+        "Render to canvas",
+        "Verify visual quality matches spec"
+      ]
+    },
+    {
+      "id": "task-043",
+      "title": "Implement seed packets puzzle (Room 3, Puzzle 1)",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-042"],
+      "description": "Build description puzzle where Player A sees seed images, Player B has planting guide",
+      "acceptance_criteria": [
+        "Player A: Seed packet images with visual descriptions",
+        "Player B: Planting guide with conditions (sun, shade, moisture)",
+        "Match seeds to correct planting spots",
+        "All seeds placed correctly completes puzzle"
+      ],
+      "test_steps": [
+        "Create seed_packets puzzle state",
+        "Render seed packets for Player A",
+        "Render planting guide for Player B",
+        "Implement drag and drop planting",
+        "Validate seed/spot matches",
+        "Test puzzle completion"
+      ]
+    },
+    {
+      "id": "task-044",
+      "title": "Implement water flow puzzle (Room 3, Puzzle 2)",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-042"],
+      "description": "Build coordination puzzle where Player A controls hot water, Player B controls cold water",
+      "acceptance_criteria": [
+        "Player A: Hot water valve (40 degrees contribution)",
+        "Player B: Cold water valve (10 degrees contribution)",
+        "Balance temperature for 4 plants",
+        "Each plant needs different target temperature",
+        "All plants healthy for 5 seconds completes puzzle"
+      ],
+      "test_steps": [
+        "Create water_flow puzzle state",
+        "Render valve controls for each player",
+        "Implement temperature calculation",
+        "Track plant health based on temperature",
+        "Test temperature balance mechanics",
+        "Verify completion condition"
+      ]
+    },
+    {
+      "id": "task-045",
+      "title": "Implement light spectrum puzzle (Room 3, Puzzle 3)",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-042"],
+      "description": "Build instruction puzzle where Player A controls prisms, Player B has light requirements chart",
+      "acceptance_criteria": [
+        "Player A: 3 prism rotators (0-360 degrees)",
+        "Player B: Light requirements chart for each flower",
+        "Prisms output colors based on rotation angle",
+        "Direct correct color light to each flower",
+        "All flowers satisfied completes puzzle"
+      ],
+      "test_steps": [
+        "Create light_spectrum puzzle state",
+        "Render prism controls for Player A",
+        "Render light chart for Player B",
+        "Calculate color output based on rotation",
+        "Track flower satisfaction",
+        "Test puzzle completion"
+      ]
+    },
+    {
+      "id": "task-046",
+      "title": "Implement hybridization puzzle (Room 3, Puzzle 4)",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-042"],
+      "description": "Build memory puzzle where players remember cross-pollination sequences",
+      "acceptance_criteria": [
+        "Cross-pollination sequence shown briefly (4 seconds)",
+        "Parent plants and offspring displayed",
+        "Players must complete 3 successful crosses",
+        "Previous round parents visible during current round",
+        "All 3 crosses correct completes puzzle"
+      ],
+      "test_steps": [
+        "Create hybridization puzzle state",
+        "Implement sequence display (4 seconds)",
+        "Render parent selection UI",
+        "Validate cross combinations",
+        "Track completed rounds",
+        "Test puzzle completion"
+      ]
+    },
+    {
+      "id": "task-047",
+      "title": "Implement trellis puzzle (Room 3, Puzzle 5)",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-042"],
+      "description": "Build perspective puzzle where vines grow differently for each player's camera angle",
+      "acceptance_criteria": [
+        "Player A: Front view of trellis",
+        "Player B: Side view (depth information)",
+        "Guide vines through trellis openings",
+        "Players must communicate about depth",
+        "All vines through openings completes puzzle"
+      ],
+      "test_steps": [
+        "Create trellis puzzle state",
+        "Render trellis from front view for Player A",
+        "Render trellis from side view for Player B",
+        "Implement vine growth controls",
+        "Validate vine positions",
+        "Test puzzle completion"
+      ]
+    },
+    {
+      "id": "task-048",
+      "title": "Implement bloom timing puzzle (Room 3, Puzzle 6)",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-042"],
+      "description": "Build coordination puzzle where players must alternate touching flowers in sequence",
+      "acceptance_criteria": [
+        "8 flowers arranged in sequence",
+        "Players must alternate turns (A-B-A-B-A-B-A-B)",
+        "Touching wrong flower or wrong player causes error",
+        "Visual indicators show whose turn it is",
+        "All flowers bloom in correct order completes puzzle"
+      ],
+      "test_steps": [
+        "Create bloom_timing puzzle state",
+        "Render 8 flowers in layout",
+        "Implement flower touch detection",
+        "Validate player turn alternation",
+        "Track sequence progress",
+        "Test puzzle completion"
+      ]
+    },
+    {
+      "id": "task-049",
+      "title": "Implement final bloom puzzle (Room 3, Puzzle 7) - Water Stage",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-042"],
+      "description": "Build stage 1 of finale: coordination water balance puzzle (80% moisture target)",
+      "acceptance_criteria": [
+        "Player A: Warm water tap control",
+        "Player B: Cool water tap control",
+        "Balance to exactly 80% moisture (75-85% tolerance)",
+        "Moisture decreases 2% per second (evaporation)",
+        "Hold in target range for 3 seconds"
+      ],
+      "test_steps": [
+        "Create final_bloom puzzle state with water_stage",
+        "Render water tap controls for each player",
+        "Implement moisture calculation",
+        "Track time in target range",
+        "Test stage completion"
+      ]
+    },
+    {
+      "id": "task-050",
+      "title": "Implement final bloom puzzle - Light Stage",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-049"],
+      "description": "Build stage 2 of finale: perspective prism rotation puzzle",
+      "acceptance_criteria": [
+        "Player A: Horizontal rotation (target: 75-105 degrees)",
+        "Player B: Vertical rotation (target: 45-75 degrees)",
+        "Rainbow intensity based on alignment",
+        "Must reach 90% intensity for 2 seconds",
+        "Rainbow appears on rose when aligned"
+      ],
+      "test_steps": [
+        "Add light_stage to final_bloom state",
+        "Render prism controls for each player",
+        "Calculate rainbow intensity from alignment",
+        "Track time at required intensity",
+        "Test stage completion"
+      ]
+    },
+    {
+      "id": "task-051",
+      "title": "Implement final bloom puzzle - Pollinate Stage",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-050"],
+      "description": "Build stage 3 of finale: instruction/memory flower sequence puzzle",
+      "acceptance_criteria": [
+        "5 flowers around central rose",
+        "Player A sees flowers, Player B has pollination guide",
+        "Touch flowers in sequence (red → yellow → blue → white → pink)",
+        "Players must alternate turns",
+        "All 5 flowers pollinated completes stage"
+      ],
+      "test_steps": [
+        "Add pollinate_stage to final_bloom state",
+        "Render 5 flowers in pentagon layout",
+        "Render pollination guide for Player B",
+        "Implement flower touch validation",
+        "Track sequence progress",
+        "Test stage completion"
+      ]
+    },
+    {
+      "id": "task-052",
+      "title": "Implement final bloom puzzle - Bloom Stage (Finale)",
+      "feature": "Room 3 - Garden Conservatory",
+      "dependencies": ["task-051"],
+      "description": "Build stage 4 of finale: rose bloom animation and victory reveal",
+      "acceptance_criteria": [
+        "5-second bloom animation (petals unfurl)",
+        "Golden light emanates from bloom",
+        "Hidden compartment opens in pot base",
+        "Reveal: two wedding bands and pressed flower",
+        "Final message: 'Together We Bloom, Forever We Grow'"
+      ],
+      "test_steps": [
+        "Add bloom_stage to final_bloom state",
+        "Create bloom animation (5 seconds)",
+        "Implement compartment open animation",
+        "Display final message overlay",
+        "Show victory screen",
+        "Test complete puzzle flow"
+      ]
+    },
+    {
+      "id": "task-053",
+      "title": "Create game victory screen",
+      "feature": "Game Completion",
+      "dependencies": ["task-052"],
+      "description": "Build victory screen showing total time, hints used, celebration animation",
+      "acceptance_criteria": [
+        "Victory screen displays after room 3 completion",
+        "Shows total playtime",
+        "Shows hints used count",
+        "Celebration animation (confetti, warm light)",
+        "End credits with developer names",
+        "Thank you message"
+      ],
+      "test_steps": [
+        "Create victory screen component",
+        "Calculate total playtime and hints",
+        "Add celebration particle effects",
+        "Display stats and credits",
+        "Test after completing all rooms"
+      ]
+    },
+    {
+      "id": "task-054",
+      "title": "Set up Zhipu AI (z.ai) API service",
+      "feature": "AI Customizer",
+      "dependencies": ["task-006"],
+      "description": "Configure backend service for Zhipu AI API calls with glm-4.6/4.7 models",
+      "acceptance_criteria": [
+        "ZAI_API_KEY environment variable configured",
+        "API service class for making chat completion requests",
+        "Error handling for API failures",
+        "Fallback to glm-4.6 if glm-4.7 unavailable",
+        "Request/response logging for debugging"
+      ],
+      "test_steps": [
+        "Install node-fetch or axios for HTTP requests",
+        "Create ZAIService class",
+        "Implement chat completion method",
+        "Add error handling and retry logic",
+        "Test API call with sample prompt",
+        "Verify response format"
+      ]
+    },
+    {
+      "id": "task-055",
+      "title": "Create couple profile onboarding flow",
+      "feature": "AI Customizer",
+      "dependencies": ["task-009"],
+      "description": "Build multi-step onboarding form for couple names, milestone, photo upload, and play style quiz",
+      "acceptance_criteria": [
+        "Step 1: Input player A and B names",
+        "Step 1: Select relationship milestone",
+        "Step 2: Upload 3-5 photos (optional but recommended)",
+        "Step 3: Complete 3-question play style quiz",
+        "Step 4: Generate experience preview",
+        "All data stored in CoupleProfile object"
+      ],
+      "test_steps": [
+        "Create onboarding page components",
+        "Implement multi-step form with navigation",
+        "Add file upload for photos",
+        "Create quiz interface",
+        "Generate experience preview",
+        "Test complete onboarding flow"
+      ]
+    },
+    {
+      "id": "task-056",
+      "title": "Implement photo upload and storage",
+      "feature": "AI Customizer",
+      "dependencies": ["task-055"],
+      "description": "Handle photo uploads from onboarding, store for puzzle personalization",
+      "acceptance_criteria": [
+        "Photos uploaded via multipart form data",
+        "Stored securely (localStorage or server)",
+        "Maximum 5 photos per couple",
+        "Each photo under 100KB limit",
+        "Photos returned as URLs for integration"
+      ],
+      "test_steps": [
+        "Create photo upload endpoint",
+        "Implement file validation (size, type)",
+        "Store photos (localStorage or server)",
+        "Return photo URLs",
+        "Test upload with sample images"
+      ]
+    },
+    {
+      "id": "task-057",
+      "title": "Create AI difficulty tuning system",
+      "feature": "AI Customizer",
+      "dependencies": ["task-054"],
+      "description": "Implement real-time difficulty adjustment based on gameplay metrics using AI analysis",
+      "acceptance_criteria": [
+        "Monitor metrics: time on puzzle, failed attempts, inactivity",
+        "Send game state to AI for analysis every 10 seconds",
+        "AI recommends difficulty adjustments",
+        "Apply adjustments: time limits, hint thresholds, clue subtlety",
+        "Log adjustments for debugging"
+      ],
+      "test_steps": [
+        "Create DifficultyTuner class",
+        "Implement metric collection",
+        "Add AI analysis interval (10s)",
+        "Parse AI response for adjustments",
+        "Apply adjustments to puzzle parameters",
+        "Test with stuck player scenario"
+      ]
+    },
+    {
+      "id": "task-058",
+      "title": "Implement personalized content generation",
+      "feature": "AI Customizer",
+      "dependencies": ["task-056"],
+      "description": "Use AI to generate personalized puzzle content from couple profile (names, photos, milestone)",
+      "acceptance_criteria": [
+        "Substitute couple photos into torn photographs puzzle",
+        "Generate personalized cipher words from milestone",
+        "Create custom love letter signatures with names",
+        "Integrate photos into victory montage",
+        "Content feels unique to each couple"
+      ],
+      "test_steps": [
+        "Create ContentGenerator class",
+        "Implement photo integration logic",
+        "Generate personalized cipher words",
+        "Create custom signatures and messages",
+        "Test with sample couple profiles",
+        "Verify personalization in puzzles"
+      ]
+    },
+    {
+      "id": "task-059",
+      "title": "Create adaptive hint system",
+      "feature": "AI Customizer",
+      "dependencies": ["task-057"],
+      "description": "Generate contextual hints based on couple progress and communication style",
+      "acceptance_criteria": [
+        "3 hint tiers (nudge, partial, near-spoiler)",
+        "Hints personalized with couple names",
+        "Hint style adapts to play style (chill vs challenge)",
+        "Hints reference player strengths",
+        "Celebrate success with personalized messages"
+      ],
+      "test_steps": [
+        "Create AdaptiveHintSystem class",
+        "Implement hint trigger logic",
+        "Generate personalized hint text",
+        "Adapt hint style to profile",
+        "Test hint progression through tiers"
+      ]
+    },
+    {
+      "id": "task-060",
+      "title": "Implement communication coach",
+      "feature": "AI Customizer",
+      "dependencies": ["task-057"],
+      "description": "Subtle AI guidance to encourage teamwork and balance participation",
+      "acceptance_criteria": [
+        "Monitor participation balance (0-1 scale)",
+        "Detect negative language patterns",
+        "Prompt passive player when balance < 0.3",
+        "Defuse tension with encouraging messages",
+        "Celebrate teamwork successes"
+      ],
+      "test_steps": [
+        "Create CommunicationCoach class",
+        "Implement participation tracking",
+        "Add tension detection",
+        "Generate coaching messages",
+        "Test with imbalanced participation",
+        "Verify messages encourage collaboration"
+      ]
+    },
+    {
+      "id": "task-061",
+      "title": "Create AI debug monitor panel",
+      "feature": "AI Customizer",
+      "dependencies": ["task-057"],
+      "description": "Developer tool to visualize AI decision-making in real-time",
+      "acceptance_criteria": [
+        "Debug panel accessible via Ctrl+Shift+D or query param",
+        "Shows real-time AI processing stream",
+        "Displays couple profile insights",
+        "Logs z.ai API calls with tokens and latency",
+        "Manual override for testing adjustments"
+      ],
+      "test_steps": [
+        "Create debug monitor component",
+        "Add keyboard shortcut handler",
+        "Display AI processing logs",
+        "Show API request/response details",
+        "Test with live game session",
+        "Verify manual override works"
+      ]
+    },
+    {
+      "id": "task-062",
+      "title": "Add particle effects system",
+      "feature": "Visual Polish",
+      "dependencies": ["task-016"],
+      "description": "Create PixiJS particle system for dust motes, candle flames, sparkles, and celebration effects",
+      "acceptance_criteria": [
+        "Particle system supports multiple emitters",
+        "Dust motes in light beams (Attic)",
+        "Candle flicker effects (all rooms)",
+        "Sparkles on puzzle completion",
+        "Confetti on victory",
+        "Performance: 60fps with particles active"
+      ],
+      "test_steps": [
+        "Create ParticleSystem class",
+        "Implement particle emitters for each effect",
+        "Add to room rendering pipelines",
+        "Test performance with browser dev tools",
+        "Verify effects match spec atmosphere"
+      ]
+    },
+    {
+      "id": "task-063",
+      "title": "Add sound effects and music",
+      "feature": "Audio",
+      "dependencies": ["task-015"],
+      "description": "Implement audio system for ambient sounds, interaction sounds, and music tracks",
+      "acceptance_criteria": [
+        "Music tracks for each room (menu, attic, clock tower, garden, victory)",
+        "Ambient sounds per room (wind, ticking, rain)",
+        "Interaction sounds (click, pickup, puzzle complete, wrong answer)",
+        "Volume controls for music and SFX",
+        "Audio fades between room transitions"
+      ],
+      "test_steps": [
+        "Create or source audio files",
+        "Implement AudioController class",
+        "Add play/stop methods for tracks",
+        "Create sound effect triggers",
+        "Add volume controls to settings",
+        "Test audio across all rooms"
+      ]
+    },
+    {
+      "id": "task-064",
+      "title": "Implement mobile touch controls",
+      "feature": "Mobile Support",
+      "dependencies": ["task-015"],
+      "description": "Adapt UI and interactions for touch devices with tap, long-press, and swipe gestures",
+      "acceptance_criteria": [
+        "All interactive elements min 44x44px",
+        "Tap instead of click for interactions",
+        "Long-press for hover hints",
+        "Inventory becomes full-screen drawer",
+        "Pinch-to-zoom on room view",
+        "On-screen controls for keyboard shortcuts"
+      ],
+      "test_steps": [
+        "Add touch event listeners",
+        "Implement long-press detection",
+        "Create mobile-specific UI components",
+        "Test on iOS and Android devices",
+        "Verify all interactions work"
+      ]
+    },
+    {
+      "id": "task-065",
+      "title": "Add accessibility features",
+      "feature": "Accessibility",
+      "dependencies": ["task-015"],
+      "description": "Implement screen reader support, colorblind mode, and keyboard navigation",
+      "acceptance_criteria": [
+        "ARIA labels on all interactive elements",
+        "Alt text for room views and objects",
+        "Colorblind mode toggle with pattern overlays",
+        "High contrast mode option",
+        "Keyboard-only navigation (Tab through elements)",
+        "Dyslexia-friendly font option"
+      ],
+      "test_steps": [
+        "Add ARIA labels to components",
+        "Create colorblind mode toggle",
+        "Implement high contrast theme",
+        "Test keyboard navigation",
+        "Verify with screen reader (NVDA/VoiceOver)"
+      ]
+    },
+    {
+      "id": "task-066",
+      "title": "Implement pause/resume functionality",
+      "feature": "Game State",
+      "dependencies": ["task-017"],
+      "description": "Allow players to pause game, show room code for reconnection",
+      "acceptance_criteria": [
+        "Pause button in settings menu",
+        "Pause screen shows room code prominently",
+        "Timer stops during pause",
+        "Copy room code button",
+        "Return to menu option",
+        "Unpause requires both players connected"
+      ],
+      "test_steps": [
+        "Create pause overlay component",
+        "Implement pause game state",
+        "Stop timer when paused",
+        "Add room code display and copy",
+        "Test pause and resume flow"
+      ]
+    },
+    {
+      "id": "task-067",
+      "title": "Add WebSocket reconnection handling",
+      "feature": "Real-time Communication",
+      "dependencies": ["task-013"],
+      "description": "Graceful reconnection with exponential backoff and state resync",
+      "acceptance_criteria": [
+        "Automatic reconnection with backoff (1s, 2s, 4s, 8s, 16s)",
+        "Show reconnection overlay to disconnected player",
+        "Server resends full state on reconnection",
+        "Partner sees 'Player X reconnected' toast",
+        "5 failed attempts shows return to menu option"
+      ],
+      "test_steps": [
+        "Implement reconnection logic in Socket.IO client",
+        "Add exponential backoff",
+        "Create reconnection overlay UI",
+        "Handle reconnection event on server",
+        "Test by killing and restarting server"
+      ]
+    },
+    {
+      "id": "task-068",
+      "title": "Create end-to-end test suite",
+      "feature": "Testing",
+      "dependencies": ["task-053"],
+      "description": "Automated tests for complete game flow from lobby to victory",
+      "acceptance_criteria": [
+        "Test room creation and joining",
+        "Test all Room 1 puzzles",
+        "Test room transition to Room 2",
+        "Test all Room 2 puzzles",
+        "Test room transition to Room 3",
+        "Test all Room 3 puzzles",
+        "Test victory screen",
+        "All tests pass"
+      ],
+      "test_steps": [
+        "Set up test framework (Playwright)",
+        "Write test for lobby flow",
+        "Write test for each puzzle",
+        "Write test for room transitions",
+        "Write test for victory flow",
+        "Run full test suite",
+        "Verify all tests pass"
+      ]
+    },
+    {
+      "id": "task-069",
+      "title": "Performance optimization and profiling",
+      "feature": "Optimization",
+      "dependencies": ["task-062"],
+      "description": "Optimize rendering, reduce bundle size, ensure 60fps on target devices",
+      "acceptance_criteria": [
+        "60fps maintained on desktop Chrome",
+        "30fps maintained on mobile devices",
+        "Bundle size under 2MB (gzipped)",
+        "Particle effects auto-reduce on low-end devices",
+        "Lazy loading for room assets"
+      ],
+      "test_steps": [
+        "Profile with Chrome DevTools",
+        "Optimize PixiJS rendering",
+        "Implement code splitting",
+        "Add lazy loading for assets",
+        "Test on low-end device",
+        "Measure bundle size"
+      ]
+    },
+    {
+      "id": "task-070",
+      "title": "Deploy frontend and backend",
+      "feature": "Deployment",
+      "dependencies": ["task-068"],
+      "description": "Deploy frontend to Vercel and backend to Railway/Render",
+      "acceptance_criteria": [
+        "Frontend deployed and accessible",
+        "Backend deployed with WebSocket support",
+        "Environment variables configured",
+        "Custom domain configured (optional)",
+        "HTTPS enabled",
+        "Two players can connect and play"
+      ],
+      "test_steps": [
+        "Connect GitHub repo to Vercel",
+        "Deploy frontend",
+        "Connect backend to Railway/Render",
+        "Configure environment variables",
+        "Test WebSocket connection",
+        "Verify gameplay works"
+      ]
+    }
+  ],
+  "execution_order": [
+    "task-001",
+    "task-002",
+    "task-003",
+    "task-004",
+    "task-005",
+    "task-006",
+    "task-007",
+    "task-008",
+    "task-009",
+    "task-010",
+    "task-011",
+    "task-012",
+    "task-013",
+    "task-014",
+    "task-015",
+    "task-016",
+    "task-017",
+    "task-018",
+    "task-019",
+    "task-020",
+    "task-021",
+    "task-022",
+    "task-023",
+    "task-024",
+    "task-025",
+    "task-026",
+    "task-027",
+    "task-028",
+    "task-029",
+    "task-030",
+    "task-031",
+    "task-032",
+    "task-033",
+    "task-034",
+    "task-035",
+    "task-036",
+    "task-037",
+    "task-038",
+    "task-039",
+    "task-040",
+    "task-041",
+    "task-042",
+    "task-043",
+    "task-044",
+    "task-045",
+    "task-046",
+    "task-047",
+    "task-048",
+    "task-049",
+    "task-050",
+    "task-051",
+    "task-052",
+    "task-053",
+    "task-054",
+    "task-055",
+    "task-056",
+    "task-057",
+    "task-058",
+    "task-059",
+    "task-060",
+    "task-061",
+    "task-062",
+    "task-063",
+    "task-064",
+    "task-065",
+    "task-066",
+    "task-067",
+    "task-068",
+    "task-069",
+    "task-070"
+  ],
+  "metadata": {
+    "total_tasks": 70,
+    "feature_count": 22,
+    "features": [
+      "Project Setup",
+      "Type System",
+      "Backend Setup",
+      "Backend Core",
+      "Frontend UI",
+      "Room Management",
+      "Real-time Communication",
+      "Game UI",
+      "Game Rendering",
+      "State Management",
+      "Game Mechanics",
+      "Communication Tools",
+      "Inventory",
+      "Hint System",
+      "Save System",
+      "Room 1 - The Attic",
+      "Room 2 - Clock Tower",
+      "Room 3 - Garden Conservatory",
+      "Game Completion",
+      "AI Customizer",
+      "Visual Polish",
+      "Audio",
+      "Mobile Support",
+      "Accessibility",
+      "Game State",
+      "Testing",
+      "Optimization",
+      "Deployment"
+    ]
+  }
+}
