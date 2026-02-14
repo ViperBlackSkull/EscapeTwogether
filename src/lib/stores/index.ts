@@ -41,3 +41,35 @@ export {
 	type PuzzleState,
 	type InventoryItem
 } from './gameState';
+
+// Role system exports
+export {
+	// Constants
+	ROLE_COLORS,
+	ROLE_CAPABILITIES,
+	ROLE_ICONS,
+
+	// Notification store
+	roleNotification,
+
+	// Role assignment functions
+	assignRoles,
+	swapRoles,
+	getCurrentRole,
+	getPlayerByRole,
+	canPerformRoleAction,
+
+	// Store actions
+	initializeRoles,
+	performRoleSwap,
+	onPuzzleSolved,
+
+	// Derived stores
+	currentPlayerRole,
+	explorerPlayer,
+	analystPlayer,
+	rolesAssigned,
+
+	// Types
+	type PlayerRole
+} from './roles';
