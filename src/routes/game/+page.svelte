@@ -6,6 +6,7 @@
 	import Chat from '$lib/components/Chat.svelte';
 	import { currentRoom, players, isConnected, disconnectSocket } from '$lib/socket';
 	import type { Player } from '$lib/socket';
+	import { soundManager } from '$lib/audio';
 
 	// Inventory state
 	let inventory: { id: string; name: string; icon: string; description: string }[] = [];
@@ -51,11 +52,14 @@
 	});
 
 	function leaveGame() {
+		soundManager.playClick();
+		soundManager.playPlayerLeave();
 		disconnectSocket();
 		goto('/');
 	}
 
 	function toggleSidebar() {
+		soundManager.playClick();
 		showSidebar = !showSidebar;
 	}
 
@@ -66,13 +70,42 @@
 	function handleTouchTap(event: CustomEvent) {
 		console.log('Touch tap:', event.detail);
 	}
+
+	function handleItemClick(itemId: string) {
+		soundManager.play('item-use');
+	}
+
+	function handleOpenChat() {
+		soundManager.playClick();
+		activeTab = 'chat';
+		showSidebar = true;
+	}
+
+	function handleOpenInventory() {
+		soundManager.playClick();
+		activeTab = 'inventory';
+		showSidebar = true;
+	}
 </script>
 
 <svelte:head>
 	<title>EscapeTogether - Game</title>
 </svelte:head>
 
-<div class="h-screen h-[100dvh] bg-soft-black text-dusty-rose flex flex-col overflow-hidden">
+{#if showSidebar && isMobile}
+	<!-- Announce sidebar state to screen readers -->
+	<div role="status" aria-live="polite" class="sr-only">
+		{activeTab === 'chat' ? 'Chat panel opened' : 'Inventory panel opened'}
+	</div>
+{/if}
+
+<div
+	id="main-content"
+	class="h-screen h-[100dvh] bg-soft-black text-dusty-rose flex flex-col overflow-hidden"
+	role="application"
+	aria-label="EscapeTogether game interface"
+	tabindex="-1"
+>
 	<!-- Header -->
 	<header class="bg-deep-navy border-b border-dusty-rose/10 px-3 md:px-4 py-2 md:py-3 flex items-center justify-between flex-shrink-0">
 		<div class="flex items-center gap-2 md:gap-4">
@@ -82,9 +115,9 @@
 			{/if}
 		</div>
 		<div class="flex items-center gap-2 md:gap-4">
-			<div class="flex items-center gap-2">
-				<div class="w-2 h-2 rounded-full {connected ? 'bg-green-500' : 'bg-red-500'}"></div>
-				<span class="text-xs md:text-sm text-dusty-rose/60">{playerList.length}/2</span>
+			<div class="flex items-center gap-2" role="status" aria-label="Connection status">
+				<div class="w-2 h-2 rounded-full {connected ? 'bg-green-500' : 'bg-red-500'}" aria-hidden="true"></div>
+				<span class="text-xs md:text-sm text-dusty-rose/60">{playerList.length}/2 players</span>
 			</div>
 
 			<!-- Mobile sidebar toggle -->
@@ -108,7 +141,8 @@
 
 			<button
 				on:click={leaveGame}
-				class="text-dusty-rose/60 hover:text-dusty-rose text-xs md:text-sm transition-colors"
+				class="text-dusty-rose/60 hover:text-dusty-rose text-xs md:text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-warm-amber rounded px-2 py-1"
+				aria-label="Leave game and return to home"
 			>
 				Leave
 			</button>
@@ -125,21 +159,25 @@
 			/>
 
 			<!-- Player overlays - smaller on mobile -->
-			<div class="absolute top-2 left-2 md:top-4 md:left-4 bg-deep-navy/80 backdrop-blur-sm rounded-lg p-2 md:p-3 border border-dusty-rose/10">
-				<div class="text-xs text-dusty-rose/60 mb-1 md:mb-2 uppercase tracking-wider">Players</div>
-				<div class="space-y-1 md:space-y-2">
+			<div
+				class="absolute top-2 left-2 md:top-4 md:left-4 bg-deep-navy/80 backdrop-blur-sm rounded-lg p-2 md:p-3 border border-dusty-rose/10"
+				role="region"
+				aria-label="Players in room"
+			>
+				<div class="text-xs text-dusty-rose/60 mb-1 md:mb-2 uppercase tracking-wider" id="players-label">Players</div>
+				<ul class="space-y-1 md:space-y-2" aria-labelledby="players-label" role="list">
 					{#each playerList as player, index (player.id)}
-						<div class="flex items-center gap-2">
-							<div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-warm-amber/20 flex items-center justify-center text-xs">
+						<li class="flex items-center gap-2">
+							<div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-warm-amber/20 flex items-center justify-center text-xs" aria-hidden="true">
 								{index + 1}
 							</div>
 							<span class="text-xs md:text-sm text-dusty-rose truncate max-w-[80px] md:max-w-none">{player.name}</span>
 							{#if player.isHost}
-								<span class="text-xs text-antique-gold">★</span>
+								<span class="text-xs text-antique-gold" aria-label="Host">★</span>
 							{/if}
-						</div>
+						</li>
 					{/each}
-				</div>
+				</ul>
 			</div>
 		</div>
 
@@ -159,6 +197,9 @@
 					? 'fixed right-0 top-0 bottom-0 w-80 max-w-[85vw] z-50 transform transition-transform duration-300 ' +
 						(showSidebar ? 'translate-x-0' : 'translate-x-full')
 					: 'w-80'}"
+			role="complementary"
+			aria-label="Game sidebar with chat and inventory"
+			aria-hidden={isMobile && !showSidebar ? 'true' : 'false'}
 		>
 			<!-- Mobile sidebar header -->
 			{#if isMobile}
@@ -226,17 +267,19 @@
 				{/if}
 				<div class="flex-1 overflow-y-auto p-3">
 					{#if inventory.length === 0}
-						<p class="text-sm text-dusty-rose/50 text-center py-4">No items yet</p>
+						<p class="text-sm text-dusty-rose/50 text-center py-4" role="status">No items yet</p>
 					{:else}
-						<div class="grid grid-cols-4 gap-2">
+						<div class="grid grid-cols-4 gap-2" role="list" aria-label="Inventory items">
 							{#each inventory as item (item.id)}
 								<button
-									class="aspect-square bg-soft-black border border-dusty-rose/20 rounded-lg flex items-center justify-center text-xl hover:border-warm-amber/50 active:scale-95 transition-all group relative"
-									title={item.name}
+									class="aspect-square bg-soft-black border border-dusty-rose/20 rounded-lg flex items-center justify-center text-xl hover:border-warm-amber/50 active:scale-95 transition-all group relative focus:outline-none focus:ring-2 focus:ring-warm-amber"
+									on:click={() => handleItemClick(item.id)}
+									aria-label="{item.name}: {item.description}"
+									role="listitem"
 								>
-									{item.icon}
+									<span aria-hidden="true">{item.icon}</span>
 									<!-- Tooltip (desktop only) -->
-									<div class="hidden md:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-deep-navy border border-dusty-rose/20 rounded text-xs text-dusty-rose whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+									<div class="hidden md:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-deep-navy border border-dusty-rose/20 rounded text-xs text-dusty-rose whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10" role="tooltip">
 										<div class="font-medium text-warm-amber">{item.name}</div>
 										<div class="text-dusty-rose/60">{item.description}</div>
 									</div>
@@ -253,7 +296,7 @@
 	{#if isMobile && !showSidebar}
 		<div class="absolute bottom-4 right-4 flex gap-2">
 			<button
-				on:click={() => { activeTab = 'chat'; showSidebar = true; }}
+				on:click={handleOpenChat}
 				class="p-3 bg-warm-amber text-deep-navy rounded-full shadow-lg active:scale-95 transition-transform"
 				aria-label="Open chat"
 			>
@@ -262,7 +305,7 @@
 				</svg>
 			</button>
 			<button
-				on:click={() => { activeTab = 'inventory'; showSidebar = true; }}
+				on:click={handleOpenInventory}
 				class="p-3 bg-soft-teal text-deep-navy rounded-full shadow-lg active:scale-95 transition-transform"
 				aria-label="Open inventory"
 			>

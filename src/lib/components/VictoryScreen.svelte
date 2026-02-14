@@ -2,6 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
+	import { soundManager } from '$lib/audio';
 
 	// Props
 	export let totalPlayTime: number = 0; // in milliseconds
@@ -117,6 +118,9 @@
 	}
 
 	onMount(() => {
+		// Play victory sound
+		soundManager.playVictory();
+
 		// Start confetti after a short delay
 		setTimeout(createConfetti, 500);
 
@@ -255,14 +259,14 @@
 
 		<!-- Actions -->
 		<div class="actions-container" in:fade={{ delay: 3000, duration: 800 }}>
-			<button class="btn btn-primary" on:click={onRestart}>
+			<button class="btn btn-primary" on:click={() => { soundManager.playClick(); onRestart(); }}>
 				<svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<path d="M23 4v6h-6M1 20v-6h6"/>
 					<path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
 				</svg>
 				Play Again
 			</button>
-			<button class="btn btn-secondary" on:click={onReturnToLobby}>
+			<button class="btn btn-secondary" on:click={() => { soundManager.playClick(); onReturnToLobby(); }}>
 				<svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
 					<polyline points="9,22 9,12 15,12 15,22"/>

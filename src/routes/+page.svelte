@@ -133,9 +133,14 @@
 <!-- Prevent pull-to-refresh on mobile -->
 <svelte:body on:touchmove|preventDefault />
 
-<main class="min-h-screen bg-soft-black text-dusty-rose font-body overflow-hidden relative" role="main">
-	<!-- Ambient background effects -->
-	<div class="fixed inset-0 pointer-events-none">
+<main
+	id="main-content"
+	class="min-h-screen bg-soft-black text-dusty-rose font-body overflow-hidden relative"
+	role="main"
+	tabindex="-1"
+>
+	<!-- Ambient background effects (decorative, hidden from screen readers) -->
+	<div class="fixed inset-0 pointer-events-none" aria-hidden="true">
 		<!-- Gradient overlay -->
 		<div class="absolute inset-0 bg-gradient-to-br from-deep-navy via-soft-black to-deep-navy opacity-90"></div>
 

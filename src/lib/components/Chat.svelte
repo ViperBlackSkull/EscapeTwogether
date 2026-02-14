@@ -2,6 +2,7 @@
 	import { onMount, afterUpdate } from 'svelte';
 	import { chatMessages, sendMessage, currentRoom } from '$lib/socket';
 	import type { ChatMessage } from '$lib/socket';
+	import { soundManager } from '$lib/audio';
 
 	// Props
 	export let placeholder: string = 'Type a message...';
@@ -11,21 +12,30 @@
 	let newMessage = '';
 	let chatContainer: HTMLDivElement;
 	let inputId = `chat-input-${Math.random().toString(36).slice(2, 9)}`;
+	let previousMessageCount = 0;
 
 	// Reactive subscriptions
 	$: messages = $chatMessages;
 	$: room = $currentRoom;
 
 	// Auto-scroll to bottom when new messages arrive
+	// Also play sound when receiving new messages
 	afterUpdate(() => {
 		if (chatContainer) {
 			chatContainer.scrollTop = chatContainer.scrollHeight;
 		}
+
+		// Play receive sound if new messages came in (not from us sending)
+		if (messages.length > previousMessageCount) {
+			soundManager.playMessageReceive();
+		}
+		previousMessageCount = messages.length;
 	});
 
 	function handleSendMessage() {
 		if (!newMessage.trim()) return;
 
+		soundManager.playMessageSend();
 		sendMessage(newMessage.trim());
 		newMessage = '';
 	}
