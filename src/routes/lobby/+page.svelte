@@ -107,54 +107,55 @@
 	<title>Lobby - EscapeTogether</title>
 </svelte:head>
 
-<main class="min-h-screen bg-soft-black text-dusty-rose font-body">
-	<div class="min-h-screen flex flex-col items-center justify-center px-4 py-8">
+<main class="min-h-screen min-h-[100dvh] bg-soft-black text-dusty-rose font-body">
+	<div class="min-h-screen min-h-[100dvh] flex flex-col items-center justify-center px-3 sm:px-4 py-6 sm:py-8">
 		<!-- Header -->
-		<div class="text-center mb-8">
-			<h1 class="text-4xl font-display font-bold text-warm-amber mb-2">Lobby</h1>
-			<p class="text-dusty-rose/60">Waiting for players...</p>
+		<div class="text-center mb-6 sm:mb-8">
+			<h1 class="text-3xl sm:text-4xl font-display font-bold text-warm-amber mb-2">Lobby</h1>
+			<p class="text-sm sm:text-base text-dusty-rose/60">Waiting for players...</p>
 		</div>
 
 		<!-- Partner joined notification -->
 		{#if showPartnerNotification}
 			<div
-				class="fixed top-4 left-1/2 -translate-x-1/2 bg-soft-teal/20 border border-soft-teal/40 rounded-xl px-6 py-3 z-50 animate-pulse"
+				class="fixed top-4 left-1/2 -translate-x-1/2 bg-soft-teal/20 border border-soft-teal/40 rounded-xl px-4 sm:px-6 py-2 sm:py-3 z-50 animate-pulse"
 			>
-				<p class="text-soft-teal font-semibold">Your partner has joined! Starting game...</p>
+				<p class="text-sm sm:text-base text-soft-teal font-semibold text-center">Your partner has joined! Starting game...</p>
 			</div>
 		{/if}
 
 		<!-- Room info card -->
-		<div class="w-full max-w-md bg-deep-navy/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-dusty-rose/10">
-			<!-- Connection status -->
-			<div class="flex items-center justify-center mb-6">
-				<div class="flex items-center gap-2">
-					<div class="w-3 h-3 rounded-full {isConnected ? 'bg-green-500' : 'bg-red-500'} animate-pulse"></div>
-					<span class="text-sm text-dusty-rose/60">
-						{isConnected ? 'Connected' : 'Connecting...'}
-					</span>
-				</div>
-			</div>
-
-			<!-- Room code display -->
-			<div class="text-center mb-8">
-				<p class="text-sm text-dusty-rose/60 mb-2 uppercase tracking-wider">Room Code</p>
-				<div class="flex items-center justify-center gap-3">
-					<div class="bg-soft-black/50 px-6 py-4 rounded-lg border border-dusty-rose/20">
-						<span class="text-4xl font-display font-bold text-antique-gold tracking-widest">
-							{roomCode}
+		<div class="w-full max-w-md px-1 sm:px-0">
+			<div class="bg-deep-navy/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 md:p-8 shadow-2xl border border-dusty-rose/10">
+				<!-- Connection status -->
+				<div class="flex items-center justify-center mb-4 sm:mb-6">
+					<div class="flex items-center gap-2">
+						<div class="w-3 h-3 rounded-full {isConnected ? 'bg-green-500' : 'bg-red-500'} animate-pulse"></div>
+						<span class="text-xs sm:text-sm text-dusty-rose/60">
+							{isConnected ? 'Connected' : 'Connecting...'}
 						</span>
 					</div>
-					<button
-						on:click={copyRoomCode}
-						class="bg-warm-amber/20 hover:bg-warm-amber/30 text-warm-amber px-3 py-2 rounded-lg transition-all"
-						title="Copy room code"
-					>
-						Copy
-					</button>
 				</div>
-				<p class="text-xs text-dusty-rose/40 mt-3">Share this code with your partner</p>
-			</div>
+
+				<!-- Room code display -->
+				<div class="text-center mb-6 sm:mb-8">
+					<p class="text-xs sm:text-sm text-dusty-rose/60 mb-2 uppercase tracking-wider">Room Code</p>
+					<div class="flex items-center justify-center gap-2 sm:gap-3">
+						<div class="bg-soft-black/50 px-4 sm:px-6 py-3 sm:py-4 rounded-lg border border-dusty-rose/20">
+							<span class="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-antique-gold tracking-widest">
+								{roomCode}
+							</span>
+						</div>
+						<button
+							on:click={copyRoomCode}
+							class="bg-warm-amber/20 hover:bg-warm-amber/30 active:bg-warm-amber/40 text-warm-amber px-2 sm:px-3 py-2 rounded-lg transition-all text-sm"
+							title="Copy room code"
+						>
+							Copy
+						</button>
+					</div>
+					<p class="text-xs text-dusty-rose/40 mt-3">Share this code with your partner</p>
+				</div>
 
 			<!-- Players list -->
 			<div class="mb-6">

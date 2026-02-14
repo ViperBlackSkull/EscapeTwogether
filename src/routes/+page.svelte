@@ -110,6 +110,9 @@
 	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </svelte:head>
 
+<!-- Prevent pull-to-refresh on mobile -->
+<svelte:body on:touchmove|preventDefault />
+
 <main class="min-h-screen bg-soft-black text-dusty-rose font-body overflow-hidden relative">
 	<!-- Ambient background effects -->
 	<div class="fixed inset-0 pointer-events-none">
@@ -130,25 +133,25 @@
 	<!-- Main content -->
 	<div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-8">
 		<!-- Header section -->
-		<div class="text-center mb-12">
+		<div class="text-center mb-8 md:mb-12">
 			<!-- Decorative element -->
-			<div class="flex items-center justify-center mb-4">
-				<div class="w-16 h-px bg-gradient-to-r from-transparent via-warm-amber/50 to-transparent"></div>
-				<div class="mx-4 w-2 h-2 bg-warm-amber/60 rotate-45"></div>
-				<div class="w-16 h-px bg-gradient-to-r from-transparent via-warm-amber/50 to-transparent"></div>
+			<div class="flex items-center justify-center mb-3 md:mb-4">
+				<div class="w-12 md:w-16 h-px bg-gradient-to-r from-transparent via-warm-amber/50 to-transparent"></div>
+				<div class="mx-3 md:mx-4 w-2 h-2 bg-warm-amber/60 rotate-45"></div>
+				<div class="w-12 md:w-16 h-px bg-gradient-to-r from-transparent via-warm-amber/50 to-transparent"></div>
 			</div>
 
-			<h1 class="text-6xl md:text-7xl font-display font-bold text-warm-amber mb-4 tracking-wide">
+			<h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-warm-amber mb-3 md:mb-4 tracking-wide">
 				EscapeTogether
 			</h1>
 
-			<p class="text-xl md:text-2xl text-dusty-rose/80 font-light tracking-wider">
+			<p class="text-lg sm:text-xl md:text-2xl text-dusty-rose/80 font-light tracking-wider px-4">
 				Work together. Solve mysteries. Escape as one.
 			</p>
 
 			<!-- Decorative element -->
-			<div class="flex items-center justify-center mt-6">
-				<div class="w-24 h-px bg-gradient-to-r from-transparent via-antique-gold/30 to-transparent"></div>
+			<div class="flex items-center justify-center mt-4 md:mt-6">
+				<div class="w-20 md:w-24 h-px bg-gradient-to-r from-transparent via-antique-gold/30 to-transparent"></div>
 			</div>
 		</div>
 
@@ -159,8 +162,8 @@
 		</div>
 
 		<!-- Main card -->
-		<div class="w-full max-w-md">
-			<div class="bg-deep-navy/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-dusty-rose/10">
+		<div class="w-full max-w-md px-2 sm:px-0">
+			<div class="bg-deep-navy/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 md:p-8 shadow-2xl border border-dusty-rose/10">
 				<!-- Error message -->
 				{#if errorMessage}
 					<div class="mb-6 p-4 bg-red-900/30 border border-red-500/30 rounded-lg text-red-300 text-sm text-center">
@@ -169,7 +172,7 @@
 				{/if}
 
 				<!-- Player name input -->
-				<div class="mb-6">
+				<div class="mb-5 md:mb-6">
 					<label for="playerName" class="block text-sm font-medium text-dusty-rose/70 mb-2 tracking-wide">
 						Your Name
 					</label>
@@ -180,20 +183,21 @@
 						on:keypress={(e) => handleKeyPress(e, 'create')}
 						placeholder="Enter your name..."
 						maxlength={20}
-						class="w-full px-4 py-3 bg-soft-black/50 border border-dusty-rose/20 rounded-lg
-							text-dusty-rose placeholder-dusty-rose/30 font-body
+						autocomplete="name"
+						class="w-full px-4 py-3 md:py-3.5 bg-soft-black/50 border border-dusty-rose/20 rounded-lg
+							text-base text-dusty-rose placeholder-dusty-rose/30 font-body
 							focus:outline-none focus:border-warm-amber/50 focus:ring-1 focus:ring-warm-amber/30
 							transition-all duration-300"
 					/>
 				</div>
 
 				<!-- Create Room section -->
-				<div class="mb-8">
+				<div class="mb-6 md:mb-8">
 					<button
 						on:click={handleCreateRoom}
 						disabled={isLoading}
-						class="w-full py-4 bg-gradient-to-r from-warm-amber/90 to-antique-gold/90
-							text-deep-navy font-semibold text-lg rounded-lg
+						class="w-full py-3.5 md:py-4 bg-gradient-to-r from-warm-amber/90 to-antique-gold/90
+							text-deep-navy font-semibold text-base md:text-lg rounded-lg
 							hover:from-warm-amber hover:to-antique-gold
 							active:scale-[0.98]
 							disabled:opacity-50 disabled:cursor-not-allowed
@@ -236,8 +240,9 @@
 						on:keypress={(e) => handleKeyPress(e, 'join')}
 						placeholder="Enter 4-character code..."
 						maxlength={4}
-						class="w-full px-4 py-3 bg-soft-black/50 border border-dusty-rose/20 rounded-lg
-							text-dusty-rose placeholder-dusty-rose/30 font-body uppercase tracking-widest text-center
+						autocomplete="off"
+						class="w-full px-4 py-3 md:py-3.5 bg-soft-black/50 border border-dusty-rose/20 rounded-lg
+							text-base text-dusty-rose placeholder-dusty-rose/30 font-body uppercase tracking-widest text-center
 							focus:outline-none focus:border-warm-amber/50 focus:ring-1 focus:ring-warm-amber/30
 							transition-all duration-300"
 					/>
