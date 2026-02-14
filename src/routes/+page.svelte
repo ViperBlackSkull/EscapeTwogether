@@ -1,36 +1,26 @@
 <script lang="ts">
-	import { io, Socket } from 'socket.io-client';
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
+	import { createRoom, joinRoom, connectSocket, isConnected } from '$lib/socket';
 
 	// Form state
 	let playerName = '';
 	let roomCode = '';
 	let isLoading = false;
 	let errorMessage = '';
-	let socket: Socket | null = null;
+	let connected = false;
 
 	// Room code validation (4 characters, alphanumeric)
 	const ROOM_CODE_REGEX = /^[A-Za-z0-9]{4}$/;
 
-	// Initialize socket connection
-	function getSocket(): Socket {
-		if (!socket) {
-			socket = io('http://localhost:3001', {
-				autoConnect: true,
-				reconnection: true,
-				reconnectionAttempts: 5,
-				reconnectionDelay: 1000
-			});
-
-			socket.on('connect_error', (error) => {
-				console.error('Connection error:', error);
-				errorMessage = 'Unable to connect to server. Please try again.';
-				isLoading = false;
-			});
-		}
-		return socket;
-	}
+	onMount(() => {
+		connectSocket();
+		const unsubscribe = isConnected.subscribe((value) => {
+			connected = value;
+		});
+		return unsubscribe;
+	});
 
 	// Handle create room
 	async function handleCreateRoom() {
@@ -42,23 +32,24 @@
 		isLoading = true;
 		errorMessage = '';
 
-		const socket = getSocket();
-
-		socket.emit('create-room', { playerName: playerName.trim() }, (response: any) => {
-			isLoading = false;
-
-			if (response.success) {
+		try {
+			const result = await createRoom(playerName.trim());
+			if (result.success) {
 				// Store room info in session storage
 				if (browser) {
-					sessionStorage.setItem('roomCode', response.room.code);
+					sessionStorage.setItem('roomCode', result.room!.code);
 					sessionStorage.setItem('playerName', playerName.trim());
 					sessionStorage.setItem('isHost', 'true');
 				}
 				goto('/lobby');
 			} else {
-				errorMessage = response.error || 'Failed to create room';
+				errorMessage = result.error || 'Failed to create room';
 			}
-		});
+		} catch (e) {
+			errorMessage = 'Connection error. Please try again.';
+		} finally {
+			isLoading = false;
+		}
 	}
 
 	// Handle join room
@@ -81,26 +72,24 @@
 		isLoading = true;
 		errorMessage = '';
 
-		const socket = getSocket();
-
-		socket.emit('join-room', {
-			roomCode: roomCode.trim().toUpperCase(),
-			playerName: playerName.trim()
-		}, (response: any) => {
-			isLoading = false;
-
-			if (response.success) {
+		try {
+			const result = await joinRoom(roomCode.trim().toUpperCase(), playerName.trim());
+			if (result.success) {
 				// Store room info in session storage
 				if (browser) {
-					sessionStorage.setItem('roomCode', response.room.code);
+					sessionStorage.setItem('roomCode', result.room!.code);
 					sessionStorage.setItem('playerName', playerName.trim());
 					sessionStorage.setItem('isHost', 'false');
 				}
 				goto('/lobby');
 			} else {
-				errorMessage = response.error || 'Failed to join room';
+				errorMessage = result.error || 'Failed to join room';
 			}
-		});
+		} catch (e) {
+			errorMessage = 'Connection error. Please try again.';
+		} finally {
+			isLoading = false;
+		}
 	}
 
 	// Handle form submission with Enter key
@@ -161,6 +150,12 @@
 			<div class="flex items-center justify-center mt-6">
 				<div class="w-24 h-px bg-gradient-to-r from-transparent via-antique-gold/30 to-transparent"></div>
 			</div>
+		</div>
+
+		<!-- Connection Status -->
+		<div class="mb-6 flex items-center gap-2">
+			<div class="w-3 h-3 rounded-full {connected ? 'bg-green-500' : 'bg-red-500'}"></div>
+			<span class="text-sm text-dusty-rose/60">{connected ? 'Connected' : 'Connecting...'}</span>
 		</div>
 
 		<!-- Main card -->
