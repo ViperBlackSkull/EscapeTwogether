@@ -1,0 +1,32 @@
+@import 'tailwindcss';
+
+/* Custom theme extensions - EscapeTogether color palette */
+@theme {
+  /* Display and body fonts */
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Lato', sans-serif;
+
+  /* Primary colors - Deep Navy to Soft Black */
+  --color-deep-navy: #1a1a2e;
+  --color-soft-black: #0f0f1a;
+
+  /* Secondary colors - Dusty Rose, Antique Gold */
+  --color-dusty-rose: #c9a9a6;
+  --color-antique-gold: #8b7355;
+
+  /* Accent colors - Warm Amber, Soft Teal */
+  --color-warm-amber: #f4a460;
+  --color-soft-teal: #4a9b8c;
+
+  /* Extended color scale for UI elements */
+  --color-primary-50: #e8e4e3;
+  --color-primary-100: #d4ccc9;
+  --color-primary-200: #b3a5a0;
+  --color-primary-300: #8b7a73;
+  --color-primary-400: #6b5a52;
+  --color-primary-500: #4a3d36;
+  --color-primary-600: #3a302b;
+  --color-primary-700: #2a2320;
+  --color-primary-800: #1a1a2e;
+  --color-primary-900: #0f0f1a;
+}
