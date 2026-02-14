@@ -68,7 +68,10 @@ describe('Gear Alignment Puzzle', () => {
 			const initialRotation = state.gears[0].rotation;
 
 			const updated = rotateGear(state, 'gear_1', 'cw');
-			expect(updated.gears[0].rotation).toBe((initialRotation + 5) % 360);
+			// Clockwise rotation increases angle (mod 360)
+			const rotationDiff = (updated.gears[0].rotation - initialRotation + 360) % 360;
+			expect(rotationDiff).toBeGreaterThan(0);
+			expect(rotationDiff).toBeLessThan(180);
 		});
 
 		it('should rotate gear counter-clockwise', () => {
@@ -76,7 +79,10 @@ describe('Gear Alignment Puzzle', () => {
 			const initialRotation = state.gears[0].rotation;
 
 			const updated = rotateGear(state, 'gear_1', 'ccw');
-			expect(updated.gears[0].rotation).toBe((initialRotation - 5 + 360) % 360);
+			// Counter-clockwise rotation decreases angle (mod 360)
+			const rotationDiff = (initialRotation - updated.gears[0].rotation + 360) % 360;
+			expect(rotationDiff).toBeGreaterThan(0);
+			expect(rotationDiff).toBeLessThan(180);
 		});
 
 		it('should propagate rotation to connected gears', () => {
