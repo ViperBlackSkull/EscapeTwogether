@@ -1,6 +1,14 @@
 import { io, Socket } from 'socket.io-client';
 import { browser } from '$app/environment';
 import { writable, type Writable } from 'svelte/store';
+import {
+	gameState,
+	handleStateUpdate,
+	handleFullStateUpdate,
+	setRoomCode as setStoreRoomCode,
+	setGamePhase
+} from '$lib/stores/gameState';
+import type { GameState } from '$lib/types';
 
 export interface Player {
 	id: string;
@@ -169,6 +177,23 @@ function getSocket(): Socket {
 			isGamePaused.set(false);
 			pauseInfo.set(null);
 		});
+
+		// Game State Update events - synchronize game state via WebSocket
+		socket.on('state_update', (data: Partial<GameState>) => {
+			console.log('Received state_update:', data);
+			handleStateUpdate(data);
+		});
+
+		socket.on('game:state', (data: GameState) => {
+			console.log('Received full game state:', data);
+			handleFullStateUpdate(data);
+		});
+
+		socket.on('game:start', (data: GameState) => {
+			console.log('Game started:', data);
+			handleFullStateUpdate(data);
+			setGamePhase('playing');
+		});
 	}
 
 	return socket!;
@@ -282,7 +307,7 @@ export function getReconnectAttempts(): number {
 }
 
 export function isReconnecting(): boolean {
-	return connectionStatus === 'reconnecting';
+	return get(connectionStatus) === 'reconnecting';
 }
 
 // Pause game
