@@ -21,3 +21,10 @@ test_*.py
 create-*.py
 *_output.txt
 demo_*.txt
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+tests/screenshots/
