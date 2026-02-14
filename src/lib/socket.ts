@@ -34,6 +34,8 @@ export const connectionStatus: Writable<ConnectionStatus> = writable('disconnect
 export const currentRoom: Writable<Room | null> = writable(null);
 export const players: Writable<Player[]> = writable([]);
 export const chatMessages: Writable<ChatMessage[]> = writable([]);
+export const isGamePaused: Writable<boolean> = writable(false);
+export const pauseInfo: Writable<{ pausedBy: string; pausedByName: string; pausedAt: Date } | null> = writable(null);
 
 // Reconnection state
 let playerName: string | null = null;
@@ -150,6 +152,23 @@ function getSocket(): Socket {
 			console.log('Received message:', data);
 			chatMessages.update((current) => [...current, data]);
 		});
+
+		// Pause/Resume events
+		socket.on('game-paused', (data: { pausedBy: string; pausedByName: string; pausedAt: Date; roomCode: string }) => {
+			console.log('Game paused by:', data.pausedByName);
+			isGamePaused.set(true);
+			pauseInfo.set({
+				pausedBy: data.pausedBy,
+				pausedByName: data.pausedByName,
+				pausedAt: new Date(data.pausedAt)
+			});
+		});
+
+		socket.on('game-resumed', (data: { resumedBy: string; resumedByName: string; pausedDuration: number; roomCode: string }) => {
+			console.log('Game resumed by:', data.resumedByName, 'after', data.pausedDuration, 'ms');
+			isGamePaused.set(false);
+			pauseInfo.set(null);
+		});
 	}
 
 	return socket!;
@@ -264,6 +283,40 @@ export function getReconnectAttempts(): number {
 
 export function isReconnecting(): boolean {
 	return connectionStatus === 'reconnecting';
+}
+
+// Pause game
+export function pauseGame(): Promise<{ success: boolean; error?: string }> {
+	return new Promise((resolve) => {
+		const sock = getSocket();
+		const room = get(currentRoom);
+
+		if (!sock.connected || !room) {
+			resolve({ success: false, error: 'Not connected or not in a room' });
+			return;
+		}
+
+		sock.emit('pause-game', { roomCode: room.code }, (response: { success: boolean; error?: string }) => {
+			resolve(response);
+		});
+	});
+}
+
+// Resume game
+export function resumeGame(): Promise<{ success: boolean; error?: string; pausedDuration?: number }> {
+	return new Promise((resolve) => {
+		const sock = getSocket();
+		const room = get(currentRoom);
+
+		if (!sock.connected || !room) {
+			resolve({ success: false, error: 'Not connected or not in a room' });
+			return;
+		}
+
+		sock.emit('resume-game', { roomCode: room.code }, (response: { success: boolean; error?: string; pausedDuration?: number }) => {
+			resolve(response);
+		});
+	});
 }
 
 import { get } from 'svelte/store';

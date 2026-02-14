@@ -2,6 +2,7 @@ export interface Player {
   id: string;
   name: string;
   isHost: boolean;
+  connected: boolean;
 }
 
 export interface Room {
@@ -9,6 +10,9 @@ export interface Room {
   hostId: string;
   players: Player[];
   createdAt: Date;
+  isPaused: boolean;
+  pausedAt?: Date;
+  pausedBy?: string;
 }
 
 export class RoomManager {
@@ -53,9 +57,11 @@ export class RoomManager {
       players: [{
         id: hostPlayerId,
         name: hostPlayerName,
-        isHost: true
+        isHost: true,
+        connected: true
       }],
-      createdAt: new Date()
+      createdAt: new Date(),
+      isPaused: false
     };
 
     this.rooms.set(code, room);
@@ -89,7 +95,8 @@ export class RoomManager {
     room.players.push({
       id: playerId,
       name: playerName,
-      isHost: false
+      isHost: false,
+      connected: true
     });
 
     this.playerRooms.set(playerId, upperCode);
@@ -134,6 +141,89 @@ export class RoomManager {
       room.hostId = room.players[0].id;
       room.players[0].isHost = true;
     }
+  }
+
+  /**
+   * Set player connection status
+   */
+  setPlayerConnected(playerId: string, connected: boolean): void {
+    const room = this.getPlayerRoom(playerId);
+    if (!room) return;
+
+    const player = room.players.find(p => p.id === playerId);
+    if (player) {
+      player.connected = connected;
+    }
+  }
+
+  /**
+   * Check if all players in a room are connected
+   */
+  areAllPlayersConnected(roomCode: string): boolean {
+    const room = this.getRoom(roomCode);
+    if (!room) return false;
+    return room.players.every(p => p.connected);
+  }
+
+  /**
+   * Pause a room
+   */
+  pauseRoom(roomCode: string, pausedBy: string): { success: boolean; error?: string } {
+    const room = this.getRoom(roomCode);
+    if (!room) {
+      return { success: false, error: 'Room not found' };
+    }
+
+    if (room.isPaused) {
+      return { success: false, error: 'Room is already paused' };
+    }
+
+    room.isPaused = true;
+    room.pausedAt = new Date();
+    room.pausedBy = pausedBy;
+
+    return { success: true };
+  }
+
+  /**
+   * Resume a room
+   */
+  resumeRoom(roomCode: string): { success: boolean; error?: string; pausedDuration?: number } {
+    const room = this.getRoom(roomCode);
+    if (!room) {
+      return { success: false, error: 'Room not found' };
+    }
+
+    if (!room.isPaused) {
+      return { success: false, error: 'Room is not paused' };
+    }
+
+    // Check if all players are connected before resuming
+    if (!room.players.every(p => p.connected)) {
+      return { success: false, error: 'All players must be connected to resume' };
+    }
+
+    const pausedDuration = room.pausedAt ? Date.now() - room.pausedAt.getTime() : 0;
+
+    room.isPaused = false;
+    room.pausedAt = undefined;
+    room.pausedBy = undefined;
+
+    return { success: true, pausedDuration };
+  }
+
+  /**
+   * Get pause state of a room
+   */
+  getPauseState(roomCode: string): { isPaused: boolean; pausedAt?: Date; pausedBy?: string } | null {
+    const room = this.getRoom(roomCode);
+    if (!room) return null;
+
+    return {
+      isPaused: room.isPaused,
+      pausedAt: room.pausedAt,
+      pausedBy: room.pausedBy
+    };
   }
 
   /**

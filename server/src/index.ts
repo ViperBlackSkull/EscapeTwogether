@@ -122,13 +122,113 @@ io.on('connection', (socket: PlayerSocket) => {
 
     const room = roomManager.getPlayerRoom(socket.playerId!);
     if (room) {
+      // Mark player as disconnected
+      roomManager.setPlayerConnected(socket.playerId!, false);
+
       // Notify other players
       socket.to(room.code).emit('player-left', {
         playerId: socket.playerId,
         playerName: socket.playerName
       });
 
-      roomManager.removePlayer(socket.playerId!);
+      // Don't remove player, allow for reconnection
+      // roomManager.removePlayer(socket.playerId!);
+    }
+  });
+
+  // Handle pause game event
+  socket.on('pause-game', (data: { roomCode: string }, callback) => {
+    try {
+      const { roomCode } = data;
+      const room = roomManager.getRoom(roomCode);
+
+      if (!room) {
+        callback({ success: false, error: 'Room not found' });
+        return;
+      }
+
+      // Verify player is in this room
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        callback({ success: false, error: 'Not authorized' });
+        return;
+      }
+
+      const result = roomManager.pauseRoom(roomCode, socket.playerId!);
+
+      if (result.success) {
+        // Broadcast pause to all players in room
+        io.to(roomCode).emit('game-paused', {
+          pausedBy: socket.playerId,
+          pausedByName: socket.playerName,
+          pausedAt: new Date(),
+          roomCode
+        });
+
+        console.log(`Game paused in room ${roomCode} by ${socket.playerName}`);
+      }
+
+      callback(result);
+    } catch (error) {
+      console.error('Error pausing game:', error);
+      callback({ success: false, error: 'Failed to pause game' });
+    }
+  });
+
+  // Handle resume game event
+  socket.on('resume-game', (data: { roomCode: string }, callback) => {
+    try {
+      const { roomCode } = data;
+      const room = roomManager.getRoom(roomCode);
+
+      if (!room) {
+        callback({ success: false, error: 'Room not found' });
+        return;
+      }
+
+      // Verify player is in this room
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        callback({ success: false, error: 'Not authorized' });
+        return;
+      }
+
+      const result = roomManager.resumeRoom(roomCode);
+
+      if (result.success) {
+        // Broadcast resume to all players in room
+        io.to(roomCode).emit('game-resumed', {
+          resumedBy: socket.playerId,
+          resumedByName: socket.playerName,
+          pausedDuration: result.pausedDuration,
+          roomCode
+        });
+
+        console.log(`Game resumed in room ${roomCode} by ${socket.playerName}`);
+      }
+
+      callback(result);
+    } catch (error) {
+      console.error('Error resuming game:', error);
+      callback({ success: false, error: 'Failed to resume game' });
+    }
+  });
+
+  // Handle get pause state event
+  socket.on('get-pause-state', (data: { roomCode: string }, callback) => {
+    try {
+      const { roomCode } = data;
+      const pauseState = roomManager.getPauseState(roomCode);
+
+      if (!pauseState) {
+        callback({ success: false, error: 'Room not found' });
+        return;
+      }
+
+      callback({ success: true, pauseState });
+    } catch (error) {
+      console.error('Error getting pause state:', error);
+      callback({ success: false, error: 'Failed to get pause state' });
     }
   });
 
