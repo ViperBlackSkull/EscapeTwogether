@@ -10,6 +10,7 @@ screenshots/
 .vercel/
 .netlify/
 *.tmp
+.playwright-mcp/
 *_IMPLEMENTATION_SUMMARY.md
 *_TEST_RESULTS.md
 *_REPORT.md

@@ -1,22 +1,16 @@
 #!/bin/bash
-# Development server startup script
-echo "Starting EscapeTwogether development servers..."
+# Development server startup script for EscapeTwogether
+echo "Starting EscapeTwogether development server..."
 echo "Frontend: http://localhost:5173"
-echo "Backend: http://localhost:3001"
 
-# Start backend server in background
-cd backend && npm run dev &
-BACKEND_PID=$!
+# Start SvelteKit dev server
+npm run dev &
+DEV_PID=$!
 
-# Start frontend dev server
-cd ../ && npm run dev &
-FRONTEND_PID=$!
-
-echo "Servers started. Press Ctrl+C to stop both."
-echo "Frontend PID: $FRONTEND_PID"
-echo "Backend PID: $BACKEND_PID"
+echo "Server started. Press Ctrl+C to stop."
+echo "Dev PID: $DEV_PID"
 
 # Handle shutdown
-trap "kill $FRONTEND_PID $BACKEND_PID 2>/dev/null" EXIT
+trap "kill $DEV_PID 2>/dev/null" EXIT
 
 wait
