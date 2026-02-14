@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { createRoom, joinRoom, connectSocket, isConnected } from '$lib/socket';
+	import { soundManager } from '$lib/audio';
 
 	// Form state
 	let playerName = '';
@@ -22,10 +23,18 @@
 		return unsubscribe;
 	});
 
+	// Play button click sound
+	function playClickSound() {
+		soundManager.playClick();
+	}
+
 	// Handle create room
 	async function handleCreateRoom() {
+		playClickSound();
+
 		if (!playerName.trim()) {
 			errorMessage = 'Please enter your name';
+			soundManager.playPuzzleError();
 			return;
 		}
 
@@ -41,12 +50,15 @@
 					sessionStorage.setItem('playerName', playerName.trim());
 					sessionStorage.setItem('isHost', 'true');
 				}
+				soundManager.playNotification();
 				goto('/lobby');
 			} else {
 				errorMessage = result.error || 'Failed to create room';
+				soundManager.playPuzzleError();
 			}
 		} catch (e) {
 			errorMessage = 'Connection error. Please try again.';
+			soundManager.playPuzzleError();
 		} finally {
 			isLoading = false;
 		}
@@ -54,18 +66,23 @@
 
 	// Handle join room
 	async function handleJoinRoom() {
+		playClickSound();
+
 		if (!playerName.trim()) {
 			errorMessage = 'Please enter your name';
+			soundManager.playPuzzleError();
 			return;
 		}
 
 		if (!roomCode.trim()) {
 			errorMessage = 'Please enter a room code';
+			soundManager.playPuzzleError();
 			return;
 		}
 
 		if (!ROOM_CODE_REGEX.test(roomCode.trim())) {
 			errorMessage = 'Room code must be 4 characters (letters and numbers)';
+			soundManager.playPuzzleError();
 			return;
 		}
 
@@ -81,12 +98,15 @@
 					sessionStorage.setItem('playerName', playerName.trim());
 					sessionStorage.setItem('isHost', 'false');
 				}
+				soundManager.playPlayerJoin();
 				goto('/lobby');
 			} else {
 				errorMessage = result.error || 'Failed to join room';
+				soundManager.playPuzzleError();
 			}
 		} catch (e) {
 			errorMessage = 'Connection error. Please try again.';
+			soundManager.playPuzzleError();
 		} finally {
 			isLoading = false;
 		}
@@ -113,7 +133,7 @@
 <!-- Prevent pull-to-refresh on mobile -->
 <svelte:body on:touchmove|preventDefault />
 
-<main class="min-h-screen bg-soft-black text-dusty-rose font-body overflow-hidden relative">
+<main class="min-h-screen bg-soft-black text-dusty-rose font-body overflow-hidden relative" role="main">
 	<!-- Ambient background effects -->
 	<div class="fixed inset-0 pointer-events-none">
 		<!-- Gradient overlay -->
@@ -156,17 +176,25 @@
 		</div>
 
 		<!-- Connection Status -->
-		<div class="mb-6 flex items-center gap-2">
-			<div class="w-3 h-3 rounded-full {connected ? 'bg-green-500' : 'bg-red-500'}"></div>
+		<div class="mb-6 flex items-center gap-2" role="status" aria-live="polite" aria-label="Connection status">
+			<div class="w-3 h-3 rounded-full {connected ? 'bg-green-500' : 'bg-red-500'}" aria-hidden="true"></div>
 			<span class="text-sm text-dusty-rose/60">{connected ? 'Connected' : 'Connecting...'}</span>
 		</div>
 
 		<!-- Main card -->
 		<div class="w-full max-w-md px-2 sm:px-0">
-			<div class="bg-deep-navy/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 md:p-8 shadow-2xl border border-dusty-rose/10">
+			<form
+				class="bg-deep-navy/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 md:p-8 shadow-2xl border border-dusty-rose/10"
+				on:submit|preventDefault={() => {}}
+				aria-label="Join or create a game room"
+			>
 				<!-- Error message -->
 				{#if errorMessage}
-					<div class="mb-6 p-4 bg-red-900/30 border border-red-500/30 rounded-lg text-red-300 text-sm text-center">
+					<div
+						class="mb-6 p-4 bg-red-900/30 border border-red-500/30 rounded-lg text-red-300 text-sm text-center"
+						role="alert"
+						aria-live="assertive"
+					>
 						{errorMessage}
 					</div>
 				{/if}
@@ -184,25 +212,31 @@
 						placeholder="Enter your name..."
 						maxlength={20}
 						autocomplete="name"
+						aria-required="true"
+						aria-describedby="playerNameHint"
 						class="w-full px-4 py-3 md:py-3.5 bg-soft-black/50 border border-dusty-rose/20 rounded-lg
 							text-base text-dusty-rose placeholder-dusty-rose/30 font-body
-							focus:outline-none focus:border-warm-amber/50 focus:ring-1 focus:ring-warm-amber/30
+							focus:outline-none focus:border-warm-amber/50 focus:ring-2 focus:ring-warm-amber/30
 							transition-all duration-300"
 					/>
+					<span id="playerNameHint" class="sr-only">Enter your display name for the game</span>
 				</div>
 
 				<!-- Create Room section -->
 				<div class="mb-6 md:mb-8">
 					<button
+						type="button"
 						on:click={handleCreateRoom}
 						disabled={isLoading}
+						aria-busy={isLoading}
 						class="w-full py-3.5 md:py-4 bg-gradient-to-r from-warm-amber/90 to-antique-gold/90
 							text-deep-navy font-semibold text-base md:text-lg rounded-lg
 							hover:from-warm-amber hover:to-antique-gold
 							active:scale-[0.98]
 							disabled:opacity-50 disabled:cursor-not-allowed
 							transition-all duration-300 shadow-lg hover:shadow-warm-amber/20
-							transform hover:-translate-y-0.5"
+							transform hover:-translate-y-0.5
+							focus:outline-none focus:ring-2 focus:ring-warm-amber focus:ring-offset-2 focus:ring-offset-deep-navy"
 					>
 						{#if isLoading}
 							<span class="flex items-center justify-center">
@@ -241,22 +275,28 @@
 						placeholder="Enter 4-character code..."
 						maxlength={4}
 						autocomplete="off"
+						aria-required="true"
+						aria-describedby="roomCodeHint"
 						class="w-full px-4 py-3 md:py-3.5 bg-soft-black/50 border border-dusty-rose/20 rounded-lg
 							text-base text-dusty-rose placeholder-dusty-rose/30 font-body uppercase tracking-widest text-center
-							focus:outline-none focus:border-warm-amber/50 focus:ring-1 focus:ring-warm-amber/30
+							focus:outline-none focus:border-warm-amber/50 focus:ring-2 focus:ring-warm-amber/30
 							transition-all duration-300"
 					/>
+					<span id="roomCodeHint" class="sr-only">Enter the 4-character room code shared by your partner</span>
 				</div>
 
 				<button
+					type="button"
 					on:click={handleJoinRoom}
 					disabled={isLoading}
+					aria-busy={isLoading}
 					class="w-full py-3 bg-transparent border-2 border-soft-teal/70
 						text-soft-teal font-semibold rounded-lg
 						hover:bg-soft-teal/10 hover:border-soft-teal
 						active:scale-[0.98]
 						disabled:opacity-50 disabled:cursor-not-allowed
-						transition-all duration-300"
+						transition-all duration-300
+						focus:outline-none focus:ring-2 focus:ring-soft-teal focus:ring-offset-2 focus:ring-offset-deep-navy"
 				>
 					{#if isLoading}
 						<span class="flex items-center justify-center">
@@ -270,7 +310,7 @@
 						Join Room
 					{/if}
 				</button>
-			</div>
+			</form>
 		</div>
 
 		<!-- Footer -->
