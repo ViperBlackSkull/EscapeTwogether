@@ -1,8 +1,87 @@
 /**
  * Performance Utilities for EscapeTogether
  *
- * Provides lazy loading, frame rate monitoring, and device capability detection
+ * Provides lazy loading, frame rate monitoring, device capability detection,
+ * debounce/throttle functions, and memory-efficient utilities
  */
+
+// ============================================
+// Debounce & Throttle
+// ============================================
+
+/**
+ * Debounce a function - delays execution until after wait ms have elapsed
+ * since the last time it was invoked.
+ */
+export function debounce<T extends (...args: unknown[]) => unknown>(
+	func: T,
+	wait: number
+): (...args: Parameters<T>) => void {
+	let timeout: ReturnType<typeof setTimeout> | null = null;
+
+	return function (this: unknown, ...args: Parameters<T>) {
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+		timeout = setTimeout(() => {
+			func.apply(this, args);
+		}, wait);
+	};
+}
+
+/**
+ * Throttle a function - limits execution to once per wait ms.
+ */
+export function throttle<T extends (...args: unknown[]) => unknown>(
+	func: T,
+	wait: number
+): (...args: Parameters<T>) => void {
+	let lastTime = 0;
+	let timeout: ReturnType<typeof setTimeout> | null = null;
+
+	return function (this: unknown, ...args: Parameters<T>) {
+		const now = Date.now();
+		const remaining = wait - (now - lastTime);
+
+		if (remaining <= 0) {
+			if (timeout) {
+				clearTimeout(timeout);
+				timeout = null;
+			}
+			lastTime = now;
+			func.apply(this, args);
+		} else if (!timeout) {
+			timeout = setTimeout(() => {
+				lastTime = Date.now();
+				timeout = null;
+				func.apply(this, args);
+			}, remaining);
+		}
+	};
+}
+
+/**
+ * Request Animation Frame throttle - limits to one call per frame
+ */
+export function rafThrottle<T extends (...args: unknown[]) => unknown>(
+	func: T
+): (...args: Parameters<T>) => void {
+	let rafId: number | null = null;
+	let lastArgs: Parameters<T> | null = null;
+
+	return function (this: unknown, ...args: Parameters<T>) {
+		lastArgs = args;
+
+		if (rafId === null) {
+			rafId = requestAnimationFrame(() => {
+				rafId = null;
+				if (lastArgs) {
+					func.apply(this, lastArgs);
+				}
+			});
+		}
+	};
+}
 
 // ============================================
 // Device Capability Detection

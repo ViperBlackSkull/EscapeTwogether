@@ -5,29 +5,16 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	build: {
-		// Enable minification
-		minify: 'terser',
-		terserOptions: {
-			compress: {
-				drop_console: true,
-				drop_debugger: true
-			}
-		},
-		// Split chunks for better caching
-		rollupOptions: {
-			output: {
-				manualChunks: {
-					// Vendor chunks
-					'pixi': ['pixi.js'],
-					'socket': ['socket.io-client'],
-					'svelte-vendor': ['svelte', 'svelte/transition', 'svelte/animate', 'svelte/motion']
-				}
-			}
-		},
+		// Use esbuild minification (built-in, faster than terser)
+		minify: 'esbuild',
 		// Target modern browsers for smaller bundles
 		target: 'es2020',
-		// Enable source maps for debugging (disable in production if needed)
-		sourcemap: false
+		// Disable source maps for production
+		sourcemap: false,
+		// Report compressed size
+		reportCompressedSize: true,
+		// Chunk size warning limit
+		chunkSizeWarningLimit: 500
 	},
 	// Optimize dependencies
 	optimizeDeps: {
