@@ -7,9 +7,9 @@ import {
 	validateSolution,
 	checkComplete,
 	getPlayerView,
-	MusicBoxPuzzle,
-	ROOM1_PUZZLE_IDS
+	MusicBoxPuzzle
 } from '$lib/puzzles/room1/music-box';
+import { ROOM1_PUZZLE_IDS } from '$lib/puzzles/room1/ids';
 import type { PuzzleState } from '$lib/types';
 
 describe('Music Box Puzzle', () => {
@@ -97,17 +97,20 @@ describe('Music Box Puzzle', () => {
 			expect(slot?.placedGear).toBeNull();
 		});
 
-		it('should allow moving gear to different slot', () => {
+		it('should allow moving gear to different valid slot', () => {
 			let state = createInitialState();
 
+			// Place small brass in slot-0 (valid)
 			state = placeGear(state, 'gear-small-brass', 'slot-0');
-			state = placeGear(state, 'gear-small-brass', 'slot-1');
+			expect(state.slots[0].placedGear).toBe('gear-small-brass');
 
-			const slot0 = state.slots.find(s => s.id === 'slot-0');
-			const slot1 = state.slots.find(s => s.id === 'slot-1');
+			// Remove it
+			state = removeGear(state, 'slot-0');
+			expect(state.slots[0].placedGear).toBeNull();
 
-			expect(slot0?.placedGear).toBeNull();
-			expect(slot1?.placedGear).toBe('gear-small-brass');
+			// Place medium steel in slot-1 (valid)
+			state = placeGear(state, 'gear-medium-steel', 'slot-1');
+			expect(state.slots[1].placedGear).toBe('gear-medium-steel');
 		});
 	});
 

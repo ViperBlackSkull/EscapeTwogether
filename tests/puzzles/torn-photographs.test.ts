@@ -5,9 +5,9 @@ import {
 	placePiece,
 	updateLockTimer,
 	checkAllCorrect,
-	TornPhotographsPuzzle,
-	ROOM1_PUZZLE_IDS
+	TornPhotographsPuzzle
 } from '$lib/puzzles/room1/torn-photographs';
+import { ROOM1_PUZZLE_IDS } from '$lib/puzzles/room1/ids';
 import type { PuzzleState } from '$lib/types';
 
 describe('Torn Photographs Puzzle', () => {

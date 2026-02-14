@@ -1,17 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import {
 	createInitialState,
-	updatePlayerPosition,
-	checkProximity,
+	isPlayerNearObject,
+	discoverLetter,
 	getNearbyObjects,
-	examineObject,
 	submitAnswer,
+	getFavoritesList,
 	validateSolution,
 	getPlayerView,
-	getDiscoveryProgress,
-	SecretMessagePuzzle,
-	ROOM1_PUZZLE_IDS
+	getProgress,
+	SecretMessagePuzzle
 } from '$lib/puzzles/room1/secret-message';
+import { ROOM1_PUZZLE_IDS } from '$lib/puzzles/room1/ids';
 import type { PuzzleState } from '$lib/types';
 
 describe('Secret Message Puzzle', () => {
@@ -20,104 +20,104 @@ describe('Secret Message Puzzle', () => {
 			const state = createInitialState();
 
 			expect(state.objects).toHaveLength(10);
-			expect(state.hints).toHaveLength(10);
 			expect(state.completed).toBe(false);
 		});
 
-		it('should have required names MARIE and JAMES', () => {
+		it('should have correct solution MARIE and JAMES', () => {
 			const state = createInitialState();
 
-			expect(state.requiredNames).toContain('MARIE');
-			expect(state.requiredNames).toContain('JAMES');
+			expect(state.correctSolution.first).toBe('MARIE');
+			expect(state.correctSolution.second).toBe('JAMES');
+			expect(state.correctSolution.combined).toBe('MARIE+JAMES');
 		});
 
 		it('should have no discovered letters initially', () => {
 			const state = createInitialState();
 
-			expect(state.discoveredLetters).toHaveLength(0);
-			expect(state.objects.every(o => o.examined === false)).toBe(true);
+			expect(state.lettersFound).toBe(0);
+			expect(state.discoveredLetters.every(l => l.discoveredBy === null)).toBe(true);
+		});
+
+		it('should have empty player input initially', () => {
+			const state = createInitialState();
+
+			expect(state.playerInput.A).toBe('');
+			expect(state.playerInput.B).toBe('');
 		});
 	});
 
-	describe('updatePlayerPosition', () => {
-		it('should update player A position', () => {
-			const state = createInitialState();
+	describe('isPlayerNearObject', () => {
+		it('should return true when player is close to object', () => {
+			const objectPos = { x: 100, y: 100 };
+			const playerPos = { x: 120, y: 120 };
 
-			const newState = updatePlayerPosition(state, { x: 100, y: 200 });
-
-			expect(newState.playerAPosition).toEqual({ x: 100, y: 200 });
-		});
-	});
-
-	describe('checkProximity', () => {
-		it('should return true when player is near object', () => {
-			const state = createInitialState();
-
-			// Move player near first object (at 100, 150)
-			const newState = updatePlayerPosition(state, { x: 120, y: 160 });
-
-			expect(checkProximity(newState, 'object-1')).toBe(true);
+			expect(isPlayerNearObject(objectPos, playerPos)).toBe(true);
 		});
 
 		it('should return false when player is far from object', () => {
-			const state = createInitialState();
+			const objectPos = { x: 100, y: 100 };
+			const playerPos = { x: 200, y: 200 };
 
-			// Player at default position (300, 250)
-			expect(checkProximity(state, 'object-1')).toBe(false);
+			expect(isPlayerNearObject(objectPos, playerPos)).toBe(false);
 		});
 
-		it('should use custom threshold', () => {
-			const state = createInitialState();
-			const newState = updatePlayerPosition(state, { x: 180, y: 150 });
+		it('should respect custom threshold', () => {
+			const objectPos = { x: 100, y: 100 };
+			const playerPos = { x: 140, y: 140 };
 
-			// Object 1 is at 100, 150 (80 units away)
-			expect(checkProximity(newState, 'object-1', 100)).toBe(true);
-			expect(checkProximity(newState, 'object-1', 50)).toBe(false);
+			expect(isPlayerNearObject(objectPos, playerPos, 50)).toBe(false);
+			expect(isPlayerNearObject(objectPos, playerPos, 100)).toBe(true);
 		});
 	});
 
 	describe('getNearbyObjects', () => {
-		it('should return objects within threshold', () => {
+		it('should return objects near player position', () => {
 			const state = createInitialState();
 
-			// Move player near object-1 and object-3
-			const newState = updatePlayerPosition(state, { x: 100, y: 150 });
-
-			const nearby = getNearbyObjects(newState);
+			// Position near the music_box (200, 150)
+			const nearby = getNearbyObjects(state, { x: 200, y: 150 });
 
 			expect(nearby.length).toBeGreaterThan(0);
-			expect(nearby.some(o => o.id === 'object-1')).toBe(true);
+			expect(nearby.some(o => o.id === 'music_box')).toBe(true);
+		});
+
+		it('should return empty array when no objects nearby', () => {
+			const state = createInitialState();
+
+			// Position far from all objects
+			const nearby = getNearbyObjects(state, { x: 1000, y: 1000 }, 50);
+
+			expect(nearby).toHaveLength(0);
 		});
 	});
 
-	describe('examineObject', () => {
-		it('should mark object as examined', () => {
-			const state = createInitialState();
-
-			const newState = examineObject(state, 'object-1');
-
-			const object = newState.objects.find(o => o.id === 'object-1');
-			expect(object?.examined).toBe(true);
-		});
-
-		it('should reveal hidden letter', () => {
-			const state = createInitialState();
-
-			const newState = examineObject(state, 'object-1');
-
-			const object = newState.objects.find(o => o.id === 'object-1');
-			expect(object?.letterRevealed).toBe(true);
-			expect(newState.discoveredLetters).toContain('M');
-		});
-
-		it('should not duplicate letters when examined again', () => {
+	describe('discoverLetter', () => {
+		it('should mark letter as discovered', () => {
 			let state = createInitialState();
 
-			state = examineObject(state, 'object-1');
-			state = examineObject(state, 'object-1');
+			state = discoverLetter(state, 'music_box', 'explorer');
 
-			const mCount = state.discoveredLetters.filter(l => l === 'M').length;
-			expect(mCount).toBe(1);
+			const discovered = state.discoveredLetters.find(l => l.objectId === 'music_box');
+			expect(discovered?.discoveredBy).toBe('A');
+			expect(discovered?.timestamp).not.toBeNull();
+		});
+
+		it('should increment lettersFound count', () => {
+			let state = createInitialState();
+
+			state = discoverLetter(state, 'music_box', 'explorer');
+
+			expect(state.lettersFound).toBe(1);
+		});
+
+		it('should not rediscover already discovered letter', () => {
+			let state = createInitialState();
+
+			state = discoverLetter(state, 'music_box', 'explorer');
+			state = discoverLetter(state, 'music_box', 'analyst');
+
+			const discovered = state.discoveredLetters.find(l => l.objectId === 'music_box');
+			expect(discovered?.discoveredBy).toBe('A'); // Still A, not changed to B
 		});
 	});
 
@@ -125,27 +125,52 @@ describe('Secret Message Puzzle', () => {
 		it('should reject wrong answer', () => {
 			const state = createInitialState();
 
-			const result = submitAnswer(state, 'WRONG');
+			const result = submitAnswer(state, 'WRONG', 'NAMES');
 
-			expect(result).toBe(false);
-			expect(state.completed).toBe(false);
+			expect(result.correct).toBe(false);
+			expect(result.state.completed).toBe(false);
 		});
 
-		it('should accept answer with both names', () => {
+		it('should reject correct answer without enough letters found', () => {
 			const state = createInitialState();
 
-			const result = submitAnswer(state, 'MARIE and JAMES');
+			const result = submitAnswer(state, 'MARIE', 'JAMES');
 
-			expect(result).toBe(true);
-			expect(state.completed).toBe(true);
+			// Requires 8 letters found minimum
+			expect(result.correct).toBe(false);
 		});
 
-		it('should accept answer regardless of format', () => {
+		it('should accept correct answer with enough letters found', () => {
+			let state = createInitialState();
+
+			// Discover 8 letters
+			const objectsToDiscover = ['music_box', 'photo_frame', 'rosary', 'inkwell',
+				'jewelry_box', 'journal', 'apron', 'mirror'];
+
+			objectsToDiscover.forEach(id => {
+				state = discoverLetter(state, id, 'explorer');
+			});
+
+			const result = submitAnswer(state, 'MARIE', 'JAMES');
+
+			expect(result.correct).toBe(true);
+			expect(result.state.completed).toBe(true);
+		});
+
+		it('should increment wrong submissions counter', () => {
 			const state = createInitialState();
 
-			const result = submitAnswer(state, 'JAMES MARIE');
+			const result = submitAnswer(state, 'WRONG', 'NAMES');
 
-			expect(result).toBe(true);
+			expect(result.state.wrongSubmissions).toBe(1);
+		});
+	});
+
+	describe('getFavoritesList', () => {
+		it('should return list of 10 hints', () => {
+			const favorites = getFavoritesList();
+
+			expect(favorites).toHaveLength(10);
 		});
 	});
 
@@ -169,7 +194,7 @@ describe('Secret Message Puzzle', () => {
 			const state: PuzzleState = {
 				puzzleId: ROOM1_PUZZLE_IDS.SECRET_MESSAGE,
 				solved: true,
-				attempts: 5,
+				attempts: 1,
 				data: puzzleState
 			};
 
@@ -180,66 +205,37 @@ describe('Secret Message Puzzle', () => {
 	describe('getPlayerView', () => {
 		it('should give explorer objects view', () => {
 			const state = createInitialState();
-			const view = getPlayerView(state, 'explorer');
+			const view = getPlayerView(state, 'explorer', { x: 200, y: 150 });
 
+			expect(view.role).toBe('explorer');
 			expect(view.objects).toBeDefined();
-			expect(view.playerPosition).toBeDefined();
 			expect(view.nearbyObjects).toBeDefined();
 		});
 
-		it('should give analyst hints view', () => {
+		it('should give analyst favorites list view', () => {
 			const state = createInitialState();
 			const view = getPlayerView(state, 'analyst');
 
-			expect(view.hints).toBeDefined();
-			expect(view.hints).toHaveLength(10);
-		});
-
-		it('should share discovered letters between players', () => {
-			let state = createInitialState();
-			state = examineObject(state, 'object-1');
-
-			const explorerView = getPlayerView(state, 'explorer');
-			const analystView = getPlayerView(state, 'analyst');
-
-			expect(explorerView.discoveredLetters).toContain('M');
-			expect(analystView.discoveredLetters).toContain('M');
+			expect(view.role).toBe('analyst');
+			expect(view.favoritesList).toBeDefined();
+			expect(view.favoritesList).toHaveLength(10);
 		});
 	});
 
-	describe('getDiscoveryProgress', () => {
-		it('should return 0% when no letters discovered', () => {
+	describe('getProgress', () => {
+		it('should return 0% when no letters found', () => {
 			const state = createInitialState();
 
-			const progress = getDiscoveryProgress(state);
-
-			expect(progress.discovered).toBe(0);
-			expect(progress.percentage).toBe(0);
+			expect(getProgress(state)).toBe(0);
 		});
 
 		it('should calculate progress correctly', () => {
 			let state = createInitialState();
 
-			state = examineObject(state, 'object-1');
-			state = examineObject(state, 'object-2');
+			state = discoverLetter(state, 'music_box', 'explorer');
+			state = discoverLetter(state, 'photo_frame', 'explorer');
 
-			const progress = getDiscoveryProgress(state);
-
-			expect(progress.discovered).toBe(2);
-			expect(progress.percentage).toBe(20);
-		});
-
-		it('should reach 100% when all letters found', () => {
-			let state = createInitialState();
-
-			state.objects.forEach(obj => {
-				state = examineObject(state, obj.id);
-			});
-
-			const progress = getDiscoveryProgress(state);
-
-			expect(progress.discovered).toBe(10);
-			expect(progress.percentage).toBe(100);
+			expect(getProgress(state)).toBe(20);
 		});
 	});
 

@@ -8,9 +8,9 @@ import {
 	submitAnswer,
 	validateSolution,
 	getPlayerView,
-	LoveLetterCipherPuzzle,
-	ROOM1_PUZZLE_IDS
+	LoveLetterCipherPuzzle
 } from '$lib/puzzles/room1/love-letter-cipher';
+import { ROOM1_PUZZLE_IDS } from '$lib/puzzles/room1/ids';
 import type { PuzzleState } from '$lib/types';
 
 describe('Love Letter Cipher Puzzle', () => {

@@ -365,9 +365,6 @@ export const getDiscoveryProgress = getProgress;
 // Alias for isPlayerNearObject (for test compatibility)
 export const checkProximity = isPlayerNearObject;
 
-// Re-export puzzle ID for test compatibility
-export { ROOM1_PUZZLE_IDS } from './index';
-
 // Alias for discoverLetter - examines an object to reveal its letter
 export function examineObject(
 	state: SecretMessageState,

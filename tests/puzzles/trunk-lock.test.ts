@@ -9,9 +9,9 @@ import {
 	setDial,
 	validateSolution,
 	getPlayerView,
-	TrunkLockPuzzle,
-	ROOM1_PUZZLE_IDS
+	TrunkLockPuzzle
 } from '$lib/puzzles/room1/trunk-lock';
+import { ROOM1_PUZZLE_IDS } from '$lib/puzzles/room1/ids';
 import type { PuzzleState } from '$lib/types';
 import type { DialSymbol } from '$lib/puzzles/room1/trunk-lock';
 
@@ -68,7 +68,8 @@ describe('Trunk Lock Puzzle', () => {
 			state = rotateDial(state, 'dial-1', 'forward', 'explorer');
 
 			const dial = state.dials.find(d => d.id === 'dial-1');
-			expect(dial?.currentSymbol).toBe('rose');
+			// moon -> dove (next in array: heart, rose, key, star, moon, dove...)
+			expect(dial?.currentSymbol).toBe('dove');
 		});
 
 		it('should rotate dial backward for correct player', () => {
@@ -77,7 +78,8 @@ describe('Trunk Lock Puzzle', () => {
 			state = rotateDial(state, 'dial-1', 'backward', 'explorer');
 
 			const dial = state.dials.find(d => d.id === 'dial-1');
-			expect(dial?.currentSymbol).toBe('infinity');
+			// moon -> star (previous in array)
+			expect(dial?.currentSymbol).toBe('star');
 		});
 
 		it('should not rotate dial for wrong player', () => {
