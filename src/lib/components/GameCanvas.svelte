@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
 	import { browser } from '$app/environment';
-	import { Application, Container, Graphics, Text, FederatedPointerEvent } from 'pixi.js';
+	import { Application, Container, Graphics, Text, FederatedPointerEvent, Sprite, Assets } from 'pixi.js';
 	import { ParticleManager, PARTICLE_PRESETS } from '$lib/effects/pixiParticles';
 	import { PuzzleRenderer, type PuzzlePiece, type AnimationConfig } from '$lib/puzzles/PuzzleRenderer';
 	import type { PuzzleState, RoomId } from '$lib/types';
@@ -135,8 +135,8 @@
 					const { width: newWidth, height: newHeight } = entry.contentRect;
 					if (app && newWidth > 0 && newHeight > 0) {
 						app.renderer.resize(newWidth, newHeight);
-						// Redraw elements on resize
-						redrawGameElements();
+						// Redraw elements on resize (async)
+						redrawGameElements().catch(console.error);
 
 						// Resize puzzle renderer if active
 						if (puzzleRenderer) {
@@ -158,7 +158,8 @@
 			app.stage.addChild(puzzleContainer);
 
 			// Create game elements
-			createGameElements();
+			await createGameElements();
+			isInitialized = true;
 
 			console.log('PixiJS Application initialized');
 			dispatch('ready');
@@ -168,10 +169,17 @@
 	});
 
 	// Store references to drawable elements for resize
-	let backgroundGraphics: Graphics | null = null;
-	let roomGraphics: Graphics | null = null;
+	let backgroundSprite: Sprite | Graphics | null = null;
+	let isInitialized = false;
 
-	function createGameElements() {
+	// Room background image mapping
+	const roomBackgrounds: Record<string, string> = {
+		'attic': '/assets/images/rooms/room1-attic.png',
+		'clock_tower': '/assets/images/rooms/room2-clocktower.png',
+		'garden': '/assets/images/rooms/room3-garden.png'
+	};
+
+	async function createGameElements() {
 		if (!app) return;
 
 		const gameContainer = app.stage.getChildByLabel('gameContainer') as Container;
@@ -180,9 +188,13 @@
 		// Clear existing elements
 		gameContainer.removeChildren();
 
-		// Create background grid
-		backgroundGraphics = createBackgroundGrid();
-		gameContainer.addChild(backgroundGraphics);
+		// Create room background (image or fallback grid)
+		backgroundSprite = await createRoomBackground();
+		gameContainer.addChild(backgroundSprite);
+
+		// Create dark overlay for better element visibility
+		const overlay = createDarkOverlay();
+		gameContainer.addChild(overlay);
 
 		// Create room elements
 		const roomElements = createRoomElements();
@@ -196,19 +208,30 @@
 		createAmbientEffects(gameContainer);
 	}
 
-	function redrawGameElements() {
+	async function redrawGameElements() {
 		if (!app) return;
 
 		const gameContainer = app.stage.getChildByLabel('gameContainer') as Container;
 		if (!gameContainer) return;
 
 		// Redraw background
-		if (backgroundGraphics) {
-			gameContainer.removeChild(backgroundGraphics);
-			backgroundGraphics.destroy();
+		if (backgroundSprite) {
+			gameContainer.removeChild(backgroundSprite);
+			backgroundSprite.destroy();
 		}
-		backgroundGraphics = createBackgroundGrid();
-		gameContainer.addChildAt(backgroundGraphics, 0);
+
+		// Load new room background
+		backgroundSprite = await createRoomBackground();
+		gameContainer.addChildAt(backgroundSprite, 0);
+
+		// Recreate dark overlay
+		const existingOverlay = gameContainer.children.find(c => c.label === 'darkOverlay');
+		if (existingOverlay) {
+			gameContainer.removeChild(existingOverlay);
+			existingOverlay.destroy();
+		}
+		const overlay = createDarkOverlay();
+		gameContainer.addChildAt(overlay, 1);
 
 		// Redraw room elements
 		const existingRoomElements = [...gameContainer.children].filter(
@@ -220,7 +243,7 @@
 		});
 
 		const roomElements = createRoomElements();
-		roomElements.forEach((el, i) => gameContainer.addChildAt(el, i + 1));
+		roomElements.forEach((el, i) => gameContainer.addChildAt(el, i + 2)); // +2 for background and overlay
 
 		// Redraw players
 		const existingPlayers = [...gameContainer.children].filter((c): c is Graphics => c.label === 'player');
@@ -231,6 +254,38 @@
 
 		const players = createPlayerPositions();
 		players.forEach(p => gameContainer.addChild(p));
+	}
+
+	async function createRoomBackground(): Promise<Sprite | Graphics> {
+		if (!app) return new Graphics();
+
+		const imagePath = roomBackgrounds[currentRoom];
+		console.log(`Loading room background: ${imagePath} for room: ${currentRoom}`);
+
+		try {
+			// Load the texture
+			const texture = await Assets.load(imagePath);
+
+			// Create sprite
+			const sprite = new Sprite(texture);
+			sprite.label = 'roomBackground';
+
+			// Calculate scale to cover the entire canvas while maintaining aspect ratio
+			const scaleX = app.screen.width / texture.width;
+			const scaleY = app.screen.height / texture.height;
+			const scale = Math.max(scaleX, scaleY); // Use max to cover fully
+
+			sprite.scale.set(scale);
+
+			// Center the sprite
+			sprite.x = (app.screen.width - texture.width * scale) / 2;
+			sprite.y = (app.screen.height - texture.height * scale) / 2;
+
+			return sprite;
+		} catch (error) {
+			console.warn('Failed to load room background, falling back to grid:', error);
+			return createBackgroundGrid();
+		}
 	}
 
 	function createBackgroundGrid(): Graphics {
@@ -256,6 +311,19 @@
 
 		graphics.stroke();
 		return graphics;
+	}
+
+	function createDarkOverlay(): Graphics {
+		if (!app) return new Graphics();
+
+		const overlay = new Graphics();
+		// Semi-transparent dark overlay to make game elements visible over the background
+		overlay.setFillStyle({ color: 0x0a0a1a, alpha: 0.35 });
+		overlay.rect(0, 0, app.screen.width, app.screen.height);
+		overlay.fill();
+		overlay.label = 'darkOverlay';
+
+		return overlay;
 	}
 
 	function createRoomElements(): Graphics[] {
@@ -701,6 +769,11 @@
 		initPuzzleRenderer(roomId as RoomId, currentPuzzleId);
 	}
 
+	// Watch for room changes to update background
+	$: if (isInitialized && app && currentRoom) {
+		redrawGameElements().catch(console.error);
+	}
+
 	// Expose methods for triggering effects
 	export function triggerPuzzleSolve(x?: number, y?: number) {
 		if (!particleManager || !app) return;
@@ -733,8 +806,9 @@
 		dispatch('effect', { type: 'victory' });
 	}
 
-	export function changeRoom(newRoom: 'attic' | 'clock_tower' | 'garden') {
+	export async function changeRoom(newRoom: 'attic' | 'clock_tower' | 'garden') {
 		currentRoom = newRoom;
+		await redrawGameElements();
 		setupRoomParticles();
 	}
 
