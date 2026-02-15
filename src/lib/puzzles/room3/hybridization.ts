@@ -234,7 +234,7 @@ export function createHybridizationState(): HybridizationState {
 
 // Validate solution
 function validateHybridization(state: PuzzleState): boolean {
-	const data = state.data as HybridizationState['data'];
+	const data = state.data as unknown as HybridizationState['data'];
 	return data.successfulCrosses.length >= data.roundsToWin;
 }
 

@@ -1,5 +1,5 @@
 /**
- * Sound Manager - Audio system for EscapeTogether
+ * Sound Manager - Audio system for EscapeTwogether
  *
  * Manages all game audio including:
  * - UI sounds (button clicks, notifications)

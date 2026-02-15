@@ -163,7 +163,7 @@ export function createWaterFlowState(): WaterFlowState {
 
 // Validate solution
 function validateWaterFlow(state: PuzzleState): boolean {
-	const data = state.data as WaterFlowState['data'];
+	const data = state.data as unknown as WaterFlowState['data'];
 	return data.completedPlants.length === 4;
 }
 

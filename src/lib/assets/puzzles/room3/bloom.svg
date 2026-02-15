@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 120" width="180" height="120">
+  <defs>
+    <!-- Rose petal gradients -->
+    <radialGradient id="petalGradient1" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#FFB6C1"/>
+      <stop offset="50%" style="stop-color:#F38181"/>
+      <stop offset="100%" style="stop-color:#E06C6C"/>
+    </radialGradient>
+
+    <radialGradient id="petalGradient2" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#FFC1CC"/>
+      <stop offset="60%" style="stop-color:#F38181"/>
+      <stop offset="100%" style="stop-color:#D65D5D"/>
+    </radialGradient>
+
+    <!-- Lavender gradient -->
+    <radialGradient id="lavenderGradient" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#C4B5FD"/>
+      <stop offset="50%" style="stop-color:#AA96DA"/>
+      <stop offset="100%" style="stop-color:#9B87CF"/>
+    </radialGradient>
+
+    <!-- Amber/yellow gradient -->
+    <radialGradient id="amberGradient" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#FFE082"/>
+      <stop offset="50%" style="stop-color:#FFB74D"/>
+      <stop offset="100%" style="stop-color:#F5A623"/>
+    </radialGradient>
+
+    <!-- Teal leaf gradient -->
+    <linearGradient id="tealLeafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7ED4A8"/>
+      <stop offset="50%" style="stop-color:#4ECDC4"/>
+      <stop offset="100%" style="stop-color:#3DA59F"/>
+    </linearGradient>
+
+    <!-- Stem gradient -->
+    <linearGradient id="stemGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5A8F5A"/>
+      <stop offset="50%" style="stop-color:#4A7F4A"/>
+      <stop offset="100%" style="stop-color:#3A6F3A"/>
+    </linearGradient>
+
+    <!-- Glow filter for bloom -->
+    <filter id="bloomGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feFlood flood-color="#F38181" flood-opacity="0.4"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Stronger pulse glow -->
+    <filter id="pulseGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#F38181" flood-opacity="0.5">
+        <animate attributeName="flood-opacity" values="0.5;0.8;0.5" dur="2s" repeatCount="indefinite"/>
+      </feFlood>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Soft shadow -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#2D1F1A" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Stage 1: Bud (left) -->
+  <g transform="translate(30, 60)" filter="url(#softShadow)">
+    <!-- Stem -->
+    <path d="M0 30 Q-2 45 0 60" fill="none" stroke="url(#stemGradient)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Sepals (green leaves around bud) -->
+    <path d="M0 25 Q-8 22 -6 15 Q0 20 0 25 Z" fill="url(#tealLeafGradient)"/>
+    <path d="M0 25 Q8 22 6 15 Q0 20 0 25 Z" fill="url(#tealLeafGradient)"/>
+    <path d="M0 25 Q-5 18 -3 10 Q0 18 0 25 Z" fill="url(#tealLeafGradient)" opacity="0.8"/>
+
+    <!-- Closed bud -->
+    <ellipse cx="0" cy="15" rx="7" ry="12" fill="url(#petalGradient1)"/>
+    <path d="M0 3 Q-4 8 -3 15 Q0 12 3 15 Q4 8 0 3 Z" fill="url(#petalGradient2)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="0" y="75" text-anchor="middle" font-family="Georgia, serif" font-size="8"
+          fill="#6B5B4F" font-style="italic">Bud</text>
+  </g>
+
+  <!-- Stage 2: Opening (center) -->
+  <g transform="translate(90, 55)" filter="url(#bloomGlow)">
+    <!-- Stem -->
+    <path d="M0 35 Q2 50 0 65" fill="none" stroke="url(#stemGradient)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Leaves -->
+    <ellipse cx="-10" cy="45" rx="10" ry="5" fill="url(#tealLeafGradient)" transform="rotate(-20 -10 45)"/>
+    <ellipse cx="12" cy="50" rx="8" ry="4" fill="url(#tealLeafGradient)" transform="rotate(15 12 50)"/>
+
+    <!-- Partially opened petals -->
+    <g class="opening-petals">
+      <!-- Outer petals (unfurling) -->
+      <ellipse cx="0" cy="5" rx="9" ry="14" fill="url(#petalGradient1)" transform="rotate(-25 0 5)"/>
+      <ellipse cx="0" cy="5" rx="9" ry="14" fill="url(#petalGradient1)" transform="rotate(25 0 5)"/>
+
+      <!-- Middle petals -->
+      <ellipse cx="0" cy="0" rx="8" ry="12" fill="url(#petalGradient2)" transform="rotate(-12 0 0)"/>
+      <ellipse cx="0" cy="0" rx="8" ry="12" fill="url(#petalGradient2)" transform="rotate(12 0 0)"/>
+
+      <!-- Inner petals (still somewhat closed) -->
+      <ellipse cx="0" cy="-5" rx="6" ry="10" fill="url(#petalGradient1)" transform="rotate(0 0 -5)"/>
+
+      <!-- Still-visible center -->
+      <circle cx="0" cy="-8" r="4" fill="url(#amberGradient)"/>
+    </g>
+
+    <!-- Label -->
+    <text x="0" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="8"
+          fill="#6B5B4F" font-style="italic">Opening</text>
+  </g>
+
+  <!-- Stage 3: Full Bloom (right) - Main animated flower -->
+  <g transform="translate(150, 50)" filter="url(#pulseGlow)">
+    <!-- Stem -->
+    <path d="M0 40 Q-3 55 0 70" fill="none" stroke="url(#stemGradient)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Leaves -->
+    <ellipse cx="-12" cy="50" rx="12" ry="6" fill="url(#tealLeafGradient)" transform="rotate(-25 -12 50)"/>
+    <ellipse cx="14" cy="55" rx="10" ry="5" fill="url(#tealLeafGradient)" transform="rotate(20 14 55)"/>
+
+    <!-- Full bloom petals -->
+    <g class="full-bloom-petals">
+      <!-- Outer layer petals -->
+      <ellipse cx="0" cy="0" rx="12" ry="18" fill="url(#petalGradient1)"
+               transform="rotate(0)">
+        <animateTransform attributeName="transform" type="rotate"
+                          values="0;2;0" dur="3s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="0" cy="0" rx="12" ry="18" fill="url(#petalGradient1)" opacity="0.95"
+               transform="rotate(40)">
+        <animateTransform attributeName="transform" type="rotate"
+                          values="40;42;40" dur="3.2s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="0" cy="0" rx="12" ry="18" fill="url(#petalGradient1)" opacity="0.9"
+               transform="rotate(80)">
+        <animateTransform attributeName="transform" type="rotate"
+                          values="80;82;80" dur="2.8s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="0" cy="0" rx="12" ry="18" fill="url(#petalGradient1)" opacity="0.9"
+               transform="rotate(120)">
+        <animateTransform attributeName="transform" type="rotate"
+                          values="120;122;120" dur="3.1s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="0" cy="0" rx="12" ry="18" fill="url(#petalGradient1)" opacity="0.95"
+               transform="rotate(160)">
+        <animateTransform attributeName="transform" type="rotate"
+                          values="160;162;160" dur="3.3s" repeatCount="indefinite"/>
+      </ellipse>
+
+      <!-- Middle layer petals -->
+      <ellipse cx="0" cy="0" rx="10" ry="15" fill="url(#petalGradient2)"
+               transform="rotate(20)"/>
+      <ellipse cx="0" cy="0" rx="10" ry="15" fill="url(#petalGradient2)" opacity="0.9"
+               transform="rotate(60)"/>
+      <ellipse cx="0" cy="0" rx="10" ry="15" fill="url(#petalGradient2)" opacity="0.85"
+               transform="rotate(100)"/>
+      <ellipse cx="0" cy="0" rx="10" ry="15" fill="url(#petalGradient2)" opacity="0.85"
+               transform="rotate(140)"/>
+
+      <!-- Inner layer petals -->
+      <ellipse cx="0" cy="0" rx="7" ry="11" fill="url(#petalGradient1)"
+               transform="rotate(10)"/>
+      <ellipse cx="0" cy="0" rx="7" ry="11" fill="url(#petalGradient1)" opacity="0.9"
+               transform="rotate(50)"/>
+      <ellipse cx="0" cy="0" rx="7" ry="11" fill="url(#petalGradient1)" opacity="0.85"
+               transform="rotate(90)"/>
+      <ellipse cx="0" cy="0" rx="7" ry="11" fill="url(#petalGradient1)" opacity="0.8"
+               transform="rotate(130)"/>
+    </g>
+
+    <!-- Flower center with pollen -->
+    <g class="flower-center">
+      <circle cx="0" cy="0" r="6" fill="url(#amberGradient)">
+        <animate attributeName="r" values="6;6.5;6" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="0" cy="0" r="4" fill="#FFB74D"/>
+      <circle cx="0" cy="0" r="2" fill="#E8A820"/>
+
+      <!-- Pollen dots -->
+      <circle cx="-2" cy="-1" r="0.8" fill="#F5A623" opacity="0.8"/>
+      <circle cx="2" cy="-1" r="0.6" fill="#F5A623" opacity="0.7"/>
+      <circle cx="0" cy="2" r="0.7" fill="#F5A623" opacity="0.75"/>
+    </g>
+
+    <!-- Sparkle effects -->
+    <g class="sparkles" opacity="0.6">
+      <circle cx="-10" cy="-12" r="1.5" fill="#FFFFFF">
+        <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="r" values="1;2;1" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="12" cy="-8" r="1" fill="#FFFFFF">
+        <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin="0.3s"/>
+      </circle>
+      <circle cx="-8" cy="10" r="1.2" fill="#FFFFFF">
+        <animate attributeName="opacity" values="0;1;0" dur="1.8s" repeatCount="indefinite" begin="0.6s"/>
+      </circle>
+      <circle cx="8" cy="8" r="0.8" fill="#FFFFFF">
+        <animate attributeName="opacity" values="0;1;0" dur="2.2s" repeatCount="indefinite" begin="0.9s"/>
+      </circle>
+    </g>
+
+    <!-- Label -->
+    <text x="0" y="85" text-anchor="middle" font-family="Georgia, serif" font-size="8"
+          fill="#6B5B4F" font-style="italic">Full Bloom</text>
+  </g>
+
+  <!-- Decorative divider lines -->
+  <g stroke="#C4B59D" stroke-width="1" opacity="0.3">
+    <line x1="55" y1="95" x2="65" y2="95" stroke-dasharray="2,2"/>
+    <line x1="115" y1="95" x2="125" y2="95" stroke-dasharray="2,2"/>
+  </g>
+
+  <!-- Title -->
+  <text x="90" y="115" text-anchor="middle" font-family="Georgia, serif" font-size="10"
+        fill="#8B7B6F" font-style="italic">Blooming Stages</text>
+</svg>

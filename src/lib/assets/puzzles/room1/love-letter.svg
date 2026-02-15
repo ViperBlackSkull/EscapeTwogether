@@ -1,0 +1,180 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 220 280"
+  class="puzzle-asset love-letter"
+  role="img"
+  aria-label="Aged romantic love letter with wax seal"
+>
+  <defs>
+    <!-- Parchment gradient -->
+    <linearGradient id="parchmentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5E6D3;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#EDE0CF;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#E8D4BE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DBC7A8;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Wax seal gradient -->
+    <radialGradient id="waxSeal" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#C41E3A;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#8B0000;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#6B0F1A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4A0A12;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Wax highlight -->
+    <radialGradient id="waxHighlight" cx="30%" cy="30%" r="40%">
+      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:transparent;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Ink gradient for script -->
+    <linearGradient id="inkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E293B;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#2D3B4D;stop-opacity:0.85" />
+      <stop offset="100%" style="stop-color:#1E293B;stop-opacity:0.9" />
+    </linearGradient>
+
+    <!-- Shadow filter -->
+    <filter id="letterShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#1E293B" flood-opacity="0.35"/>
+    </filter>
+
+    <!-- Paper texture -->
+    <filter id="paperTexture">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+      <feDiffuseLighting in="noise" lighting-color="#F5E6D3" surfaceScale="1.5">
+        <feDistantLight azimuth="45" elevation="60"/>
+      </feDiffuseLighting>
+    </filter>
+
+    <!-- Aging stain gradient -->
+    <radialGradient id="ageStain" cx="30%" cy="70%" r="50%">
+      <stop offset="0%" style="stop-color:#8B7355;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:transparent;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Gold embossing -->
+    <linearGradient id="goldEmboss" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <style>
+    .love-letter { transition: transform 0.3s ease; }
+    .love-letter:hover { transform: scale(1.02) rotate(1deg); }
+    .love-letter:focus { outline: 2px solid #FFB74D; outline-offset: 4px; }
+    .letter-content { transition: opacity 0.3s ease; }
+    .love-letter:hover .wax-seal { transform: scale(1.05); }
+    .wax-seal { transition: transform 0.3s ease; transform-origin: center; }
+    .script-line { opacity: 0.8; transition: opacity 0.2s ease; }
+    .love-letter:hover .script-line { opacity: 1; }
+  </style>
+
+  <!-- Letter body -->
+  <g filter="url(#letterShadow)">
+    <!-- Main paper -->
+    <rect x="20" y="20" width="180" height="240" rx="3" fill="url(#parchmentGradient)"/>
+
+    <!-- Paper edge detail -->
+    <rect x="20" y="20" width="180" height="240" rx="3" fill="none" stroke="#C4A882" stroke-width="1"/>
+
+    <!-- Aging stains -->
+    <rect x="20" y="20" width="180" height="240" rx="3" fill="url(#ageStain)"/>
+    <ellipse cx="150" cy="80" rx="25" ry="15" fill="#8B7355" opacity="0.08"/>
+    <ellipse cx="60" cy="200" rx="20" ry="12" fill="#7A6248" opacity="0.1"/>
+
+    <!-- Fold lines -->
+    <line x1="20" y1="140" x2="200" y2="140" stroke="#C4A882" stroke-width="0.5" opacity="0.4"/>
+    <line x1="110" y1="20" x2="110" y2="260" stroke="#C4A882" stroke-width="0.3" opacity="0.2"/>
+
+    <!-- Corner creases -->
+    <path d="M20,20 Q30,30 25,45" fill="none" stroke="#B8A07A" stroke-width="0.5" opacity="0.3"/>
+    <path d="M200,20 Q190,30 195,45" fill="none" stroke="#B8A07A" stroke-width="0.5" opacity="0.3"/>
+    <path d="M20,260 Q30,250 25,235" fill="none" stroke="#B8A07A" stroke-width="0.5" opacity="0.3"/>
+    <path d="M200,260 Q190,250 195,235" fill="none" stroke="#B8A07A" stroke-width="0.5" opacity="0.3"/>
+  </g>
+
+  <!-- Letter content (romantic script) -->
+  <g class="letter-content" fill="url(#inkGradient)" font-family="Georgia, serif">
+    <!-- Date -->
+    <text x="40" y="50" font-size="8" font-style="italic" opacity="0.7">December 24th, 1892</text>
+
+    <!-- Salutation -->
+    <text x="40" y="75" font-size="11" font-style="italic">My Dearest Eleanor,</text>
+
+    <!-- Body text - simulated script lines -->
+    <g class="script-lines">
+      <rect class="script-line" x="40" y="95" width="140" height="2" rx="1" opacity="0.6"/>
+      <rect class="script-line" x="40" y="105" width="145" height="2" rx="1" opacity="0.6"/>
+      <rect class="script-line" x="40" y="115" width="130" height="2" rx="1" opacity="0.65"/>
+      <rect class="script-line" x="40" y="125" width="140" height="2" rx="1" opacity="0.55"/>
+      <rect class="script-line" x="40" y="135" width="120" height="2" rx="1" opacity="0.6"/>
+
+      <!-- Paragraph break -->
+      <rect class="script-line" x="40" y="155" width="135" height="2" rx="1" opacity="0.65"/>
+      <rect class="script-line" x="40" y="165" width="145" height="2" rx="1" opacity="0.6"/>
+      <rect class="script-line" x="40" y="175" width="125" height="2" rx="1" opacity="0.55"/>
+      <rect class="script-line" x="40" y="185" width="140" height="2" rx="1" opacity="0.6"/>
+    </g>
+
+    <!-- Signature area -->
+    <text x="130" y="220" font-size="10" font-style="italic">Forever Yours,</text>
+
+    <!-- Flourished signature -->
+    <path d="M130,235 Q140,228 150,235 Q160,242 170,235 Q175,232 180,235"
+          fill="none" stroke="url(#inkGradient)" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Wax seal -->
+  <g class="wax-seal" transform="translate(160, 200)">
+    <!-- Wax blob base -->
+    <ellipse cx="0" cy="0" rx="28" ry="26" fill="url(#waxSeal)"/>
+
+    <!-- Wax texture/drips -->
+    <ellipse cx="-15" cy="20" rx="8" ry="6" fill="#6B0F1A"/>
+    <ellipse cx="18" cy="18" rx="6" ry="5" fill="#5A0A12"/>
+    <ellipse cx="5" cy="24" rx="5" ry="4" fill="#4A0A12"/>
+
+    <!-- Highlight -->
+    <ellipse cx="-8" cy="-8" rx="12" ry="10" fill="url(#waxHighlight)"/>
+
+    <!-- Heart impression in wax -->
+    <g transform="translate(0, -2)">
+      <path d="M0,8 C-12,-5 -12,-15 0,-8 C12,-15 12,-5 0,8 Z"
+            fill="url(#goldEmboss)" stroke="#8B6914" stroke-width="0.5"/>
+      <path d="M0,5 C-8,-3 -8,-10 0,-5 C8,-10 8,-3 0,5 Z"
+            fill="none" stroke="#D4AF37" stroke-width="0.5" opacity="0.5"/>
+    </g>
+
+    <!-- Wax edge detail -->
+    <ellipse cx="0" cy="0" rx="28" ry="26" fill="none" stroke="#4A0A12" stroke-width="1" opacity="0.5"/>
+  </g>
+
+  <!-- Decorative corner flourishes -->
+  <g stroke="#C4A882" stroke-width="0.8" fill="none" opacity="0.4">
+    <!-- Top left -->
+    <path d="M30,30 Q35,40 30,50 M30,30 Q40,35 50,30"/>
+    <circle cx="30" cy="30" r="2" fill="#C4A882"/>
+
+    <!-- Top right -->
+    <path d="M190,30 Q185,40 190,50 M190,30 Q180,35 170,30"/>
+    <circle cx="190" cy="30" r="2" fill="#C4A882"/>
+
+    <!-- Bottom left -->
+    <path d="M30,250 Q35,240 30,230 M30,250 Q40,245 50,250"/>
+    <circle cx="30" cy="250" r="2" fill="#C4A882"/>
+
+    <!-- Bottom right (partially covered by seal) -->
+    <path d="M190,250 Q185,240 190,230 M190,250 Q180,245 170,250"/>
+    <circle cx="190" cy="250" r="2" fill="#C4A882"/>
+  </g>
+
+  <!-- Small decorative hearts in corners -->
+  <g fill="#F4D0C3" opacity="0.5">
+    <path d="M45,45 C45,42 48,40 50,42 C52,40 55,42 55,45 C55,48 50,52 50,52 C50,52 45,48 45,45 Z" transform="scale(0.6)"/>
+    <path d="M280,45 C280,42 283,40 285,42 C287,40 290,42 290,45 C290,48 285,52 285,52 C285,52 280,48 280,45 Z" transform="scale(0.6)"/>
+  </g>
+</svg>

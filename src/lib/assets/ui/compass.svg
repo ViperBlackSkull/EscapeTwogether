@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="compassGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="50%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#8B7355"/>
+    </linearGradient>
+
+    <linearGradient id="compassRose" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F4D0C3"/>
+      <stop offset="100%" stop-color="#C9A9A6"/>
+    </linearGradient>
+
+    <linearGradient id="compassNeedleN" x1="50%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#8B3A3A"/>
+      <stop offset="100%" stop-color="#C94040"/>
+    </linearGradient>
+
+    <linearGradient id="compassNeedleS" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#F4F4F4"/>
+      <stop offset="100%" stop-color="#D4D4D4"/>
+    </linearGradient>
+
+    <radialGradient id="compassCenter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#8B7355"/>
+    </radialGradient>
+
+    <filter id="compassGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="compassShadow">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#3a302b" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Outer compass ring shadow -->
+  <circle cx="50" cy="50" r="48" fill="#1a1a2e" filter="url(#compassShadow)" opacity="0.3"/>
+
+  <!-- Outer compass ring -->
+  <circle cx="50" cy="50" r="46" stroke="url(#compassGold)" stroke-width="4" fill="#1a1a2e" filter="url(#compassGlow)">
+    <animate attributeName="stroke-opacity" values="0.8;1;0.8" dur="4s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Inner decorative ring -->
+  <circle cx="50" cy="50" r="40" stroke="url(#compassGold)" stroke-width="1" fill="none" opacity="0.5"/>
+
+  <!-- Compass face -->
+  <circle cx="50" cy="50" r="38" fill="#0f0f1a"/>
+
+  <!-- Degree markings -->
+  <g stroke="url(#compassGold)" stroke-width="1" opacity="0.6">
+    <!-- Cardinal directions (thicker) -->
+    <line x1="50" y1="14" x2="50" y2="22" stroke-width="2"/>
+    <line x1="50" y1="78" x2="50" y2="86" stroke-width="2"/>
+    <line x1="14" y1="50" x2="22" y2="50" stroke-width="2"/>
+    <line x1="78" y1="50" x2="86" y2="50" stroke-width="2"/>
+
+    <!-- Ordinal directions -->
+    <line x1="25" y1="25" x2="30" y2="30"/>
+    <line x1="75" y1="25" x2="70" y2="30"/>
+    <line x1="25" y1="75" x2="30" y2="70"/>
+    <line x1="75" y1="75" x2="70" y2="70"/>
+  </g>
+
+  <!-- Small degree ticks -->
+  <g stroke="url(#compassGold)" stroke-width="0.5" opacity="0.4">
+    <!-- Every 15 degrees -->
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(15 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(30 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(60 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(75 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(105 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(120 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(150 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(165 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(195 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(210 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(240 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(255 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(285 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(300 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(330 50 50)"/>
+    <line x1="50" y1="14" x2="50" y2="18" transform="rotate(345 50 50)"/>
+  </g>
+
+  <!-- Compass rose (star pattern) -->
+  <g opacity="0.3">
+    <polygon points="50,20 54,45 50,35 46,45" fill="url(#compassRose)"/>
+    <polygon points="50,80 46,55 50,65 54,55" fill="url(#compassRose)"/>
+    <polygon points="20,50 45,46 35,50 45,54" fill="url(#compassRose)"/>
+    <polygon points="80,50 55,54 65,50 55,46" fill="url(#compassRose)"/>
+  </g>
+
+  <!-- Cardinal direction labels -->
+  <g fill="url(#compassGold)" font-family="serif" font-size="8" text-anchor="middle">
+    <text x="50" y="30">N</text>
+    <text x="50" y="76">S</text>
+    <text x="26" y="53">W</text>
+    <text x="74" y="53">E</text>
+  </g>
+
+  <!-- Ordinal direction labels (smaller) -->
+  <g fill="url(#compassRose)" font-family="serif" font-size="5" text-anchor="middle" opacity="0.6">
+    <text x="33" y="35">NW</text>
+    <text x="67" y="35">NE</text>
+    <text x="33" y="70">SW</text>
+    <text x="67" y="70">SE</text>
+  </g>
+
+  <!-- North needle (red) -->
+  <polygon points="50,20 54,48 50,52 46,48" fill="url(#compassNeedleN)" filter="url(#compassGlow)">
+    <animateTransform attributeName="transform" type="rotate"
+                      values="0 50 50;3 50 50;0 50 50;-3 50 50;0 50 50"
+                      dur="8s" repeatCount="indefinite"/>
+  </polygon>
+
+  <!-- South needle (white/silver) -->
+  <polygon points="50,80 54,52 50,48 46,52" fill="url(#compassNeedleS)">
+    <animateTransform attributeName="transform" type="rotate"
+                      values="0 50 50;3 50 50;0 50 50;-3 50 50;0 50 50"
+                      dur="8s" repeatCount="indefinite"/>
+  </polygon>
+
+  <!-- Center pivot -->
+  <circle cx="50" cy="50" r="6" fill="url(#compassCenter)"/>
+  <circle cx="50" cy="50" r="4" stroke="url(#compassGold)" stroke-width="1" fill="none"/>
+  <circle cx="50" cy="50" r="2" fill="#FFB74D">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Decorative outer elements -->
+  <g opacity="0.6">
+    <!-- Triangular markers at cardinals -->
+    <polygon points="50,8 47,14 53,14" fill="url(#compassGold)"/>
+    <polygon points="50,92 47,86 53,86" fill="url(#compassGold)"/>
+    <polygon points="8,50 14,47 14,53" fill="url(#compassGold)"/>
+    <polygon points="92,50 86,47 86,53" fill="url(#compassGold)"/>
+  </g>
+
+  <!-- Subtle glass reflection effect -->
+  <ellipse cx="40" cy="35" rx="15" ry="10" fill="white" opacity="0.05"/>
+</svg>

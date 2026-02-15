@@ -1,0 +1,221 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 240 200"
+  class="puzzle-asset music-box"
+  role="img"
+  aria-label="Ornate Victorian music box with visible gears"
+>
+  <defs>
+    <!-- Wood grain gradient -->
+    <linearGradient id="woodGrain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#A0522D;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6B3E26;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#704214;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Brass gradient -->
+    <linearGradient id="brassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#FFB74D;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#C5A028;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#996515;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Rose velvet interior -->
+    <linearGradient id="velvetRose" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4D0C3;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E8B4A8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D4A094;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Gear metal gradient -->
+    <radialGradient id="gearMetal" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#C0C0C0;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#808080;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#606060;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Shadow filter -->
+    <filter id="boxShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="4" dy="6" stdDeviation="5" flood-color="#1E293B" flood-opacity="0.4"/>
+    </filter>
+
+    <!-- Inner shadow for lid -->
+    <filter id="innerShadow">
+      <feOffset dx="0" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+      <feFlood flood-color="#1E293B" flood-opacity="0.3" result="color"/>
+      <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+      <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+    </filter>
+
+    <!-- Wood texture pattern -->
+    <pattern id="woodTexture" patternUnits="userSpaceOnUse" width="40" height="40">
+      <path d="M0,10 Q10,8 20,12 T40,10" fill="none" stroke="#5a3d2b" stroke-width="0.5" opacity="0.3"/>
+      <path d="M0,25 Q15,22 30,28 T40,25" fill="none" stroke="#5a3d2b" stroke-width="0.3" opacity="0.2"/>
+      <path d="M0,35 Q8,33 16,37 T32,35" fill="none" stroke="#4a2d1b" stroke-width="0.4" opacity="0.2"/>
+    </pattern>
+
+    <!-- Decorative pattern -->
+    <pattern id="victorianPattern" patternUnits="userSpaceOnUse" width="30" height="30">
+      <circle cx="15" cy="15" r="3" fill="#D4AF37" opacity="0.3"/>
+      <path d="M0,15 Q7,10 15,15 Q23,20 30,15" fill="none" stroke="#FFB74D" stroke-width="0.5" opacity="0.4"/>
+    </pattern>
+  </defs>
+
+  <style>
+    .music-box { transition: transform 0.3s ease; }
+    .music-box:hover { transform: scale(1.02); }
+    .music-box:focus { outline: 2px solid #FFB74D; outline-offset: 4px; }
+    .lid { transition: transform 0.5s ease; transform-origin: 20px 70px; }
+    .music-box:hover .lid { transform: rotate(-5deg); }
+    .gear { animation: rotate 8s linear infinite; transform-origin: center; }
+    .gear-small { animation: rotate 4s linear infinite reverse; }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .music-note { animation: float 2s ease-in-out infinite; }
+    .note-1 { animation-delay: 0s; }
+    .note-2 { animation-delay: 0.5s; }
+    .note-3 { animation-delay: 1s; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  </style>
+
+  <!-- Main box body -->
+  <g filter="url(#boxShadow)">
+    <!-- Box base -->
+    <rect x="20" y="110" width="200" height="80" rx="8" fill="url(#woodGrain)"/>
+    <rect x="20" y="110" width="200" height="80" rx="8" fill="url(#woodTexture)"/>
+
+    <!-- Base trim - bottom -->
+    <rect x="15" y="182" width="210" height="8" rx="2" fill="url(#brassGradient)"/>
+
+    <!-- Decorative side panels -->
+    <rect x="25" y="115" width="30" height="65" rx="2" fill="#704214" opacity="0.5"/>
+    <rect x="185" y="115" width="30" height="65" rx="2" fill="#704214" opacity="0.5"/>
+
+    <!-- Brass corner ornaments -->
+    <g fill="url(#brassGradient)">
+      <circle cx="28" cy="118" r="5"/>
+      <circle cx="212" cy="118" r="5"/>
+      <circle cx="28" cy="182" r="5"/>
+      <circle cx="212" cy="182" r="5"/>
+    </g>
+
+    <!-- Key winding mechanism -->
+    <circle cx="220" cy="150" r="8" fill="url(#brassGradient)" stroke="#996515" stroke-width="1"/>
+    <rect x="217" y="142" width="6" height="16" rx="1" fill="#8B4513"/>
+    <circle cx="220" cy="150" r="3" fill="#1E293B"/>
+  </g>
+
+  <!-- Lid (partially open) -->
+  <g class="lid">
+    <path d="M20,110 L20,70 Q20,60 30,60 L210,60 Q220,60 220,70 L220,110 Q120,115 20,110 Z"
+          fill="url(#woodGrain)" filter="url(#boxShadow)"/>
+    <path d="M20,110 L20,70 Q20,60 30,60 L210,60 Q220,60 220,70 L220,110 Q120,115 20,110 Z"
+          fill="url(#woodTexture)"/>
+
+    <!-- Lid interior - velvet -->
+    <ellipse cx="120" cy="85" rx="85" ry="20" fill="url(#velvetRose)"/>
+
+    <!-- Lid mirror -->
+    <ellipse cx="120" cy="85" rx="70" ry="15" fill="#E8D4BE" opacity="0.4"/>
+    <ellipse cx="110" cy="82" rx="20" ry="5" fill="#FFF" opacity="0.2"/>
+
+    <!-- Lid decorations -->
+    <rect x="30" y="62" width="180" height="3" fill="url(#brassGradient)" opacity="0.6"/>
+
+    <!-- Decorative inlay on lid -->
+    <g transform="translate(120, 80)">
+      <ellipse rx="40" ry="10" fill="none" stroke="url(#brassGradient)" stroke-width="1"/>
+      <path d="M-30,0 Q-15,-5 0,0 Q15,5 30,0" fill="none" stroke="#FFB74D" stroke-width="0.5"/>
+    </g>
+  </g>
+
+  <!-- Interior visible -->
+  <g class="interior">
+    <!-- Velvet lining -->
+    <rect x="30" y="112" width="180" height="60" rx="4" fill="url(#velvetRose)"/>
+
+    <!-- Mechanical compartment -->
+    <rect x="40" y="120" width="70" height="45" rx="3" fill="#1E293B" opacity="0.8"/>
+
+    <!-- Visible gears -->
+    <g transform="translate(75, 145)">
+      <g class="gear">
+        <circle r="18" fill="url(#gearMetal)" stroke="#404040" stroke-width="1"/>
+        <circle r="12" fill="#505050"/>
+        <circle r="4" fill="#303030"/>
+        <!-- Gear teeth -->
+        <g stroke="#606060" stroke-width="2">
+          <line x1="0" y1="-18" x2="0" y2="-22"/>
+          <line x1="12.7" y1="-12.7" x2="15.6" y2="-15.6"/>
+          <line x1="18" y1="0" x2="22" y2="0"/>
+          <line x1="12.7" y1="12.7" x2="15.6" y2="15.6"/>
+          <line x1="0" y1="18" x2="0" y2="22"/>
+          <line x1="-12.7" y1="12.7" x2="-15.6" y2="15.6"/>
+          <line x1="-18" y1="0" x2="-22" y2="0"/>
+          <line x1="-12.7" y1="-12.7" x2="-15.6" y2="-15.6"/>
+        </g>
+      </g>
+    </g>
+
+    <g transform="translate(50, 140)">
+      <g class="gear gear-small">
+        <circle r="10" fill="url(#gearMetal)" stroke="#404040" stroke-width="1"/>
+        <circle r="6" fill="#505050"/>
+        <circle r="2" fill="#303030"/>
+        <g stroke="#606060" stroke-width="1.5">
+          <line x1="0" y1="-10" x2="0" y2="-12"/>
+          <line x1="7" y1="-7" x2="8.5" y2="-8.5"/>
+          <line x1="10" y1="0" x2="12" y2="0"/>
+          <line x1="7" y1="7" x2="8.5" y2="8.5"/>
+          <line x1="0" y1="10" x2="0" y2="12"/>
+          <line x1="-7" y1="7" x2="-8.5" y2="8.5"/>
+          <line x1="-10" y1="0" x2="-12" y2="0"/>
+          <line x1="-7" y1="-7" x2="-8.5" y2="-8.5"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- Music cylinder -->
+    <rect x="120" y="130" width="80" height="25" rx="5" fill="#C0C0C0" stroke="#808080" stroke-width="1"/>
+    <g fill="#606060">
+      <circle cx="130" cy="142" r="2"/>
+      <circle cx="145" cy="142" r="2"/>
+      <circle cx="160" cy="142" r="2"/>
+      <circle cx="175" cy="142" r="2"/>
+      <circle cx="190" cy="142" r="2"/>
+    </g>
+
+    <!-- Decorative figurine base -->
+    <ellipse cx="160" cy="170" rx="15" ry="5" fill="#D4AF37"/>
+  </g>
+
+  <!-- Floating music notes -->
+  <g class="music-notes" fill="#1E293B" opacity="0.6">
+    <g class="music-note note-1" transform="translate(180, 45)">
+      <ellipse cx="0" cy="0" rx="4" ry="3" transform="rotate(-20)"/>
+      <line x1="3" y1="-1" x2="3" y2="-15" stroke="#1E293B" stroke-width="1.5"/>
+      <path d="M3,-15 Q10,-12 8,-8" fill="none" stroke="#1E293B" stroke-width="1.5"/>
+    </g>
+    <g class="music-note note-2" transform="translate(195, 35)">
+      <ellipse cx="0" cy="0" rx="3" ry="2.5" transform="rotate(-20)"/>
+      <line x1="2" y1="-1" x2="2" y2="-12" stroke="#1E293B" stroke-width="1.5"/>
+    </g>
+    <g class="music-note note-3" transform="translate(165, 50)">
+      <ellipse cx="0" cy="0" rx="3" ry="2" transform="rotate(-20)"/>
+      <line x1="2" y1="-1" x2="2" y2="-10" stroke="#1E293B" stroke-width="1.5"/>
+      <path d="M2,-10 Q7,-8 6,-5" fill="none" stroke="#1E293B" stroke-width="1.5"/>
+    </g>
+  </g>
+
+  <!-- Front lock clasp -->
+  <g transform="translate(120, 108)">
+    <rect x="-12" y="-4" width="24" height="8" rx="2" fill="url(#brassGradient)" stroke="#996515" stroke-width="0.5"/>
+    <circle cx="0" cy="0" r="3" fill="#1E293B"/>
+    <circle cx="0" cy="0" r="1.5" fill="#303030"/>
+  </g>
+</svg>

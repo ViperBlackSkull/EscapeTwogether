@@ -212,7 +212,7 @@ export function createFinalBloomState(): FinalBloomState {
 
 // Validate solution
 function validateFinalBloom(state: PuzzleState): boolean {
-	const data = state.data as FinalBloomState['data'];
+	const data = state.data as unknown as FinalBloomState['data'];
 	return data.stagesCompleted.length === 5 && data.compartmentOpen;
 }
 

@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="100" height="120">
+  <defs>
+    <!-- Terracotta gradient -->
+    <linearGradient id="terracottaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4845C"/>
+      <stop offset="30%" style="stop-color:#C76F45"/>
+      <stop offset="70%" style="stop-color:#B85E38"/>
+      <stop offset="100%" style="stop-color:#A04E28"/>
+    </linearGradient>
+
+    <!-- Inner pot shadow -->
+    <linearGradient id="innerShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A3728"/>
+      <stop offset="100%" style="stop-color:#5C4A3A"/>
+    </linearGradient>
+
+    <!-- Soil gradient -->
+    <linearGradient id="soilGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6B4423"/>
+      <stop offset="50%" style="stop-color:#5A3A1E"/>
+      <stop offset="100%" style="stop-color:#4A2F18"/>
+    </linearGradient>
+
+    <!-- Leaf gradient -->
+    <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ECDC4"/>
+      <stop offset="50%" style="stop-color:#45B7AF"/>
+      <stop offset="100%" style="stop-color:#3DA59F"/>
+    </linearGradient>
+
+    <!-- Stem gradient -->
+    <linearGradient id="stemGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5A8F5A"/>
+      <stop offset="50%" style="stop-color:#4A7F4A"/>
+      <stop offset="100%" style="stop-color:#3A6F3A"/>
+    </linearGradient>
+
+    <!-- Sprout leaf gradient -->
+    <radialGradient id="sproutGradient" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#7ED4A8"/>
+      <stop offset="100%" style="stop-color:#4ECDC4"/>
+    </radialGradient>
+
+    <!-- Highlight gradient -->
+    <linearGradient id="potHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E8A080"/>
+      <stop offset="50%" style="stop-color:transparent"/>
+      <stop offset="100%" style="stop-color:#8B5A3C"/>
+    </linearGradient>
+
+    <!-- Soft shadow -->
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#2D1F1A" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Glow for sprout -->
+    <filter id="sproutGlow">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feFlood flood-color="#4ECDC4" flood-opacity="0.3"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Pot shadow on ground -->
+  <ellipse cx="50" cy="115" rx="35" ry="5" fill="#2D1F1A" opacity="0.2"/>
+
+  <!-- Main pot body -->
+  <g filter="url(#softShadow)">
+    <!-- Pot rim -->
+    <path d="M20 45 Q20 40 25 40 L75 40 Q80 40 80 45 L78 50 Q50 52 22 50 Z"
+          fill="url(#terracottaGradient)"/>
+
+    <!-- Pot body -->
+    <path d="M22 50 L15 105 Q15 115 50 115 Q85 115 85 105 L78 50 Z"
+          fill="url(#terracottaGradient)"/>
+
+    <!-- Pot highlight -->
+    <path d="M25 52 L20 100 Q25 102 30 100 L32 52 Q28 52 25 52 Z"
+          fill="url(#potHighlight)" opacity="0.4"/>
+
+    <!-- Decorative ring -->
+    <ellipse cx="50" cy="65" rx="32" ry="4" fill="none" stroke="#A05A30" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <!-- Inner pot (soil area) -->
+  <ellipse cx="50" cy="48" rx="27" ry="6" fill="url(#innerShadow)"/>
+
+  <!-- Soil surface -->
+  <ellipse cx="50" cy="47" rx="25" ry="5" fill="url(#soilGradient)"/>
+
+  <!-- Soil texture -->
+  <g opacity="0.3">
+    <circle cx="35" cy="46" r="1.5" fill="#3A2510"/>
+    <circle cx="45" cy="48" r="1" fill="#4A3520"/>
+    <circle cx="55" cy="45" r="1.2" fill="#3A2510"/>
+    <circle cx="62" cy="47" r="0.8" fill="#4A3520"/>
+    <circle cx="40" cy="49" r="0.6" fill="#3A2510"/>
+  </g>
+
+  <!-- Main stem -->
+  <path d="M50 45 Q50 30 48 20 Q47 10 50 5"
+        fill="none" stroke="url(#stemGradient)" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Sprouting leaves -->
+  <g filter="url(#sproutGlow)">
+    <!-- Left sprout leaf -->
+    <path d="M48 20 Q35 15 30 8 Q38 12 48 18 Z"
+          fill="url(#sproutGradient)" class="sprout-leaf sprout-leaf-left">
+      <animate attributeName="d"
+               values="M48 20 Q35 15 30 8 Q38 12 48 18 Z;
+                       M48 20 Q33 14 28 6 Q38 12 48 18 Z;
+                       M48 20 Q35 15 30 8 Q38 12 48 18 Z"
+               dur="3s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- Right sprout leaf -->
+    <path d="M50 15 Q60 10 68 5 Q62 12 52 16 Z"
+          fill="url(#sproutGradient)" class="sprout-leaf sprout-leaf-right">
+      <animate attributeName="d"
+               values="M50 15 Q60 10 68 5 Q62 12 52 16 Z;
+                       M50 15 Q62 8 70 3 Q62 12 52 16 Z;
+                       M50 15 Q60 10 68 5 Q62 12 52 16 Z"
+               dur="3.5s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- Top budding leaf -->
+    <path d="M50 5 Q42 0 50 -8 Q58 0 50 5 Z"
+          fill="url(#sproutGradient)" class="sprout-leaf sprout-leaf-top">
+      <animate attributeName="d"
+               values="M50 5 Q42 0 50 -8 Q58 0 50 5 Z;
+                       M50 5 Q41 -1 50 -10 Q59 -1 50 5 Z;
+                       M50 5 Q42 0 50 -8 Q58 0 50 5 Z"
+               dur="4s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- Leaf veins -->
+  <g stroke="#3DA59F" stroke-width="0.5" fill="none" opacity="0.5">
+    <path d="M48 20 Q40 15 35 10"/>
+    <path d="M50 15 Q58 10 63 7"/>
+    <path d="M50 5 L50 -2"/>
+  </g>
+
+  <!-- Small water droplet (optional detail) -->
+  <g class="water-drop" opacity="0.6">
+    <ellipse cx="56" cy="18" rx="1.5" ry="2" fill="#87CEEB"/>
+    <ellipse cx="55.5" cy="17" rx="0.5" ry="0.8" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Decorative saucer -->
+  <ellipse cx="50" cy="112" rx="38" ry="6" fill="#C4764A" opacity="0.8"/>
+  <ellipse cx="50" cy="110" rx="35" ry="5" fill="#D4845C" opacity="0.6"/>
+</svg>

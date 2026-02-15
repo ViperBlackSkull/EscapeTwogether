@@ -90,7 +90,7 @@
 </script>
 
 <svelte:head>
-	<title>Role System Test - EscapeTogether</title>
+	<title>Role System Test - EscapeTwogether</title>
 </svelte:head>
 
 <div class="test-page">

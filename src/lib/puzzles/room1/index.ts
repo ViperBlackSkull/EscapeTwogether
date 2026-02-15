@@ -56,27 +56,35 @@ import { TrunkLockPuzzle } from './trunk-lock';
 import { SecretMessagePuzzle } from './secret-message';
 import { ROOM1_PUZZLE_IDS } from './ids';
 
+// Room 1 constants
+export const ROOM1_ID: RoomId = 'attic';
+export const ROOM1_NAME = 'The Attic';
+export const ROOM1_DESCRIPTION = 'Golden hour light streams through dusty windows. This attic holds decades of memories, wrapped in the warm scent of cedar and old photographs.';
+export const ROOM1_COLORS = {
+	primary: '#D4A574', // warm-amber
+	secondary: '#8B7355', // wood brown
+	accent: '#C9A66B', // golden light
+	background: '#1A1A2E' // deep navy
+};
+
 // Get all Room 1 puzzle definitions
+export const room1Puzzles: PuzzleDefinition[] = [
+	TornPhotographsPuzzle,
+	MusicBoxPuzzle,
+	LoveLetterCipherPuzzle,
+	TrunkLockPuzzle,
+	SecretMessagePuzzle
+];
+
 export function getRoom1PuzzleDefinitions(): PuzzleDefinition[] {
-	return [
-		TornPhotographsPuzzle,
-		MusicBoxPuzzle,
-		LoveLetterCipherPuzzle,
-		TrunkLockPuzzle,
-		SecretMessagePuzzle
-	];
+	return room1Puzzles;
 }
 
 // Room 1 metadata
 export const ROOM1_METADATA = {
-	id: 'attic' as RoomId,
-	name: 'The Attic',
-	description: 'Golden hour light streams through dusty windows. This attic holds decades of memories, wrapped in the warm scent of cedar and old photographs.',
-	theme: {
-		primaryColor: '#D4A574', // warm-amber
-		secondaryColor: '#8B7355', // wood brown
-		accentColor: '#C9A66B', // golden light
-		backgroundColor: '#1A1A2E' // deep navy
-	},
+	id: ROOM1_ID,
+	name: ROOM1_NAME,
+	description: ROOM1_DESCRIPTION,
+	theme: ROOM1_COLORS,
 	puzzles: Object.values(ROOM1_PUZZLE_IDS)
 };

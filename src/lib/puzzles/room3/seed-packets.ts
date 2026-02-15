@@ -186,7 +186,7 @@ export function createSeedPacketsState(): SeedPacketsState {
 
 // Validate solution
 function validateSeedPackets(state: PuzzleState): boolean {
-	const data = state.data as SeedPacketsState['data'];
+	const data = state.data as unknown as SeedPacketsState['data'];
 
 	// Check if all 5 matches are made
 	if (data.matches.length !== 5) return false;

@@ -169,7 +169,7 @@ describe('Love Letter Cipher Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.LOVE_LETTER_CIPHER,
 				solved: false,
 				attempts: 0,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(false);
@@ -183,7 +183,7 @@ describe('Love Letter Cipher Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.LOVE_LETTER_CIPHER,
 				solved: true,
 				attempts: 1,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(true);

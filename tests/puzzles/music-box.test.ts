@@ -151,7 +151,7 @@ describe('Music Box Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.MUSIC_BOX,
 				solved: false,
 				attempts: 0,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(false);
@@ -168,7 +168,7 @@ describe('Music Box Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.MUSIC_BOX,
 				solved: false,
 				attempts: 3,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(true);

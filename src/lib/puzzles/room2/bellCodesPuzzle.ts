@@ -6,7 +6,7 @@
  * Players must transmit the message 'LOVE ETERNAL'.
  */
 
-import type { PuzzleState, PuzzleHint, PlayerRole } from '../types';
+import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
 
 export const BELL_CODES_PUZZLE_ID = 'room2_bell_codes';
 
@@ -276,6 +276,6 @@ export const bellCodesPuzzleDefinition = {
 	createInitialState: createInitialBellCodesState,
 	validateSolution: (state: PuzzleState) => {
 		if (state.puzzleId !== BELL_CODES_PUZZLE_ID) return false;
-		return isBellCodesSolved(state.data as BellCodesPuzzleData);
+		return isBellCodesSolved(state.data as unknown as BellCodesPuzzleData);
 	},
 };

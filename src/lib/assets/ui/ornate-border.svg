@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <defs>
+    <!-- Gradient definitions -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="50%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#8B7355"/>
+    </linearGradient>
+
+    <linearGradient id="roseGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F4D0C3"/>
+      <stop offset="100%" stop-color="#C9A9A6"/>
+    </linearGradient>
+
+    <!-- Glow filter -->
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Corner flourish pattern -->
+    <symbol id="cornerFlourish" viewBox="0 0 60 60">
+      <path d="M5 55 Q5 30 15 20 Q25 10 50 5" stroke="url(#goldGradient)" stroke-width="2" fill="none" filter="url(#softGlow)">
+        <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M10 55 Q10 35 18 27 Q26 19 45 10" stroke="url(#goldGradient)" stroke-width="1" fill="none" opacity="0.5"/>
+      <!-- Decorative scrolls -->
+      <circle cx="15" cy="20" r="3" fill="url(#goldGradient)" opacity="0.8">
+        <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+      <path d="M8 45 Q12 40 8 35 Q4 40 8 45" fill="url(#roseGradient)" opacity="0.7"/>
+      <path d="M20 8 Q25 12 30 8 Q25 4 20 8" fill="url(#roseGradient)" opacity="0.7"/>
+    </symbol>
+
+    <!-- Side flourish pattern -->
+    <symbol id="sideFlourish" viewBox="0 0 100 20">
+      <path d="M0 10 Q25 5 50 10 Q75 15 100 10" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+      <circle cx="50" cy="10" r="2" fill="url(#goldGradient)">
+        <animate attributeName="r" values="2;2.5;2" dur="2s" repeatCount="indefinite"/>
+      </circle>
+    </symbol>
+
+    <!-- Center ornament -->
+    <symbol id="centerOrnament" viewBox="0 0 40 20">
+      <path d="M0 10 L15 10 M25 10 L40 10" stroke="url(#goldGradient)" stroke-width="1" opacity="0.7"/>
+      <path d="M15 10 Q20 5 25 10 Q20 15 15 10" fill="url(#roseGradient)" opacity="0.8">
+        <animate attributeName="opacity" values="0.6;0.9;0.6" dur="3s" repeatCount="indefinite"/>
+      </path>
+    </symbol>
+  </defs>
+
+  <!-- Main border frame -->
+  <rect x="10" y="10" width="380" height="280" rx="8"
+        stroke="url(#goldGradient)" stroke-width="2" fill="none" filter="url(#softGlow)"/>
+
+  <!-- Inner decorative frame -->
+  <rect x="20" y="20" width="360" height="260" rx="6"
+        stroke="url(#roseGradient)" stroke-width="1" fill="none" opacity="0.5"/>
+
+  <!-- Corner flourishes -->
+  <use href="#cornerFlourish" x="0" y="0" width="60" height="60"/>
+  <use href="#cornerFlourish" x="340" y="0" width="60" height="60" transform="scale(-1,1) translate(-400,0)"/>
+  <use href="#cornerFlourish" x="0" y="240" width="60" height="60" transform="scale(1,-1) translate(0,-300)"/>
+  <use href="#cornerFlourish" x="340" y="240" width="60" height="60" transform="scale(-1,-1) translate(-400,-300)"/>
+
+  <!-- Top center ornament -->
+  <use href="#centerOrnament" x="180" y="0" width="40" height="20"/>
+
+  <!-- Bottom center ornament -->
+  <use href="#centerOrnament" x="180" y="280" width="40" height="20"/>
+
+  <!-- Side flourishes -->
+  <use href="#sideFlourish" x="0" y="140" width="100" height="20"/>
+  <use href="#sideFlourish" x="300" y="140" width="100" height="20"/>
+
+  <!-- Decorative corners with swirls -->
+  <g opacity="0.6">
+    <!-- Top-left swirl -->
+    <path d="M25 35 Q35 25 45 30 Q40 40 30 35" fill="url(#goldGradient)"/>
+    <!-- Top-right swirl -->
+    <path d="M375 35 Q365 25 355 30 Q360 40 370 35" fill="url(#goldGradient)"/>
+    <!-- Bottom-left swirl -->
+    <path d="M25 265 Q35 275 45 270 Q40 260 30 265" fill="url(#goldGradient)"/>
+    <!-- Bottom-right swirl -->
+    <path d="M375 265 Q365 275 355 270 Q360 260 370 265" fill="url(#goldGradient)"/>
+  </g>
+</svg>

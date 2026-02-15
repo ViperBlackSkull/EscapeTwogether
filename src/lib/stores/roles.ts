@@ -1,4 +1,4 @@
-// EscapeTogether - Role Assignment System
+// EscapeTwogether - Role Assignment System
 // Manages Explorer/Analyst roles for players
 
 import { writable, derived, get, type Writable, type Readable } from 'svelte/store';

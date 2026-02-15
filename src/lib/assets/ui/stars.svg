@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 60" fill="none">
+  <defs>
+    <linearGradient id="starGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="50%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#8B7355"/>
+    </linearGradient>
+
+    <linearGradient id="starGoldBright" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE4B5"/>
+      <stop offset="50%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#D4A574"/>
+    </linearGradient>
+
+    <linearGradient id="starEmpty" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A3D36"/>
+      <stop offset="50%" stop-color="#3a302b"/>
+      <stop offset="100%" stop-color="#2a2320"/>
+    </linearGradient>
+
+    <linearGradient id="starRose" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F4D0C3"/>
+      <stop offset="100%" stop-color="#C9A9A6"/>
+    </linearGradient>
+
+    <filter id="starGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="starSmallGlow">
+      <feGaussianBlur stdDeviation="0.5"/>
+    </filter>
+
+    <!-- Full star shape -->
+    <symbol id="starShape" viewBox="0 0 30 30">
+      <path d="M15 2 L18.5 11 L28 11 L20.5 17 L23.5 26 L15 20.5 L6.5 26 L9.5 17 L2 11 L11.5 11 Z"/>
+    </symbol>
+
+    <!-- Full filled star -->
+    <symbol id="fullStar" viewBox="0 0 30 30">
+      <use href="#starShape" fill="url(#starGoldBright)" filter="url(#starGlow)"/>
+      <!-- Inner highlight -->
+      <path d="M15 5 L17.5 11.5 L24 11.5 L19 15.5 L21 22 L15 18 L9 22 L11 15.5 L6 11.5 L12.5 11.5 Z"
+            fill="url(#starGold)" opacity="0.7"/>
+      <!-- Shine effect -->
+      <circle cx="12" cy="10" r="2" fill="white" opacity="0.4"/>
+    </symbol>
+
+    <!-- Empty star -->
+    <symbol id="emptyStar" viewBox="0 0 30 30">
+      <use href="#starShape" fill="url(#starEmpty)"/>
+      <use href="#starShape" stroke="url(#starGold)" stroke-width="0.5" fill="none" opacity="0.4"/>
+    </symbol>
+
+    <!-- Half star (clip from left) -->
+    <clipPath id="halfClip">
+      <rect x="0" y="0" width="15" height="30"/>
+    </clipPath>
+
+    <symbol id="halfStar" viewBox="0 0 30 30">
+      <!-- Empty base -->
+      <use href="#starShape" fill="url(#starEmpty)"/>
+      <use href="#starShape" stroke="url(#starGold)" stroke-width="0.5" fill="none" opacity="0.4"/>
+      <!-- Filled half -->
+      <g clip-path="url(#halfClip)">
+        <use href="#starShape" fill="url(#starGoldBright)" filter="url(#starGlow)"/>
+        <path d="M15 5 L17.5 11.5 L24 11.5 L19 15.5 L21 22 L15 18 L9 22 L11 15.5 L6 11.5 L12.5 11.5 Z"
+              fill="url(#starGold)" opacity="0.7"/>
+      </g>
+    </symbol>
+  </defs>
+
+  <!-- Row 1: Empty stars -->
+  <g id="empty-row" transform="translate(0, 0)">
+    <use href="#emptyStar" x="0" y="0" width="30" height="30"/>
+    <use href="#emptyStar" x="36" y="0" width="30" height="30"/>
+    <use href="#emptyStar" x="72" y="0" width="30" height="30"/>
+    <use href="#emptyStar" x="108" y="0" width="30" height="30"/>
+    <use href="#emptyStar" x="144" y="0" width="30" height="30"/>
+  </g>
+
+  <!-- Row 2: Full stars -->
+  <g id="full-row" transform="translate(0, 30)">
+    <use href="#fullStar" x="0" y="0" width="30" height="30">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+    </use>
+    <use href="#fullStar" x="36" y="0" width="30" height="30">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite" begin="0.1s"/>
+    </use>
+    <use href="#fullStar" x="72" y="0" width="30" height="30">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite" begin="0.2s"/>
+    </use>
+    <use href="#fullStar" x="108" y="0" width="30" height="30">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+    </use>
+    <use href="#fullStar" x="144" y="0" width="30" height="30">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite" begin="0.4s"/>
+    </use>
+  </g>
+
+  <!-- Individual star exports for use -->
+  <!-- Star 1: Empty -->
+  <g id="star-1-empty" transform="translate(0, 0)" style="display: none;">
+    <use href="#emptyStar" x="0" y="0" width="30" height="30"/>
+  </g>
+
+  <!-- Star 2: Half -->
+  <g id="star-2-half" transform="translate(0, 0)" style="display: none;">
+    <use href="#halfStar" x="0" y="0" width="30" height="30">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+    </use>
+  </g>
+
+  <!-- Star 3: Full -->
+  <g id="star-3-full" transform="translate(0, 0)" style="display: none;">
+    <use href="#fullStar" x="0" y="0" width="30" height="30">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+    </use>
+  </g>
+
+  <!-- Example: 3.5 star rating -->
+  <g id="rating-3-5" transform="translate(0, 60)" style="display: none;">
+    <use href="#fullStar" x="0" y="0" width="24" height="24"/>
+    <use href="#fullStar" x="28" y="0" width="24" height="24"/>
+    <use href="#fullStar" x="56" y="0" width="24" height="24"/>
+    <use href="#halfStar" x="84" y="0" width="24" height="24"/>
+    <use href="#emptyStar" x="112" y="0" width="24" height="24"/>
+  </g>
+
+  <!-- Sparkle animation overlay for full stars -->
+  <g id="sparkles" opacity="0.6">
+    <circle cx="15" cy="8" r="1" fill="white">
+      <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="51" cy="10" r="0.8" fill="white">
+      <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin="0.3s"/>
+    </circle>
+    <circle cx="87" cy="8" r="1" fill="white">
+      <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin="0.6s"/>
+    </circle>
+    <circle cx="123" cy="12" r="0.8" fill="white">
+      <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin="0.9s"/>
+    </circle>
+    <circle cx="159" cy="9" r="1" fill="white">
+      <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin="1.2s"/>
+    </circle>
+  </g>
+</svg>

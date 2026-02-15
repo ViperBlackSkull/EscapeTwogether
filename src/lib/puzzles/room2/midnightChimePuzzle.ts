@@ -7,7 +7,7 @@
  * Players alternate in the sequence.
  */
 
-import type { PuzzleState, PuzzleHint, PlayerRole } from '../types';
+import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
 
 export const MIDNIGHT_CHIME_PUZZLE_ID = 'room2_midnight_chime';
 
@@ -323,6 +323,6 @@ export const midnightChimePuzzleDefinition = {
 	createInitialState: createInitialMidnightChimeState,
 	validateSolution: (state: PuzzleState) => {
 		if (state.puzzleId !== MIDNIGHT_CHIME_PUZZLE_ID) return false;
-		return isMidnightChimeSolved(state.data as MidnightChimePuzzleData);
+		return isMidnightChimeSolved(state.data as unknown as MidnightChimePuzzleData);
 	},
 };

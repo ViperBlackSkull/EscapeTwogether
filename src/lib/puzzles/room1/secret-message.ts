@@ -311,7 +311,7 @@ export function autoSortLetters(state: SecretMessageState): {
 
 // Validate solution
 export function validateSolution(state: PuzzleState): boolean {
-	const puzzleState = state.data as SecretMessageState;
+	const puzzleState = state.data as unknown as SecretMessageState;
 	if (!puzzleState) return false;
 
 	return puzzleState.completed;

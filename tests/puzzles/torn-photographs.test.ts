@@ -155,7 +155,7 @@ describe('Torn Photographs Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.TORN_PHOTOGRAPHS,
 				solved: false,
 				attempts: 0,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(false);
@@ -173,7 +173,7 @@ describe('Torn Photographs Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.TORN_PHOTOGRAPHS,
 				solved: false,
 				attempts: 5,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(true);

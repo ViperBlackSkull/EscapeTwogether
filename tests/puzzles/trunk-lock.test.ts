@@ -205,7 +205,7 @@ describe('Trunk Lock Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.TRUNK_LOCK,
 				solved: false,
 				attempts: 0,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(false);
@@ -219,7 +219,7 @@ describe('Trunk Lock Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.TRUNK_LOCK,
 				solved: true,
 				attempts: 5,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(true);

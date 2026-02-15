@@ -10,4 +10,10 @@ declare global {
 	}
 }
 
+// SVG module declaration for importing SVG files
+declare module '*.svg' {
+	const content: string;
+	export default content;
+}
+
 export {};

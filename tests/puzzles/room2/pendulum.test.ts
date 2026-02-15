@@ -217,7 +217,7 @@ describe('Pendulum Puzzle', () => {
 				puzzleId: PENDULUM_PUZZLE_ID,
 				solved: false,
 				attempts: 0,
-				data: solvedData
+				data: solvedData as unknown as Record<string, unknown>
 			};
 
 			expect(pendulumPuzzleDefinition.validateSolution(state)).toBe(true);
@@ -228,7 +228,7 @@ describe('Pendulum Puzzle', () => {
 				puzzleId: PENDULUM_PUZZLE_ID,
 				solved: false,
 				attempts: 0,
-				data: createInitialPendulumState()
+				data: createInitialPendulumState() as unknown as Record<string, unknown>
 			};
 
 			expect(pendulumPuzzleDefinition.validateSolution(state)).toBe(false);

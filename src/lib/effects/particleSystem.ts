@@ -1,5 +1,5 @@
 /**
- * Particle Effects System for EscapeTogether
+ * Particle Effects System for EscapeTwogether
  *
  * A reusable particle system for visual polish throughout the game.
  * Supports multiple particle types:

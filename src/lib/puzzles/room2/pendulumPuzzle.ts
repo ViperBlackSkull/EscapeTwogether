@@ -6,7 +6,7 @@
  * The ball must stay in the goal for 2 seconds to complete the puzzle.
  */
 
-import type { PuzzleState, PuzzleHint, PlayerRole } from '../types';
+import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
 
 export const PENDULUM_PUZZLE_ID = 'room2_pendulum';
 
@@ -263,6 +263,6 @@ export const pendulumPuzzleDefinition = {
 	createInitialState: createInitialPendulumState,
 	validateSolution: (state: PuzzleState) => {
 		if (state.puzzleId !== PENDULUM_PUZZLE_ID) return false;
-		return isPendulumSolved(state.data as PendulumPuzzleData);
+		return isPendulumSolved(state.data as unknown as PendulumPuzzleData);
 	},
 };

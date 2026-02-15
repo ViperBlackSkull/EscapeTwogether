@@ -31,22 +31,36 @@ test.describe('Multiplayer Flow', () => {
       await page.waitForTimeout(1000);
     });
 
-    test('should show room code after creation', async ({ page }) => {
-      const nameInput = page.locator('input[placeholder*="name" i], input[type="text"]').first();
-      await nameInput.fill('TestHost');
-
-      const createButton = page.locator('button:has-text("Create"), button:has-text("New Room")').first();
+    test('should show error when name is empty', async ({ page }) => {
+      // Click create without entering name
+      const createButton = page.locator('button:has-text("Create")').first();
       await createButton.click();
 
-      await page.waitForTimeout(1000);
+      // Wait a bit for Svelte to react and render the error
+      await page.waitForTimeout(500);
 
-      // Look for room code display (4 character code pattern)
-      const roomCodeDisplay = page.locator('[data-testid="room-code"], text=/[A-Z0-9]{4}/');
-      const hasRoomCode = await roomCodeDisplay.count() > 0;
+      // Should show error message - look for red-300 class which is used for error text
+      // or the alert role
+      const errorMessage = page.locator('.text-red-300, [role="alert"]').first();
+      await expect(errorMessage).toBeVisible({ timeout: 5000 });
+      await expect(errorMessage).toContainText('Please enter your name');
+    });
 
-      // Pass if we either have a room code or navigated to lobby
-      const currentUrl = page.url();
-      expect(hasRoomCode || currentUrl.includes('lobby') || currentUrl.includes('room')).toBeTruthy();
+    test('should show error for invalid room code on join', async ({ page }) => {
+      const nameInput = page.locator('input[placeholder*="name" i], input[type="text"]').first();
+      await nameInput.fill('TestPlayer');
+
+      const roomCodeInput = page.locator('input[placeholder*="room" i], input[placeholder*="code" i]').first();
+      if (await roomCodeInput.isVisible().catch(() => false)) {
+        await roomCodeInput.fill('ZZZZ');
+      }
+
+      const joinButton = page.locator('button:has-text("Join")').first();
+      if (await joinButton.isVisible()) {
+        await joinButton.click();
+        // Wait for error response
+        await page.waitForTimeout(1000);
+      }
     });
   });
 

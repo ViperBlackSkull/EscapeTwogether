@@ -134,6 +134,19 @@ import { clockFacePuzzleDefinition } from './clockFacePuzzle';
 import { windupKeyPuzzleDefinition } from './windupKeyPuzzle';
 import { midnightChimePuzzleDefinition } from './midnightChimePuzzle';
 
+import type { RoomId } from '$lib/types';
+
+// Room 2 constants
+export const ROOM2_ID: RoomId = 'clock_tower';
+export const ROOM2_NAME = 'The Clock Tower';
+export const ROOM2_DESCRIPTION = 'Night, moonlight through clock face, mysterious, romantic, slightly magical.';
+export const ROOM2_COLORS = {
+	primary: '#7B68EE', // medium slate blue
+	secondary: '#4A4A6A', // dusk blue
+	accent: '#C0C0C0', // silver
+	background: '#1A1A2E' // deep navy
+};
+
 // All Room 2 puzzle definitions
 export const room2Puzzles = [
 	pendulumPuzzleDefinition,

@@ -1,7 +1,7 @@
 {
   "name": "ai-playtester",
   "version": "1.0.0",
-  "description": "Autonomous AI testing agent for EscapeTogether game",
+  "description": "Autonomous AI testing agent for EscapeTwogether game",
   "main": "dist/playtester.js",
   "scripts": {
     "build": "tsc",

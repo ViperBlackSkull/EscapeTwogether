@@ -1,8 +1,8 @@
 // Effects module exports
 
 // PixiJS-based particle system (for game canvas)
-export { ParticleManager, ParticleEmitter, PARTICLE_PRESETS } from './ParticleSystem';
-export type { ParticleConfig } from './ParticleSystem';
+export { ParticleManager, ParticleEmitter, PARTICLE_PRESETS } from './pixiParticles';
+export type { ParticleConfig } from './pixiParticles';
 
 // Canvas 2D particle system (for overlays and UI effects)
 export {
@@ -22,3 +22,15 @@ export type { Particle, ParticleType as CanvasParticleType, EmitterConfig } from
 
 // Svelte component for canvas particles
 export { default as ParticleCanvas } from './ParticleCanvas.svelte';
+
+// Performance utilities for scaling effects
+export {
+	getDeviceCapabilities,
+	getParticleScale,
+	shouldEnableParticles,
+	FrameRateMonitor,
+	frameRateMonitor,
+	ThrottledRenderer,
+	AdaptiveRenderer
+} from '$lib/utils/performance';
+export type { DeviceCapabilities } from '$lib/utils/performance';

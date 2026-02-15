@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 40" fill="none">
+  <defs>
+    <linearGradient id="dividerGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFB74D" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#D4A574"/>
+      <stop offset="50%" stop-color="#FFB74D"/>
+      <stop offset="70%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#FFB74D" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="dividerRose" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F4D0C3"/>
+      <stop offset="100%" stop-color="#C9A9A6"/>
+    </linearGradient>
+
+    <filter id="dividerGlow">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Center diamond ornament -->
+    <symbol id="centerDiamond" viewBox="0 0 30 30">
+      <rect x="10" y="10" width="10" height="10" rx="1" fill="url(#dividerGold)" transform="rotate(45 15 15)">
+        <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <circle cx="15" cy="15" r="3" fill="url(#dividerRose)" opacity="0.8">
+        <animate attributeName="r" values="3;3.5;3" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+    </symbol>
+
+    <!-- Flourish element -->
+    <symbol id="flourish" viewBox="0 0 60 20">
+      <path d="M0 10 Q15 5 30 10 Q45 15 60 10" stroke="url(#dividerGold)" stroke-width="1" fill="none" opacity="0.6"/>
+      <circle cx="15" cy="8" r="2" fill="url(#dividerRose)" opacity="0.6"/>
+      <circle cx="45" cy="12" r="2" fill="url(#dividerRose)" opacity="0.6"/>
+    </symbol>
+  </defs>
+
+  <!-- Main horizontal line with gradient fade -->
+  <line x1="20" y1="20" x2="380" y2="20" stroke="url(#dividerGold)" stroke-width="2" filter="url(#dividerGlow)">
+    <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- Secondary thin lines -->
+  <line x1="40" y1="17" x2="170" y2="17" stroke="url(#dividerGold)" stroke-width="0.5" opacity="0.4"/>
+  <line x1="230" y1="17" x2="360" y2="17" stroke="url(#dividerGold)" stroke-width="0.5" opacity="0.4"/>
+  <line x1="40" y1="23" x2="170" y2="23" stroke="url(#dividerGold)" stroke-width="0.5" opacity="0.4"/>
+  <line x1="230" y1="23" x2="360" y2="23" stroke="url(#dividerGold)" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- Center ornament -->
+  <use href="#centerDiamond" x="185" y="5" width="30" height="30"/>
+
+  <!-- Left flourish -->
+  <use href="#flourish" x="60" y="10" width="60" height="20" opacity="0.7"/>
+
+  <!-- Right flourish -->
+  <use href="#flourish" x="280" y="10" width="60" height="20" opacity="0.7"/>
+
+  <!-- End decorations -->
+  <g opacity="0.6">
+    <!-- Left end -->
+    <circle cx="20" cy="20" r="3" fill="url(#dividerRose)">
+      <animate attributeName="opacity" values="0.4;0.7;0.4" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="30" cy="20" r="1.5" fill="url(#dividerGold)" opacity="0.5"/>
+
+    <!-- Right end -->
+    <circle cx="380" cy="20" r="3" fill="url(#dividerRose)">
+      <animate attributeName="opacity" values="0.4;0.7;0.4" dur="2s" repeatCount="indefinite" begin="1s"/>
+    </circle>
+    <circle cx="370" cy="20" r="1.5" fill="url(#dividerGold)" opacity="0.5"/>
+  </g>
+
+  <!-- Decorative dots along the line -->
+  <g opacity="0.5">
+    <circle cx="80" cy="20" r="1" fill="url(#dividerGold)">
+      <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="120" cy="20" r="1" fill="url(#dividerGold)">
+      <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+    </circle>
+    <circle cx="280" cy="20" r="1" fill="url(#dividerGold)">
+      <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" begin="0.6s"/>
+    </circle>
+    <circle cx="320" cy="20" r="1" fill="url(#dividerGold)">
+      <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" begin="0.9s"/>
+    </circle>
+  </g>
+</svg>

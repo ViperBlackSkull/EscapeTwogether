@@ -7,7 +7,7 @@
  * Both are mirror reflections. Players must deduce the true time: 12:00 (midnight).
  */
 
-import type { PuzzleState, PuzzleHint, PlayerRole } from '../types';
+import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
 
 export const CLOCK_FACE_PUZZLE_ID = 'room2_clock_face';
 
@@ -257,6 +257,6 @@ export const clockFacePuzzleDefinition = {
 	createInitialState: createInitialClockFaceState,
 	validateSolution: (state: PuzzleState) => {
 		if (state.puzzleId !== CLOCK_FACE_PUZZLE_ID) return false;
-		return isClockFaceSolved(state.data as ClockFacePuzzleData);
+		return isClockFaceSolved(state.data as unknown as ClockFacePuzzleData);
 	},
 };

@@ -167,7 +167,7 @@ export function submitAnswer(state: LoveLetterCipherState, answer: string): bool
 
 // Validate solution
 export function validateSolution(state: PuzzleState): boolean {
-	const puzzleState = state.data as LoveLetterCipherState;
+	const puzzleState = state.data as unknown as LoveLetterCipherState;
 	if (!puzzleState) return false;
 	return puzzleState.completed || checkWordComplete(puzzleState);
 }

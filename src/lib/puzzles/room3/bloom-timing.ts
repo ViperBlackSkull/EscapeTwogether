@@ -108,7 +108,7 @@ export function createBloomTimingState(): BloomTimingState {
 
 // Validate solution
 function validateBloomTiming(state: PuzzleState): boolean {
-	const data = state.data as BloomTimingState['data'];
+	const data = state.data as unknown as BloomTimingState['data'];
 	return data.correctCount === 8;
 }
 

@@ -1,4 +1,4 @@
-// EscapeTogether - Game State Store
+// EscapeTwogether - Game State Store
 // Svelte store for synchronized game state that updates via WebSocket events
 
 import { writable, derived, get, type Writable, type Readable } from 'svelte/store';

@@ -206,7 +206,7 @@ export function removeGear(state: MusicBoxState, slotId: string): MusicBoxState 
 
 // Validate solution
 export function validateSolution(state: PuzzleState): boolean {
-	const puzzleState = state.data as MusicBoxState;
+	const puzzleState = state.data as unknown as MusicBoxState;
 	if (!puzzleState) return false;
 
 	// All slots must have correct gears

@@ -1,4 +1,4 @@
-// EscapeTogether - Base TypeScript Type Definitions
+// EscapeTwogether - Base TypeScript Type Definitions
 
 // ============================================
 // Player Types

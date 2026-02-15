@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a2a4a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bgGradient)"/>
+  <rect x="100" y="80" width="600" height="440" rx="20" fill="#3a3a5a" stroke="#4a4a6a" stroke-width="2"/>
+  <text x="400" y="560" text-anchor="middle" fill="#8b8baa" font-family="Lato, sans-serif" font-size="14">Torn Photographs - Arrange the pieces to reveal the image</text>
+</svg>

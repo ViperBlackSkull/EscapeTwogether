@@ -1,4 +1,4 @@
-// EscapeTogether - Store Exports
+// EscapeTwogether - Store Exports
 
 export {
 	// Core store

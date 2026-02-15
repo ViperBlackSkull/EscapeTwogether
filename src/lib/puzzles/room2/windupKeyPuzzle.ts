@@ -7,7 +7,7 @@
  * Must maintain synchronization for 5 seconds to complete.
  */
 
-import type { PuzzleState, PuzzleHint, PlayerRole } from '../types';
+import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
 
 export const WINDUP_KEY_PUZZLE_ID = 'room2_windup_key';
 
@@ -294,6 +294,6 @@ export const windupKeyPuzzleDefinition = {
 	createInitialState: createInitialWindupKeyState,
 	validateSolution: (state: PuzzleState) => {
 		if (state.puzzleId !== WINDUP_KEY_PUZZLE_ID) return false;
-		return isWindupKeySolved(state.data as WindupKeyPuzzleData);
+		return isWindupKeySolved(state.data as unknown as WindupKeyPuzzleData);
 	},
 };

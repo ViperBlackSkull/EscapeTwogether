@@ -213,7 +213,7 @@ export function setDial(
 
 // Validate solution
 export function validateSolution(state: PuzzleState): boolean {
-	const puzzleState = state.data as TrunkLockState;
+	const puzzleState = state.data as unknown as TrunkLockState;
 	if (!puzzleState) return false;
 	return puzzleState.completed;
 }

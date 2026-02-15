@@ -1,0 +1,312 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 260 220"
+  class="puzzle-asset trunk-lock"
+  role="img"
+  aria-label="Antique brass trunk lock with rotating dials"
+>
+  <defs>
+    <!-- Brass base gradient -->
+    <linearGradient id="brassBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#C5A028;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#996515;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B6914;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Brass highlight -->
+    <linearGradient id="brassHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#FFB74D;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:0.2" />
+    </linearGradient>
+
+    <!-- Dial metal gradient -->
+    <radialGradient id="dialMetal" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#E8E8E8;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B8B8B8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#808080;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Dial edge gradient -->
+    <linearGradient id="dialEdge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#606060;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#909090;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#505050;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Shadow filter -->
+    <filter id="lockShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="4" dy="5" stdDeviation="5" flood-color="#1E293B" flood-opacity="0.4"/>
+    </filter>
+
+    <!-- Inner shadow for dial recess -->
+    <filter id="dialRecess">
+      <feOffset dx="0" dy="1"/>
+      <feGaussianBlur stdDeviation="1" result="offset-blur"/>
+      <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+      <feFlood flood-color="#1E293B" flood-opacity="0.4" result="color"/>
+      <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+      <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+    </filter>
+
+    <!-- Steampunk gear pattern -->
+    <pattern id="gearPattern" patternUnits="userSpaceOnUse" width="40" height="40">
+      <circle cx="20" cy="20" r="3" fill="#8B6914" opacity="0.2"/>
+      <circle cx="20" cy="20" r="6" fill="none" stroke="#996515" stroke-width="0.5" opacity="0.3"/>
+      <path d="M20,14 L20,16 M20,24 L20,26 M14,20 L16,20 M24,20 L26,20" stroke="#8B6914" stroke-width="0.5" opacity="0.3"/>
+    </pattern>
+
+    <!-- Copper accent -->
+    <linearGradient id="copperAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#B87333;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#CD7F32;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Glow effect for active dial -->
+    <filter id="dialGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    .trunk-lock { transition: transform 0.3s ease; }
+    .trunk-lock:hover { transform: scale(1.02); }
+    .trunk-lock:focus { outline: 2px solid #FFB74D; outline-offset: 4px; }
+    .dial { cursor: pointer; transition: transform 0.3s ease; }
+    .dial:hover { transform: rotate(15deg); }
+    .dial-1:hover { transform: rotate(30deg); }
+    .dial-2:hover { transform: rotate(-20deg); }
+    .dial-3:hover { transform: rotate(45deg); }
+    .gear-decoration { animation: rotate 12s linear infinite; transform-origin: center; }
+    .gear-small { animation: rotate 8s linear infinite reverse; }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .steam-particle { animation: steam 3s ease-in-out infinite; }
+    .steam-1 { animation-delay: 0s; }
+    .steam-2 { animation-delay: 0.5s; }
+    .steam-3 { animation-delay: 1s; }
+    @keyframes steam { 0%, 100% { opacity: 0.2; transform: translateY(0); } 50% { opacity: 0.5; transform: translateY(-5px); } }
+    .number-display { font-family: 'Courier New', monospace; }
+  </style>
+
+  <!-- Main lock plate -->
+  <g filter="url(#lockShadow)">
+    <!-- Base plate -->
+    <rect x="30" y="30" width="200" height="160" rx="10" fill="url(#brassBase)"/>
+    <rect x="30" y="30" width="200" height="160" rx="10" fill="url(#gearPattern)"/>
+
+    <!-- Plate border -->
+    <rect x="30" y="30" width="200" height="160" rx="10" fill="none" stroke="#8B6914" stroke-width="3"/>
+
+    <!-- Inner decorative border -->
+    <rect x="40" y="40" width="180" height="140" rx="6" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.5"/>
+
+    <!-- Corner ornaments -->
+    <g fill="url(#brassHighlight)">
+      <circle cx="45" cy="45" r="8"/>
+      <circle cx="215" cy="45" r="8"/>
+      <circle cx="45" cy="175" r="8"/>
+      <circle cx="215" cy="175" r="8"/>
+    </g>
+
+    <!-- Decorative screws -->
+    <g fill="#605020" stroke="#8B6914" stroke-width="0.5">
+      <circle cx="45" cy="45" r="3"/>
+      <line x1="43" y1="45" x2="47" y2="45" stroke="#403010" stroke-width="1"/>
+      <circle cx="215" cy="45" r="3"/>
+      <line x1="213" y1="45" x2="217" y2="45" stroke="#403010" stroke-width="1"/>
+      <circle cx="45" cy="175" r="3"/>
+      <line x1="45" y1="173" x2="45" y2="177" stroke="#403010" stroke-width="1"/>
+      <circle cx="215" cy="175" r="3"/>
+      <line x1="215" y1="173" x2="215" y2="177" stroke="#403010" stroke-width="1"/>
+    </g>
+  </g>
+
+  <!-- Top decorative scrollwork -->
+  <g stroke="#8B6914" stroke-width="1.5" fill="none" opacity="0.6">
+    <path d="M70,50 Q90,40 110,50 Q130,60 150,50 Q170,40 190,50"/>
+    <circle cx="130" cy="50" r="5" fill="#8B6914"/>
+  </g>
+
+  <!-- Three rotating dials -->
+  <g transform="translate(0, 10)">
+    <!-- Dial 1 -->
+    <g class="dial dial-1" transform="translate(75, 110)">
+      <!-- Dial recess -->
+      <circle r="32" fill="#504020" filter="url(#dialRecess)"/>
+      <circle r="30" fill="#1E293B"/>
+
+      <!-- Dial face -->
+      <circle r="28" fill="url(#dialMetal)"/>
+      <circle r="28" fill="none" stroke="url(#dialEdge)" stroke-width="2"/>
+
+      <!-- Dial numbers -->
+      <g class="number-display" fill="#1E293B" font-size="10" font-weight="bold">
+        <text x="0" y="-18" text-anchor="middle">0</text>
+        <text x="17" y="-6" text-anchor="middle">1</text>
+        <text x="11" y="14" text-anchor="middle">2</text>
+        <text x="-11" y="14" text-anchor="middle">3</text>
+        <text x="-17" y="-6" text-anchor="middle">4</text>
+      </g>
+
+      <!-- Dial indicator mark -->
+      <line x1="0" y1="-25" x2="0" y2="-20" stroke="#8B0000" stroke-width="2"/>
+
+      <!-- Center knob -->
+      <circle r="8" fill="url(#brassBase)"/>
+      <circle r="5" fill="#1E293B"/>
+      <circle r="2" fill="url(#brassHighlight)"/>
+
+      <!-- Dial grip ridges -->
+      <g stroke="#606060" stroke-width="1">
+        <line x1="22" y1="-15" x2="26" y2="-18"/>
+        <line x1="26" y1="0" x2="30" y2="0"/>
+        <line x1="22" y1="15" x2="26" y2="18"/>
+        <line x1="-22" y1="15" x2="-26" y2="18"/>
+        <line x1="-26" y1="0" x2="-30" y2="0"/>
+        <line x1="-22" y1="-15" x2="-26" y2="-18"/>
+      </g>
+    </g>
+
+    <!-- Dial 2 -->
+    <g class="dial dial-2" transform="translate(130, 110)">
+      <circle r="32" fill="#504020" filter="url(#dialRecess)"/>
+      <circle r="30" fill="#1E293B"/>
+
+      <circle r="28" fill="url(#dialMetal)"/>
+      <circle r="28" fill="none" stroke="url(#dialEdge)" stroke-width="2"/>
+
+      <g class="number-display" fill="#1E293B" font-size="10" font-weight="bold">
+        <text x="0" y="-18" text-anchor="middle">5</text>
+        <text x="17" y="-6" text-anchor="middle">6</text>
+        <text x="11" y="14" text-anchor="middle">7</text>
+        <text x="-11" y="14" text-anchor="middle">8</text>
+        <text x="-17" y="-6" text-anchor="middle">9</text>
+      </g>
+
+      <line x1="0" y1="-25" x2="0" y2="-20" stroke="#8B0000" stroke-width="2"/>
+
+      <circle r="8" fill="url(#brassBase)"/>
+      <circle r="5" fill="#1E293B"/>
+      <circle r="2" fill="url(#brassHighlight)"/>
+
+      <g stroke="#606060" stroke-width="1">
+        <line x1="22" y1="-15" x2="26" y2="-18"/>
+        <line x1="26" y1="0" x2="30" y2="0"/>
+        <line x1="22" y1="15" x2="26" y2="18"/>
+        <line x1="-22" y1="15" x2="-26" y2="18"/>
+        <line x1="-26" y1="0" x2="-30" y2="0"/>
+        <line x1="-22" y1="-15" x2="-26" y2="-18"/>
+      </g>
+    </g>
+
+    <!-- Dial 3 -->
+    <g class="dial dial-3" transform="translate(185, 110)">
+      <circle r="32" fill="#504020" filter="url(#dialRecess)"/>
+      <circle r="30" fill="#1E293B"/>
+
+      <circle r="28" fill="url(#dialMetal)"/>
+      <circle r="28" fill="none" stroke="url(#dialEdge)" stroke-width="2"/>
+
+      <g class="number-display" fill="#1E293B" font-size="10" font-weight="bold">
+        <text x="0" y="-18" text-anchor="middle">A</text>
+        <text x="17" y="-6" text-anchor="middle">B</text>
+        <text x="11" y="14" text-anchor="middle">C</text>
+        <text x="-11" y="14" text-anchor="middle">D</text>
+        <text x="-17" y="-6" text-anchor="middle">E</text>
+      </g>
+
+      <line x1="0" y1="-25" x2="0" y2="-20" stroke="#8B0000" stroke-width="2"/>
+
+      <circle r="8" fill="url(#brassBase)"/>
+      <circle r="5" fill="#1E293B"/>
+      <circle r="2" fill="url(#brassHighlight)"/>
+
+      <g stroke="#606060" stroke-width="1">
+        <line x1="22" y1="-15" x2="26" y2="-18"/>
+        <line x1="26" y1="0" x2="30" y2="0"/>
+        <line x1="22" y1="15" x2="26" y2="18"/>
+        <line x1="-22" y1="15" x2="-26" y2="18"/>
+        <line x1="-26" y1="0" x2="-30" y2="0"/>
+        <line x1="-22" y1="-15" x2="-26" y2="-18"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Steampunk gear decorations -->
+  <g class="gear-decoration" transform="translate(55, 70)">
+    <circle r="12" fill="url(#copperAccent)" stroke="#8B4513" stroke-width="1"/>
+    <circle r="6" fill="#503020"/>
+    <circle r="2" fill="#8B4513"/>
+    <g stroke="#8B4513" stroke-width="2">
+      <line x1="0" y1="-12" x2="0" y2="-15"/>
+      <line x1="8.5" y1="-8.5" x2="10.6" y2="-10.6"/>
+      <line x1="12" y1="0" x2="15" y2="0"/>
+      <line x1="8.5" y1="8.5" x2="10.6" y2="10.6"/>
+      <line x1="0" y1="12" x2="0" y2="15"/>
+      <line x1="-8.5" y1="8.5" x2="-10.6" y2="10.6"/>
+      <line x1="-12" y1="0" x2="-15" y2="0"/>
+      <line x1="-8.5" y1="-8.5" x2="-10.6" y2="-10.6"/>
+    </g>
+  </g>
+
+  <g class="gear-decoration gear-small" transform="translate(205, 70)">
+    <circle r="8" fill="url(#copperAccent)" stroke="#8B4513" stroke-width="1"/>
+    <circle r="4" fill="#503020"/>
+    <circle r="1.5" fill="#8B4513"/>
+    <g stroke="#8B4513" stroke-width="1.5">
+      <line x1="0" y1="-8" x2="0" y2="-10"/>
+      <line x1="5.7" y1="-5.7" x2="7.1" y2="-7.1"/>
+      <line x1="8" y1="0" x2="10" y2="0"/>
+      <line x1="5.7" y1="5.7" x2="7.1" y2="7.1"/>
+      <line x1="0" y1="8" x2="0" y2="10"/>
+      <line x1="-5.7" y1="5.7" x2="-7.1" y2="7.1"/>
+      <line x1="-8" y1="0" x2="-10" y2="0"/>
+      <line x1="-5.7" y1="-5.7" x2="-7.1" y2="-7.1"/>
+    </g>
+  </g>
+
+  <!-- Bottom decorative keyhole -->
+  <g transform="translate(130, 175)">
+    <ellipse cx="0" cy="0" rx="12" ry="8" fill="#1E293B"/>
+    <rect x="-4" y="0" width="8" height="15" fill="#1E293B"/>
+    <ellipse cx="0" cy="0" rx="12" ry="8" fill="none" stroke="#FFB74D" stroke-width="1" opacity="0.5"/>
+
+    <!-- Keyhole glow -->
+    <ellipse cx="0" cy="0" rx="8" ry="5" fill="#FFB74D" opacity="0.15"/>
+  </g>
+
+  <!-- Steam/pressure particles -->
+  <g class="steam-particles" fill="#F4D0C3" opacity="0.3">
+    <circle class="steam-particle steam-1" cx="60" cy="55" r="3"/>
+    <circle class="steam-particle steam-2" cx="200" cy="55" r="2.5"/>
+    <circle class="steam-particle steam-3" cx="130" cy="50" r="2"/>
+  </g>
+
+  <!-- Pressure gauges -->
+  <g transform="translate(50, 160)">
+    <circle r="10" fill="#1E293B" stroke="url(#brassBase)" stroke-width="2"/>
+    <path d="M-6,3 A8,8 0 0,1 6,-3" fill="none" stroke="#FFB74D" stroke-width="1.5"/>
+    <circle r="1.5" fill="#FFB74D"/>
+  </g>
+
+  <g transform="translate(210, 160)">
+    <circle r="10" fill="#1E293B" stroke="url(#brassBase)" stroke-width="2"/>
+    <path d="M-4,-5 A8,8 0 0,1 5,5" fill="none" stroke="#F4D0C3" stroke-width="1.5"/>
+    <circle r="1.5" fill="#F4D0C3"/>
+  </g>
+
+  <!-- Metal plates with rivets -->
+  <g fill="#605020" opacity="0.5">
+    <circle cx="75" cy="165" r="2"/>
+    <circle cx="95" cy="165" r="2"/>
+    <circle cx="165" cy="165" r="2"/>
+    <circle cx="185" cy="165" r="2"/>
+  </g>
+</svg>

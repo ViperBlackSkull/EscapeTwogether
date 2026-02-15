@@ -211,7 +211,7 @@ describe('Bell Codes Puzzle', () => {
 				puzzleId: BELL_CODES_PUZZLE_ID,
 				solved: false,
 				attempts: 0,
-				data: solvedState
+				data: solvedState as unknown as Record<string, unknown>
 			};
 
 			expect(bellCodesPuzzleDefinition.validateSolution(state)).toBe(true);

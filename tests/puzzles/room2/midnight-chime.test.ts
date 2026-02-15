@@ -299,7 +299,7 @@ describe('Midnight Chime Puzzle', () => {
 				puzzleId: MIDNIGHT_CHIME_PUZZLE_ID,
 				solved: false,
 				attempts: 0,
-				data: solvedState
+				data: solvedState as unknown as Record<string, unknown>
 			};
 
 			expect(midnightChimePuzzleDefinition.validateSolution(state)).toBe(true);

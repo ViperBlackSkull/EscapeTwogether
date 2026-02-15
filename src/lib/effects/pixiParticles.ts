@@ -1,4 +1,4 @@
-// Particle System for EscapeTogether
+// Particle System for EscapeTwogether
 // Creates ambient particles, celebration effects, and room-specific visual effects
 
 import { Container, Graphics, Assets, Sprite, Texture } from 'pixi.js';

@@ -1,17 +1,27 @@
 <script lang="ts">
 	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
 	import { browser } from '$app/environment';
-	import { Application, Container, Graphics, Text } from 'pixi.js';
-	import { ParticleManager, PARTICLE_PRESETS } from '$lib/effects/ParticleSystem';
+	import { Application, Container, Graphics, Text, FederatedPointerEvent } from 'pixi.js';
+	import { ParticleManager, PARTICLE_PRESETS } from '$lib/effects/pixiParticles';
+	import { PuzzleRenderer, type PuzzlePiece, type AnimationConfig } from '$lib/puzzles/PuzzleRenderer';
+	import type { PuzzleState, RoomId } from '$lib/types';
+
+	// Import puzzle animations CSS
+	import '../puzzles/puzzle-animations.css';
 
 	let canvasContainer: HTMLDivElement;
 	let app: Application | null = null;
 	let resizeObserver: ResizeObserver | null = null;
 	let particleManager: ParticleManager | null = null;
 	let particleContainer: Container | null = null;
+	let puzzleRenderer: PuzzleRenderer | null = null;
 
 	// Current room for theming particles
 	export let currentRoom: 'attic' | 'clock_tower' | 'garden' = 'attic';
+
+	// Current puzzle state for rendering
+	export let currentPuzzleState: PuzzleState | null = null;
+	export let currentPuzzleId: string | null = null;
 
 	// Touch state for mobile interactions
 	let touchStartPos = { x: 0, y: 0 };
@@ -127,6 +137,11 @@
 						app.renderer.resize(newWidth, newHeight);
 						// Redraw elements on resize
 						redrawGameElements();
+
+						// Resize puzzle renderer if active
+						if (puzzleRenderer) {
+							puzzleRenderer.resize(newWidth, newHeight);
+						}
 					}
 				}
 			});
@@ -136,6 +151,11 @@
 			const gameContainer = new Container();
 			gameContainer.label = 'gameContainer';
 			app.stage.addChild(gameContainer);
+
+			// Create puzzle container (layered above game elements)
+			const puzzleContainer = new Container();
+			puzzleContainer.label = 'puzzleContainer';
+			app.stage.addChild(puzzleContainer);
 
 			// Create game elements
 			createGameElements();
@@ -525,6 +545,162 @@
 		}
 	}
 
+	// ============================================
+	// Puzzle Renderer Integration
+	// ============================================
+
+	/**
+	 * Initialize the puzzle renderer for a specific puzzle
+	 */
+	export async function initPuzzleRenderer(room: RoomId, puzzleId: string): Promise<void> {
+		if (!app) {
+			console.error('PixiJS app not initialized');
+			return;
+		}
+
+		// Get or create puzzle container
+		let puzzleContainer = app.stage.getChildByLabel('puzzleContainer') as Container;
+		if (!puzzleContainer) {
+			puzzleContainer = new Container();
+			puzzleContainer.label = 'puzzleContainer';
+			app.stage.addChild(puzzleContainer);
+		}
+
+		// Clean up existing renderer
+		if (puzzleRenderer) {
+			puzzleRenderer.destroy();
+			puzzleRenderer = null;
+		}
+
+		// Create new renderer
+		puzzleRenderer = new PuzzleRenderer({
+			container: puzzleContainer,
+			room,
+			puzzleId,
+			width: app.screen.width,
+			height: app.screen.height,
+			onPieceClick: handlePuzzlePieceClick,
+			onPieceHover: handlePuzzlePieceHover
+		});
+
+		// Load assets
+		try {
+			await puzzleRenderer.loadPuzzleAssets(room, puzzleId);
+			console.log(`Puzzle renderer initialized for ${puzzleId}`);
+		} catch (error) {
+			console.error('Failed to load puzzle assets:', error);
+		}
+	}
+
+	/**
+	 * Render the current puzzle state
+	 */
+	export function renderPuzzle(state: PuzzleState): void {
+		if (!puzzleRenderer) {
+			console.warn('Puzzle renderer not initialized');
+			return;
+		}
+
+		puzzleRenderer.renderPuzzle(state);
+	}
+
+	/**
+	 * Animate a specific puzzle piece
+	 */
+	export async function animatePuzzlePiece(pieceId: string, animation: string | AnimationConfig): Promise<void> {
+		if (!puzzleRenderer) return;
+		await puzzleRenderer.animatePiece(pieceId, animation);
+	}
+
+	/**
+	 * Highlight all interactive elements in the puzzle
+	 */
+	export function highlightInteractivePieces(): void {
+		if (!puzzleRenderer) return;
+		puzzleRenderer.highlightInteractive();
+	}
+
+	/**
+	 * Stop highlighting interactive elements
+	 */
+	export function stopHighlightPieces(): void {
+		if (!puzzleRenderer) return;
+		puzzleRenderer.stopHighlight();
+	}
+
+	/**
+	 * Show a hint for a specific puzzle piece
+	 */
+	export function showPuzzleHint(pieceId: string, hintText?: string): void {
+		if (!puzzleRenderer) return;
+		puzzleRenderer.showHint(pieceId, hintText);
+	}
+
+	/**
+	 * Show celebration effect when puzzle is solved
+	 */
+	export function showPuzzleCelebration(): void {
+		if (!puzzleRenderer) return;
+		puzzleRenderer.showCelebration();
+
+		// Also trigger particle effects
+		triggerPuzzleSolve();
+	}
+
+	/**
+	 * Add a custom piece to the puzzle
+	 */
+	export function addPuzzlePiece(piece: PuzzlePiece): void {
+		if (!puzzleRenderer) return;
+		puzzleRenderer.addPiece(piece);
+	}
+
+	/**
+	 * Update a puzzle piece's properties
+	 */
+	export function updatePuzzlePiece(pieceId: string, updates: Partial<PuzzlePiece>): void {
+		if (!puzzleRenderer) return;
+		puzzleRenderer.updatePiece(pieceId, updates);
+	}
+
+	/**
+	 * Remove a puzzle piece
+	 */
+	export function removePuzzlePiece(pieceId: string): void {
+		if (!puzzleRenderer) return;
+		puzzleRenderer.removePiece(pieceId);
+	}
+
+	/**
+	 * Destroy the puzzle renderer
+	 */
+	export function destroyPuzzleRenderer(): void {
+		if (puzzleRenderer) {
+			puzzleRenderer.destroy();
+			puzzleRenderer = null;
+		}
+	}
+
+	// Puzzle event handlers
+	function handlePuzzlePieceClick(pieceId: string, event: FederatedPointerEvent): void {
+		dispatch('puzzle:pieceClick', { pieceId, event });
+	}
+
+	function handlePuzzlePieceHover(pieceId: string, isHovering: boolean): void {
+		dispatch('puzzle:pieceHover', { pieceId, isHovering });
+	}
+
+	// Watch for puzzle state changes
+	$: if (currentPuzzleState && puzzleRenderer) {
+		puzzleRenderer.renderPuzzle(currentPuzzleState);
+	}
+
+	// Watch for puzzle ID changes to initialize renderer
+	$: if (currentPuzzleId && app) {
+		const roomId = currentRoom === 'garden' ? 'garden_conservatory' : currentRoom;
+		initPuzzleRenderer(roomId as RoomId, currentPuzzleId);
+	}
+
 	// Expose methods for triggering effects
 	export function triggerPuzzleSolve(x?: number, y?: number) {
 		if (!particleManager || !app) return;
@@ -571,6 +747,10 @@
 			particleManager.destroy();
 			particleManager = null;
 		}
+		if (puzzleRenderer) {
+			puzzleRenderer.destroy();
+			puzzleRenderer = null;
+		}
 		if (app) {
 			app.destroy(true, { children: true, texture: true });
 			app = null;
@@ -580,7 +760,10 @@
 
 <div
 	bind:this={canvasContainer}
-	class="w-full h-full touch-none"
+	class="w-full h-full touch-none puzzle-container"
+	class:room-attic={currentRoom === 'attic'}
+	class:room-clock-tower={currentRoom === 'clock_tower'}
+	class:room-garden={currentRoom === 'garden'}
 	style="min-height: 300px;"
 	on:touchstart|passive={handleTouchStart}
 	on:touchmove|passive={handleTouchMove}

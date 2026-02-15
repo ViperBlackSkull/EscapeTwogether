@@ -1,7 +1,7 @@
 /**
  * AI Playtester - Autonomous Game Testing Agent
  *
- * This agent connects to the EscapeTogether game server and performs
+ * This agent connects to the EscapeTwogether game server and performs
  * automated testing of game mechanics, puzzles, and player interactions.
  */
 

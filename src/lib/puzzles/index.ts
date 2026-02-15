@@ -1,9 +1,19 @@
 /**
- * EscapeTogether Puzzles
+ * EscapeTwogether Puzzles
  * All puzzle definitions and utilities for the three rooms
  */
 
 import type { PuzzleDefinition, RoomId } from '$lib/types';
+
+// Re-export PuzzleRenderer and related types
+export { PuzzleRenderer, ANIMATION_PRESETS } from './PuzzleRenderer';
+export type {
+	PuzzlePiece,
+	PuzzleAsset,
+	AnimationConfig,
+	HighlightConfig,
+	PuzzleRendererOptions
+} from './PuzzleRenderer';
 
 // Re-export Room 1 (The Attic) puzzles
 export { room1Puzzles, ROOM1_ID, ROOM1_NAME, ROOM1_DESCRIPTION, ROOM1_COLORS } from './room1';

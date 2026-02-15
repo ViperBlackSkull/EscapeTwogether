@@ -12,7 +12,7 @@ test.describe('Landing Page', () => {
     await expect(page.locator('h1, h2').first()).toBeVisible();
 
     // Check that the page has loaded
-    await expect(page).toHaveTitle(/EscapeTogether/i);
+    await expect(page).toHaveTitle(/EscapeTwogether/i);
   });
 
   test('should have a way to create a new room', async ({ page }) => {

@@ -21,7 +21,7 @@
 	let players: Player[] = [];
 	let showPartnerNotification = false;
 	let copySuccess = false;
-	let notificationTimeout: ReturnType<typeof setTimeout>;
+	let notificationTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	onMount(() => {
 		if (browser) {
@@ -71,7 +71,7 @@
 </script>
 
 <svelte:head>
-	<title>Lobby - {roomCode} - EscapeTogether</title>
+	<title>Lobby - {roomCode} - EscapeTwogether</title>
 	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </svelte:head>
 

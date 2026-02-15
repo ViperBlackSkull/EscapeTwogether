@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { browser } from '$app/environment';
-import { writable, type Writable } from 'svelte/store';
+import { writable, get, type Writable } from 'svelte/store';
 import {
 	gameState,
 	handleStateUpdate,
@@ -14,6 +14,7 @@ export interface Player {
 	id: string;
 	name: string;
 	isHost: boolean;
+	connected?: boolean;
 }
 
 export interface Room {
@@ -51,20 +52,12 @@ let pendingRejoin: { roomCode: string; wasHost: boolean } | null = null;
 let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 10;
 
-function getSocket(): Socket {
-	if (!socket && browser) {
-		socket = io('http://localhost:3001', {
-			autoConnect: false,
-			transports: ['websocket', 'polling'],
-			reconnection: true,
-			reconnectionAttempts: MAX_RECONNECT_ATTEMPTS,
-			reconnectionDelay: 1000,
-			reconnectionDelayMax: 5000,
-			randomizationFactor: 0.5
-		});
+// Initialize socket event handlers
+function initializeSocketHandlers(): void {
+	if (!socket) return;
 
-		// Connection events
-		socket.on('connect', () => {
+	// Connection events
+	socket.on('connect', () => {
 			console.log('Connected to server');
 			isConnected.set(true);
 			connectionStatus.set('connected');
@@ -189,14 +182,59 @@ function getSocket(): Socket {
 			handleFullStateUpdate(data);
 		});
 
-		socket.on('game:start', (data: GameState) => {
+		socket.on('game:start', (data) => {
 			console.log('Game started:', data);
-			handleFullStateUpdate(data);
+			// Handle game start - data might be full GameState or a simpler object
+			if (data.players) {
+				players.set(data.players);
+			}
 			setGamePhase('playing');
 		});
-	}
 
-	return socket!;
+		// Game action events from other players
+		socket.on('game:action', (data: { playerId: string; playerName: string; action: string; payload: any; timestamp: number }) => {
+			console.log('Received game action:', data);
+			lastGameAction.set(data);
+		});
+
+		// Game sync events from other players
+		socket.on('game:sync', (data: { playerId: string; state: any; timestamp: number }) => {
+			console.log('Received game sync:', data);
+			lastGameSync.set(data);
+			// Also update the game state store
+			if (data.state) {
+				handleStateUpdate(data.state);
+			}
+		});
+}
+
+// Get the socket instance (creates it if needed)
+export function getSocket(): Socket {
+	if (!socket && browser) {
+		// Use current hostname but port 3001 for backend
+		// This allows the game to work on local network
+		const protocol = window.location.protocol; // http: or https:
+		const hostname = window.location.hostname;
+		const socketUrl = `${protocol}//${hostname}:3001`;
+
+		console.log('Connecting to backend at:', socketUrl);
+		socket = io(socketUrl, {
+			autoConnect: false,
+			transports: ['websocket', 'polling'],
+			reconnection: true,
+			reconnectionAttempts: MAX_RECONNECT_ATTEMPTS,
+			reconnectionDelay: 1000,
+			reconnectionDelayMax: 5000,
+			randomizationFactor: 0.5
+		});
+		initializeSocketHandlers();
+	}
+	return socket as Socket;
+}
+
+// Get current player's socket ID
+export function getCurrentPlayerId(): string | null {
+	return socket?.id ?? null;
 }
 
 async function attemptRejoin(): Promise<void> {
@@ -344,6 +382,65 @@ export function resumeGame(): Promise<{ success: boolean; error?: string; paused
 	});
 }
 
-import { get } from 'svelte/store';
+// Game action callbacks - stores for reactive updates
+export const lastGameAction: Writable<{ playerId: string; playerName: string; action: string; payload: any; timestamp: number } | null> = writable(null);
+export const lastGameSync: Writable<{ playerId: string; state: any; timestamp: number } | null> = writable(null);
+
+// Emit a game action to other players
+export function emitGameAction(action: string, payload: any): void {
+	const sock = getSocket();
+	const room = get(currentRoom);
+
+	if (!sock.connected || !room) {
+		console.error('Cannot emit game action: not connected or not in a room');
+		return;
+	}
+
+	sock.emit('game:action', { roomCode: room.code, action, payload });
+}
+
+// Emit a game state sync to other players
+export function emitGameSync(state: any): void {
+	const sock = getSocket();
+	const room = get(currentRoom);
+
+	if (!sock.connected || !room) {
+		console.error('Cannot emit game sync: not connected or not in a room');
+		return;
+	}
+
+	sock.emit('game:sync', { roomCode: room.code, state });
+}
+
+// Start the game (host only)
+export function startGame(): Promise<{ success: boolean; error?: string }> {
+	return new Promise((resolve) => {
+		const sock = getSocket();
+		const room = get(currentRoom);
+
+		if (!sock.connected || !room) {
+			resolve({ success: false, error: 'Not connected or not in a room' });
+			return;
+		}
+
+		sock.emit('start-game', { roomCode: room.code }, (response: { success: boolean; error?: string }) => {
+			resolve(response);
+		});
+	});
+}
+
+// Subscribe to game actions from other players
+export function onGameAction(callback: (data: { playerId: string; playerName: string; action: string; payload: any; timestamp: number }) => void): () => void {
+	const sock = getSocket();
+	sock.on('game:action', callback);
+	return () => sock.off('game:action', callback);
+}
+
+// Subscribe to game sync from other players
+export function onGameSync(callback: (data: { playerId: string; state: any; timestamp: number }) => void): () => void {
+	const sock = getSocket();
+	sock.on('game:sync', callback);
+	return () => sock.off('game:sync', callback);
+}
 
 export { socket };

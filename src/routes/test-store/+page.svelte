@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Test Game State Store - EscapeTogether</title>
+	<title>Test Game State Store - EscapeTwogether</title>
 </svelte:head>
 
 <main class="min-h-screen bg-slate-900 py-8 px-4">

@@ -1,4 +1,4 @@
-import { Page, BrowserContext } from '@playwright/test';
+import type { Page, BrowserContext } from '@playwright/test';
 
 /**
  * Test utilities for simulating multiplayer connections
@@ -12,61 +12,143 @@ export interface TestPlayer {
 }
 
 /**
- * Create a mock socket connection for testing
+ * Create a mock socket.io-client module for testing
+ * This mocks the socket.io-client at the module level so the app uses it
  */
 export async function createMockSocket(page: Page) {
   await page.addInitScript(() => {
-    // Mock Socket.IO client
-    (window as any).__mockSocket = {
-      id: `player-${Math.random().toString(36).substr(2, 9)}`,
-      connected: true,
-      handlers: new Map<string, Function[]>(),
+    // Create a mock socket instance
+    const createMockSocketInstance = () => {
+      const handlers = new Map<string, Function[]>();
+      let _connected = false;
+      let _id = `player-${Math.random().toString(36).substr(2, 9)}`;
+      let _roomCode: string | null = null;
 
-      on(event: string, callback: Function) {
-        if (!this.handlers.has(event)) {
-          this.handlers.set(event, []);
-        }
-        this.handlers.get(event)!.push(callback);
-      },
+      const socket = {
+        id: _id,
+        connected: _connected,
 
-      emit(event: string, data: any, callback?: Function) {
-        // Simulate server responses
-        if (event === 'create-room' && callback) {
-          const roomCode = `TEST`;
-          callback({
-            success: true,
-            room: {
-              code: roomCode,
-              players: [{ id: this.id, name: data.playerName, isHost: true }],
-              hostId: this.id
-            }
-          });
-          this.roomCode = roomCode;
-        }
+        connect() {
+          _connected = true;
+          socket.connected = true;
+          // Trigger connect handlers
+          const cbs = handlers.get('connect') || [];
+          cbs.forEach(cb => cb());
+        },
 
-        if (event === 'join-room' && callback) {
-          if (data.roomCode === 'TEST') {
-            callback({
+        disconnect() {
+          _connected = false;
+          socket.connected = false;
+          const cbs = handlers.get('disconnect') || [];
+          cbs.forEach(cb => cb('client disconnect'));
+        },
+
+        on(event: string, callback: Function) {
+          if (!handlers.has(event)) {
+            handlers.set(event, []);
+          }
+          handlers.get(event)!.push(callback);
+          return socket;
+        },
+
+        off(event: string, callback?: Function) {
+          if (!callback) {
+            handlers.delete(event);
+          } else {
+            const cbs = handlers.get(event) || [];
+            const idx = cbs.indexOf(callback);
+            if (idx > -1) cbs.splice(idx, 1);
+          }
+          return socket;
+        },
+
+        emit(event: string, data: any, callback?: Function) {
+          // Simulate server responses
+          if (event === 'create-room') {
+            _roomCode = 'TEST';
+            const response = {
               success: true,
               room: {
-                code: data.roomCode,
-                players: [
-                  { id: 'host-id', name: 'Host', isHost: true },
-                  { id: this.id, name: data.playerName, isHost: false }
-                ],
-                hostId: 'host-id'
+                code: _roomCode,
+                players: [{ id: _id, name: data.playerName, isHost: true }],
+                hostId: _id
               }
-            });
-          } else {
-            callback({ success: false, error: 'Room not found' });
+            };
+            // Update socket id to match the host
+            _id = socket.id;
+            if (callback) callback(response);
+            // Trigger player-joined event for self
+            setTimeout(() => {
+              const cbs = handlers.get('player-joined') || [];
+              cbs.forEach(cb => cb({ player: response.room.players[0] }));
+            }, 50);
+          }
+
+          if (event === 'join-room') {
+            if (data.roomCode === 'TEST') {
+              const response = {
+                success: true,
+                room: {
+                  code: data.roomCode,
+                  players: [
+                    { id: 'host-id', name: 'Host', isHost: true },
+                    { id: _id, name: data.playerName, isHost: false }
+                  ],
+                  hostId: 'host-id'
+                }
+              };
+              if (callback) callback(response);
+              // Trigger player-joined event
+              setTimeout(() => {
+                const cbs = handlers.get('player-joined') || [];
+                cbs.forEach(cb => cb({ player: response.room.players[1] }));
+              }, 50);
+            } else {
+              if (callback) callback({ success: false, error: 'Room not found' });
+            }
+          }
+
+          // Handle game events
+          if (event === 'game:action' || event === 'game:sync' || event === 'start-game') {
+            // Just acknowledge, don't broadcast in single-browser test
+            if (callback) callback({ success: true });
+          }
+
+          if (event === 'send-message') {
+            // Simulate message echo
+            setTimeout(() => {
+              const cbs = handlers.get('receive-message') || [];
+              cbs.forEach(cb => cb({
+                id: `msg-${Date.now()}`,
+                senderId: _id,
+                senderName: data.senderName || 'Player',
+                message: data.message,
+                timestamp: new Date(),
+                roomCode: data.roomCode
+              }));
+            }, 50);
+          }
+        },
+
+        io: {
+          on(event: string, callback: Function) {
+            // Mock reconnection events
+            return socket;
           }
         }
-      },
+      };
 
-      disconnect() {
-        this.connected = false;
-      }
+      return socket;
     };
+
+    // Mock the socket.io-client module
+    (window as any).__mockSocketIo = () => {
+      const instance = createMockSocketInstance();
+      return instance;
+    };
+
+    // Store reference for test access
+    (window as any).__testSocket = null;
   });
 }
 

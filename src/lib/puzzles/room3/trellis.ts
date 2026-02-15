@@ -157,7 +157,7 @@ export function createTrellisState(): TrellisState {
 
 // Validate solution
 function validateTrellis(state: PuzzleState): boolean {
-	const data = state.data as TrellisState['data'];
+	const data = state.data as unknown as TrellisState['data'];
 	return data.successfulVines >= data.vinesToWin;
 }
 

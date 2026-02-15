@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 120" fill="none">
+  <defs>
+    <linearGradient id="candleBody" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F4E4D4"/>
+      <stop offset="50%" stop-color="#FFF8F0"/>
+      <stop offset="100%" stop-color="#E8D4C4"/>
+    </linearGradient>
+
+    <linearGradient id="candleGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="50%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#8B7355"/>
+    </linearGradient>
+
+    <radialGradient id="flameGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFB74D" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#D4A574" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#D4A574" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="flameCore" cx="50%" cy="70%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="30%" stop-color="#FFE4B5"/>
+      <stop offset="60%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#D4A574" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="candleGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="flameBlur">
+      <feGaussianBlur stdDeviation="1"/>
+    </filter>
+  </defs>
+
+  <!-- Ambient glow around flame -->
+  <ellipse cx="30" cy="35" rx="25" ry="35" fill="url(#flameGlow)">
+    <animate attributeName="rx" values="25;28;25" dur="0.5s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="35;38;35" dur="0.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;0.8;0.6" dur="0.5s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Outer glow -->
+  <ellipse cx="30" cy="35" rx="35" ry="45" fill="url(#flameGlow)" opacity="0.3">
+    <animate attributeName="rx" values="35;40;35" dur="1s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="45;50;45" dur="1s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Candle holder base -->
+  <ellipse cx="30" cy="110" rx="20" ry="5" fill="url(#candleGold)"/>
+  <rect x="15" y="100" width="30" height="10" fill="url(#candleGold)"/>
+  <ellipse cx="30" cy="100" rx="15" ry="4" fill="#E0B585"/>
+
+  <!-- Decorative holder ring -->
+  <ellipse cx="30" cy="102" rx="17" ry="3" stroke="url(#candleGold)" stroke-width="1" fill="none" opacity="0.6"/>
+
+  <!-- Candle body -->
+  <rect x="20" y="50" width="20" height="50" rx="2" fill="url(#candleBody)"/>
+
+  <!-- Candle top (melted wax effect) -->
+  <ellipse cx="30" cy="50" rx="10" ry="3" fill="#FFF8F0"/>
+
+  <!-- Melted wax drips -->
+  <path d="M20 55 Q18 70 22 85 Q20 90 22 95" stroke="#E8D4C4" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M40 60 Q42 75 38 88 Q40 93 38 98" stroke="#E8D4C4" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+  <!-- Wick -->
+  <line x1="30" y1="50" x2="30" y2="42" stroke="#3a302b" stroke-width="1.5"/>
+
+  <!-- Flame outer -->
+  <path d="M30 15 Q22 25 24 40 Q27 50 30 48 Q33 50 36 40 Q38 25 30 15" fill="#FFB74D" filter="url(#flameBlur)">
+    <animate attributeName="d"
+             values="M30 15 Q22 25 24 40 Q27 50 30 48 Q33 50 36 40 Q38 25 30 15;
+                     M30 14 Q21 24 23 38 Q26 48 30 47 Q34 48 37 38 Q39 24 30 14;
+                     M30 16 Q23 26 25 42 Q28 52 30 49 Q32 52 35 42 Q37 26 30 16;
+                     M30 15 Q22 25 24 40 Q27 50 30 48 Q33 50 36 40 Q38 25 30 15"
+             dur="0.3s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- Flame middle -->
+  <path d="M30 20 Q25 28 26 38 Q28 44 30 43 Q32 44 34 38 Q35 28 30 20" fill="#FFC970">
+    <animate attributeName="d"
+             values="M30 20 Q25 28 26 38 Q28 44 30 43 Q32 44 34 38 Q35 28 30 20;
+                     M30 19 Q24 27 25 36 Q27 42 30 41 Q33 42 35 36 Q36 27 30 19;
+                     M30 21 Q26 29 27 40 Q29 46 30 45 Q31 46 33 40 Q34 29 30 21;
+                     M30 20 Q25 28 26 38 Q28 44 30 43 Q32 44 34 38 Q35 28 30 20"
+             dur="0.25s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- Flame core (brightest part) -->
+  <ellipse cx="30" cy="35" rx="4" ry="8" fill="url(#flameCore)">
+    <animate attributeName="ry" values="8;10;8" dur="0.2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.9;1;0.9" dur="0.2s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Sparkle particles -->
+  <g opacity="0.7">
+    <circle cx="25" cy="20" r="1" fill="#FFB74D">
+      <animate attributeName="cy" values="20;10;5" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.7;0.3;0" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="35" cy="25" r="0.8" fill="#FFB74D">
+      <animate attributeName="cy" values="25;12;5" dur="1.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.2;0" dur="1.8s" repeatCount="indefinite"/>
+      <animate attributeName="cx" values="35;40;45" dur="1.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="30" cy="18" r="0.6" fill="#FFFFFF">
+      <animate attributeName="cy" values="18;8;2" dur="1.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;0.4;0" dur="1.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

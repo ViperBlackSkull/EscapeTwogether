@@ -149,7 +149,7 @@ export function createInitialState(): TornPhotographsState {
 
 // Validate solution - all pieces must be in correct frames
 export function validateSolution(state: PuzzleState): boolean {
-	const puzzleState = state.data as TornPhotographsState;
+	const puzzleState = state.data as unknown as TornPhotographsState;
 	if (!puzzleState) return false;
 
 	// Check if all pieces are placed in correct frames

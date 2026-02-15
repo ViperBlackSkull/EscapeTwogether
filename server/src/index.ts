@@ -232,6 +232,105 @@ io.on('connection', (socket: PlayerSocket) => {
     }
   });
 
+  // Handle game action event - broadcast game actions to other player
+  socket.on('game:action', (data: { roomCode: string; action: string; payload: any }) => {
+    try {
+      const { roomCode, action, payload } = data;
+
+      if (!socket.playerId || !socket.playerName) {
+        return;
+      }
+
+      // Verify player is in this room
+      const room = roomManager.getRoom(roomCode);
+      if (!room) {
+        return;
+      }
+
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        return;
+      }
+
+      console.log(`Game action in room ${roomCode} from ${socket.playerName}: ${action}`);
+
+      // Broadcast to other players in the room (not sender)
+      socket.to(roomCode).emit('game:action', {
+        playerId: socket.playerId,
+        playerName: socket.playerName,
+        action,
+        payload,
+        timestamp: Date.now()
+      });
+    } catch (error) {
+      console.error('Error handling game action:', error);
+    }
+  });
+
+  // Handle game state sync - broadcast full state updates
+  socket.on('game:sync', (data: { roomCode: string; state: any }) => {
+    try {
+      const { roomCode, state } = data;
+
+      if (!socket.playerId) {
+        return;
+      }
+
+      const room = roomManager.getRoom(roomCode);
+      if (!room) {
+        return;
+      }
+
+      // Broadcast to other players in the room (not sender)
+      socket.to(roomCode).emit('game:sync', {
+        playerId: socket.playerId,
+        state,
+        timestamp: Date.now()
+      });
+    } catch (error) {
+      console.error('Error handling game sync:', error);
+    }
+  });
+
+  // Handle start game event
+  socket.on('start-game', (data: { roomCode: string }, callback) => {
+    try {
+      const { roomCode } = data;
+      const room = roomManager.getRoom(roomCode);
+
+      if (!room) {
+        callback?.({ success: false, error: 'Room not found' });
+        return;
+      }
+
+      // Only host can start the game
+      if (room.hostId !== socket.playerId) {
+        callback?.({ success: false, error: 'Only the host can start the game' });
+        return;
+      }
+
+      // Check if there are 2 players
+      if (room.players.length < 2) {
+        callback?.({ success: false, error: 'Need 2 players to start' });
+        return;
+      }
+
+      console.log(`Game starting in room ${roomCode}`);
+
+      // Broadcast game start to all players in room
+      io.to(roomCode).emit('game:start', {
+        roomCode,
+        players: room.players,
+        timestamp: Date.now()
+      });
+
+      callback?.({ success: true });
+    } catch (error) {
+      console.error('Error starting game:', error);
+      callback?.({ success: false, error: 'Failed to start game' });
+    }
+  });
+
   // Handle send-message event (chat)
   socket.on('send-message', (data: { message: string; roomCode: string }) => {
     try {

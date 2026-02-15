@@ -6,7 +6,7 @@
  * to align all marks simultaneously for 2 seconds.
  */
 
-import type { PuzzleState, PuzzleHint, PlayerRole } from '../types';
+import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
 
 export const GEAR_ALIGNMENT_PUZZLE_ID = 'room2_gear_alignment';
 
@@ -279,6 +279,6 @@ export const gearAlignmentPuzzleDefinition = {
 	createInitialState: createInitialGearAlignmentState,
 	validateSolution: (state: PuzzleState) => {
 		if (state.puzzleId !== GEAR_ALIGNMENT_PUZZLE_ID) return false;
-		return isGearAlignmentSolved(state.data as GearAlignmentPuzzleData);
+		return isGearAlignmentSolved(state.data as unknown as GearAlignmentPuzzleData);
 	},
 };

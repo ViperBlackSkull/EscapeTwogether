@@ -210,7 +210,7 @@ export function createLightSpectrumState(): LightSpectrumState {
 
 // Validate solution
 function validateLightSpectrum(state: PuzzleState): boolean {
-	const data = state.data as LightSpectrumState['data'];
+	const data = state.data as unknown as LightSpectrumState['data'];
 	return data.completedFlowers.length === 5;
 }
 

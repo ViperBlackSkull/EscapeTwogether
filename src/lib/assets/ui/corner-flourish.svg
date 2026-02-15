@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="50%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#8B7355"/>
+    </linearGradient>
+
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F4D0C3"/>
+      <stop offset="100%" stop-color="#C9A9A6"/>
+    </linearGradient>
+
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Base corner flourish -->
+    <symbol id="baseCorner" viewBox="0 0 50 50">
+      <!-- Main curved line -->
+      <path d="M5 45 Q5 25 15 15 Q25 5 45 5"
+            stroke="url(#goldGrad)" stroke-width="2.5" fill="none" filter="url(#glow)">
+        <animate attributeName="stroke-opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- Inner curve -->
+      <path d="M10 45 Q10 30 18 22 Q26 14 40 10"
+            stroke="url(#goldGrad)" stroke-width="1" fill="none" opacity="0.4"/>
+
+      <!-- Decorative scroll at corner -->
+      <path d="M15 15 Q10 20 15 25 Q20 20 15 15" fill="url(#roseGrad)" opacity="0.8">
+        <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.5s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- Small decorative circles -->
+      <circle cx="8" cy="40" r="2" fill="url(#goldGrad)" opacity="0.7">
+        <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="40" cy="8" r="2" fill="url(#goldGrad)" opacity="0.7">
+        <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+      </circle>
+
+      <!-- Leaf-like flourish -->
+      <path d="M12 30 Q8 28 6 32 Q10 34 12 30" fill="url(#roseGrad)" opacity="0.6"/>
+      <path d="M30 12 Q28 8 32 6 Q34 10 30 12" fill="url(#roseGrad)" opacity="0.6"/>
+
+      <!-- Terminal scroll -->
+      <path d="M3 45 Q0 42 3 39 Q6 42 3 45" fill="url(#goldGrad)"/>
+      <path d="M45 3 Q42 0 39 3 Q42 6 45 3" fill="url(#goldGrad)"/>
+
+      <!-- Small dots along curve -->
+      <circle cx="10" cy="25" r="1" fill="url(#goldGrad)" opacity="0.5"/>
+      <circle cx="25" cy="10" r="1" fill="url(#goldGrad)" opacity="0.5"/>
+    </symbol>
+  </defs>
+
+  <style>
+    .corner-top-left { transform-origin: center; }
+    .corner-top-right { transform: scaleX(-1); transform-origin: center; }
+    .corner-bottom-left { transform: scaleY(-1); transform-origin: center; }
+    .corner-bottom-right { transform: scale(-1, -1); transform-origin: center; }
+  </style>
+
+  <!-- Top-left corner (default) -->
+  <g class="corner-top-left">
+    <use href="#baseCorner" x="0" y="0" width="50" height="50"/>
+  </g>
+
+  <!-- Top-right corner -->
+  <g class="corner-top-right">
+    <use href="#baseCorner" x="50" y="0" width="50" height="50"/>
+  </g>
+
+  <!-- Bottom-left corner -->
+  <g class="corner-bottom-left">
+    <use href="#baseCorner" x="0" y="50" width="50" height="50"/>
+  </g>
+
+  <!-- Bottom-right corner -->
+  <g class="corner-bottom-right">
+    <use href="#baseCorner" x="50" y="50" width="50" height="50"/>
+  </g>
+</svg>

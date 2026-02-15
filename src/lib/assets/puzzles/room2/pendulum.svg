@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 200" width="80" height="200">
+  <defs>
+    <!-- Gold brass gradient for pendulum rod -->
+    <linearGradient id="pendulumRodGradient" x1="0%" y1="0%" x2="100%" y2="0">
+      <stop offset="0%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFB74D;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#D4A574;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B6914;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Ornate bob gradient -->
+    <radialGradient id="pendulumBobGradient" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#FFB74D;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#D4A574;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B6914;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Decorative etching gradient -->
+    <linearGradient id="etchGradient" x1="0%" y1="0%" x2="100%" y2="0">
+      <stop offset="0%" style="stop-color:#8B6914;stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#8B6914;stop-opacity:0.6" />
+    </linearGradient>
+
+    <!-- Glow filter for active state -->
+    <filter id="pendulumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Shadow filter -->
+    <filter id="pendulumShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#2C1810" flood-opacity="0.4"/>
+    </filter>
+
+    <!-- Inner highlight -->
+    <radialGradient id="bobHighlight" cx="35%" cy="25%" r="50%">
+      <stop offset="0%" style="stop-color:#FFF8DC;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#FFB74D;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Victorian pattern -->
+    <pattern id="victorianPattern" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="5" r="1" fill="#8B6914" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Mounting bracket at top -->
+  <g filter="url(#pendulumShadow)">
+    <rect x="25" y="5" width="30" height="15" rx="3" fill="url(#pendulumRodGradient)" stroke="#8B6914" stroke-width="1"/>
+    <circle cx="40" cy="12" r="4" fill="#8B6914"/>
+    <circle cx="40" cy="12" r="2" fill="#FFD700"/>
+
+    <!-- Decorative finials -->
+    <path d="M25 10 L20 12 L25 14" fill="url(#pendulumRodGradient)" stroke="#8B6914" stroke-width="0.5"/>
+    <path d="M55 10 L60 12 L55 14" fill="url(#pendulumRodGradient)" stroke="#8B6914" stroke-width="0.5"/>
+  </g>
+
+  <!-- Pendulum rod -->
+  <g filter="url(#pendulumShadow)">
+    <!-- Main rod -->
+    <rect x="36" y="20" width="8" height="100" fill="url(#pendulumRodGradient)" rx="2"/>
+
+    <!-- Rod decorative elements -->
+    <rect x="33" y="40" width="14" height="6" rx="1" fill="url(#pendulumRodGradient)" stroke="#8B6914" stroke-width="0.5"/>
+    <rect x="33" y="70" width="14" height="6" rx="1" fill="url(#pendulumRodGradient)" stroke="#8B6914" stroke-width="0.5"/>
+
+    <!-- Etched lines on rod -->
+    <line x1="37" y1="25" x2="37" y2="115" stroke="#8B6914" stroke-width="0.5" opacity="0.4"/>
+    <line x1="43" y1="25" x2="43" y2="115" stroke="#FFD700" stroke-width="0.5" opacity="0.3"/>
+  </g>
+
+  <!-- Ornate connector piece -->
+  <g>
+    <ellipse cx="40" cy="120" rx="12" ry="6" fill="url(#pendulumRodGradient)" stroke="#8B6914" stroke-width="1"/>
+    <ellipse cx="40" cy="120" rx="6" ry="3" fill="#8B6914"/>
+    <ellipse cx="40" cy="120" rx="3" ry="1.5" fill="#FFD700"/>
+  </g>
+
+  <!-- Pendulum bob (weight) -->
+  <g filter="url(#pendulumShadow)">
+    <!-- Main bob shape - lens/disc style -->
+    <ellipse cx="40" cy="165" rx="28" ry="32" fill="url(#pendulumBobGradient)" stroke="#8B6914" stroke-width="2"/>
+
+    <!-- Bob inner ring -->
+    <ellipse cx="40" cy="165" rx="22" ry="26" fill="none" stroke="#8B6914" stroke-width="1.5" opacity="0.6"/>
+
+    <!-- Decorative outer ring -->
+    <ellipse cx="40" cy="165" rx="25" ry="29" fill="none" stroke="url(#etchGradient)" stroke-width="1"/>
+
+    <!-- Victorian ornate center -->
+    <ellipse cx="40" cy="165" rx="15" ry="18" fill="url(#victorianPattern)"/>
+
+    <!-- Center medallion -->
+    <circle cx="40" cy="165" r="8" fill="url(#pendulumBobGradient)" stroke="#8B6914" stroke-width="1"/>
+
+    <!-- Sunburst pattern in center -->
+    <g stroke="#FFD700" stroke-width="0.8" opacity="0.6">
+      <line x1="40" y1="157" x2="40" y2="160"/>
+      <line x1="40" y1="170" x2="40" y2="173"/>
+      <line x1="32" y1="165" x2="35" y2="165"/>
+      <line x1="45" y1="165" x2="48" y2="165"/>
+      <line x1="34" y1="159" x2="36" y2="161"/>
+      <line x1="44" y1="169" x2="46" y2="171"/>
+      <line x1="34" y1="171" x2="36" y2="169"/>
+      <line x1="44" y1="161" x2="46" y2="159"/>
+    </g>
+
+    <!-- Highlight on bob -->
+    <ellipse cx="32" cy="155" rx="10" ry="12" fill="url(#bobHighlight)"/>
+
+    <!-- Bottom decorative point -->
+    <path d="M35 195 L40 200 L45 195" fill="url(#pendulumRodGradient)" stroke="#8B6914" stroke-width="1"/>
+  </g>
+
+  <!-- Rating adjustment screw -->
+  <g>
+    <rect x="37" y="118" width="6" height="8" rx="1" fill="url(#pendulumRodGradient)" stroke="#8B6914" stroke-width="0.5"/>
+    <line x1="38" y1="120" x2="42" y2="120" stroke="#8B6914" stroke-width="0.5"/>
+    <line x1="38" y1="122" x2="42" y2="122" stroke="#8B6914" stroke-width="0.5"/>
+    <line x1="38" y1="124" x2="42" y2="124" stroke="#8B6914" stroke-width="0.5"/>
+  </g>
+
+  <!-- Active glow effect (hidden by default) -->
+  <g class="pendulum-glow" opacity="0" filter="url(#pendulumGlow)">
+    <ellipse cx="40" cy="165" rx="35" ry="40" fill="#FFB74D" opacity="0.4"/>
+  </g>
+
+  <!-- Motion blur suggestion lines (subtle) -->
+  <g opacity="0.15" stroke="#FFD700" stroke-width="0.5">
+    <path d="M10 140 Q15 165 10 190" fill="none"/>
+    <path d="M70 140 Q65 165 70 190" fill="none"/>
+  </g>
+</svg>

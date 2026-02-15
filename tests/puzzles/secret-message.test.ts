@@ -181,7 +181,7 @@ describe('Secret Message Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.SECRET_MESSAGE,
 				solved: false,
 				attempts: 0,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(false);
@@ -195,7 +195,7 @@ describe('Secret Message Puzzle', () => {
 				puzzleId: ROOM1_PUZZLE_IDS.SECRET_MESSAGE,
 				solved: true,
 				attempts: 1,
-				data: puzzleState
+				data: puzzleState as unknown as Record<string, unknown>
 			};
 
 			expect(validateSolution(state)).toBe(true);

@@ -206,14 +206,14 @@ describe('Windup Key Puzzle', () => {
 			const state = createInitialWindupKeyState();
 			const viewData = getWindupKeyViewData('explorer', state);
 
-			expect(viewData.myKey.position).toBe('left');
+			expect((viewData.myKey as { position: string }).position).toBe('left');
 		});
 
 		it('should show right key to analyst', () => {
 			const state = createInitialWindupKeyState();
 			const viewData = getWindupKeyViewData('analyst', state);
 
-			expect(viewData.myKey.position).toBe('right');
+			expect((viewData.myKey as { position: string }).position).toBe('right');
 		});
 
 		it('should include sync progress', () => {
@@ -251,7 +251,7 @@ describe('Windup Key Puzzle', () => {
 				puzzleId: WINDUP_KEY_PUZZLE_ID,
 				solved: false,
 				attempts: 0,
-				data: solvedState
+				data: solvedState as unknown as Record<string, unknown>
 			};
 
 			expect(windupKeyPuzzleDefinition.validateSolution(state)).toBe(true);

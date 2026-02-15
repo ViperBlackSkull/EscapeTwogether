@@ -2,7 +2,7 @@
 	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
 	import { browser } from '$app/environment';
 	import { Container } from 'pixi.js';
-	import { ParticleManager, PARTICLE_PRESETS, type ParticleConfig } from '$lib/effects/ParticleSystem';
+	import { ParticleManager, PARTICLE_PRESETS, type ParticleConfig } from '$lib/effects/pixiParticles';
 
 	export let width: number = 800;
 	export let height: number = 600;

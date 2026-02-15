@@ -1,5 +1,5 @@
 /**
- * Performance Utilities for EscapeTogether
+ * Performance Utilities for EscapeTwogether
  *
  * Provides lazy loading, frame rate monitoring, device capability detection,
  * debounce/throttle functions, and memory-efficient utilities
@@ -381,13 +381,13 @@ export class AdaptiveRenderer {
 	}
 
 	private maybeAdjustFPS(): void {
-		const now = performance.now();
+		const now = globalThis.performance.now();
 		if (now - this.lastAdjustment < this.adjustmentInterval) return;
 
 		this.lastAdjustment = now;
-		const performance = this.monitor.getPerformanceLevel();
+		const perfLevel = this.monitor.getPerformanceLevel();
 
-		switch (performance) {
+		switch (perfLevel) {
 			case 'poor':
 				if (this.currentFPS > 20) {
 					this.currentFPS -= 5;

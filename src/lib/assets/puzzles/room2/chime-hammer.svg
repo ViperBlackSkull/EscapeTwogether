@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100" width="160" height="100">
+  <defs>
+    <!-- Main brass gradient -->
+    <linearGradient id="hammerBrassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#FFB74D;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4A574;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B6914;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Hammer head gradient -->
+    <radialGradient id="hammerHeadGradient" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#D4A574;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B6914;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Metal highlight -->
+    <linearGradient id="hammerHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF8DC;stop-opacity:0.9" />
+      <stop offset="30%" style="stop-color:#FFD700;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#FFB74D;stop-opacity:0" />
+    </linearGradient>
+
+    <!-- Glow filter -->
+    <filter id="hammerGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Shadow filter -->
+    <filter id="hammerShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="2" flood-color="#2C1810" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Leather/felt gradient -->
+    <linearGradient id="feltGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B0000;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A52A2A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5C0000;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Etched pattern -->
+    <pattern id="hammerEtchPattern" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M0,4 L8,4" stroke="#8B6914" stroke-width="0.5" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Mounting bracket -->
+  <g filter="url(#hammerShadow)">
+    <rect x="5" y="35" width="25" height="30" rx="3" fill="url(#hammerBrassGradient)" stroke="#8B6914" stroke-width="1"/>
+
+    <!-- Bracket slots -->
+    <rect x="10" y="40" width="15" height="3" rx="1" fill="#8B6914"/>
+    <rect x="10" y="57" width="15" height="3" rx="1" fill="#8B6914"/>
+
+    <!-- Mounting screws -->
+    <circle cx="15" cy="50" r="4" fill="url(#hammerBrassGradient)" stroke="#8B6914" stroke-width="0.5"/>
+    <circle cx="15" cy="50" r="2" fill="#8B6914"/>
+    <circle cx="15" cy="50" r="0.8" fill="#FFD700"/>
+
+    <circle cx="25" cy="50" r="4" fill="url(#hammerBrassGradient)" stroke="#8B6914" stroke-width="0.5"/>
+    <circle cx="25" cy="50" r="2" fill="#8B6914"/>
+    <circle cx="25" cy="50" r="0.8" fill="#FFD700"/>
+  </g>
+
+  <!-- Pivot mechanism -->
+  <g filter="url(#hammerShadow)">
+    <circle cx="45" cy="50" r="12" fill="url(#hammerBrassGradient)" stroke="#8B6914" stroke-width="1.5"/>
+    <circle cx="45" cy="50" r="8" fill="url(#hammerHeadGradient)"/>
+    <circle cx="45" cy="50" r="4" fill="#8B6914"/>
+    <circle cx="45" cy="50" r="2" fill="#FFD700"/>
+
+    <!-- Pivot detail ring -->
+    <circle cx="45" cy="50" r="10" fill="none" stroke="#FFD700" stroke-width="0.5" opacity="0.5"/>
+  </g>
+
+  <!-- Hammer arm -->
+  <g filter="url(#hammerShadow)">
+    <!-- Main arm body -->
+    <rect x="55" y="43" width="70" height="14" rx="2" fill="url(#hammerBrassGradient)" stroke="#8B6914" stroke-width="1"/>
+
+    <!-- Arm decorative details -->
+    <rect x="55" y="43" width="70" height="14" rx="2" fill="url(#hammerEtchPattern)"/>
+
+    <!-- Arm edge highlights -->
+    <rect x="55" y="43" width="70" height="2" fill="#FFD700" opacity="0.3"/>
+    <rect x="55" y="55" width="70" height="2" fill="#8B6914" opacity="0.5"/>
+
+    <!-- Reinforcing bands -->
+    <rect x="65" y="42" width="8" height="16" rx="1" fill="url(#hammerBrassGradient)" stroke="#8B6914" stroke-width="0.5"/>
+    <rect x="100" y="42" width="8" height="16" rx="1" fill="url(#hammerBrassGradient)" stroke="#8B6914" stroke-width="0.5"/>
+
+    <!-- Victorian flourish on arm -->
+    <path d="M75,50 Q80,47 85,50 Q80,53 75,50" fill="#8B6914" opacity="0.4"/>
+
+    <!-- Highlight -->
+    <rect x="60" y="44" width="60" height="3" fill="url(#hammerHighlight)" opacity="0.4"/>
+  </g>
+
+  <!-- Hammer head -->
+  <g filter="url(#hammerShadow)">
+    <!-- Main head body -->
+    <ellipse cx="135" cy="50" rx="20" ry="18" fill="url(#hammerHeadGradient)" stroke="#8B6914" stroke-width="1.5"/>
+
+    <!-- Head band -->
+    <ellipse cx="135" cy="50" rx="18" ry="16" fill="none" stroke="#8B6914" stroke-width="2"/>
+
+    <!-- Inner decorative ring -->
+    <ellipse cx="135" cy="50" rx="12" ry="10" fill="none" stroke="#FFD700" stroke-width="0.5" opacity="0.6"/>
+
+    <!-- Striking surface (felt) -->
+    <ellipse cx="152" cy="50" rx="6" ry="12" fill="url(#feltGradient)" stroke="#5C0000" stroke-width="0.5"/>
+
+    <!-- Felt texture -->
+    <ellipse cx="152" cy="50" rx="5" ry="10" fill="none" stroke="#5C0000" stroke-width="0.3" stroke-dasharray="1,2"/>
+
+    <!-- Highlight on head -->
+    <ellipse cx="128" cy="42" rx="8" ry="6" fill="url(#hammerHighlight)" opacity="0.6"/>
+
+    <!-- Wear marks -->
+    <ellipse cx="140" cy="55" rx="3" ry="2" fill="#8B6914" opacity="0.3"/>
+  </g>
+
+  <!-- Spring mechanism -->
+  <g>
+    <!-- Coil spring suggestion -->
+    <path d="M30,65 Q35,70 30,75 Q25,80 30,85"
+          fill="none" stroke="#8B6914" stroke-width="2" stroke-linecap="round"/>
+    <path d="M30,65 Q35,70 30,75 Q25,80 30,85"
+          fill="none" stroke="#FFD700" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+
+    <!-- Spring attachment -->
+    <circle cx="30" cy="88" r="3" fill="url(#hammerBrassGradient)" stroke="#8B6914" stroke-width="0.5"/>
+  </g>
+
+  <!-- Counter-balance weight -->
+  <g filter="url(#hammerShadow)">
+    <ellipse cx="55" cy="65" rx="8" ry="6" fill="url(#hammerBrassGradient)" stroke="#8B6914" stroke-width="1"/>
+    <ellipse cx="55" cy="65" rx="5" ry="3" fill="#8B6914"/>
+    <ellipse cx="53" cy="63" rx="2" ry="1.5" fill="#FFD700" opacity="0.5"/>
+  </g>
+
+  <!-- Active glow effect (hidden by default) -->
+  <g class="hammer-glow" opacity="0" filter="url(#hammerGlow)">
+    <ellipse cx="100" cy="50" rx="65" ry="40" fill="#FFB74D" opacity="0.3"/>
+  </g>
+
+  <!-- Motion arc indicator (subtle) -->
+  <g stroke="#FFD700" stroke-width="0.5" fill="none" opacity="0.12">
+    <path d="M135,30 A20,20 0 0,1 155,50"/>
+    <path d="M155,50 A20,20 0 0,1 135,70"/>
+  </g>
+
+  <!-- Sound wave suggestion (when active) -->
+  <g class="sound-waves" opacity="0" stroke="#FFB74D" stroke-width="0.8" fill="none">
+    <path d="M160,40 Q165,50 160,60"/>
+    <path d="M165,35 Q172,50 165,65"/>
+  </g>
+</svg>
