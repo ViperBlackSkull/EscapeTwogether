@@ -119,7 +119,13 @@ function initializeSocketHandlers(): void {
 		// Player events
 		socket.on('player-joined', (data: { player: Player }) => {
 			console.log('Player joined:', data.player);
-			players.update((current) => [...current, data.player]);
+			players.update((current) => {
+				// Check if player already exists to prevent duplicates
+				if (current.some(p => p.id === data.player.id)) {
+					return current;
+				}
+				return [...current, data.player];
+			});
 
 			// Update current room if we have it
 			currentRoom.update((room) => {
