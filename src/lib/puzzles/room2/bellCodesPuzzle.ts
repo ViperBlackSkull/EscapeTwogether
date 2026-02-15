@@ -3,12 +3,34 @@
  *
  * A communication puzzle where Player A operates a telegraph key (tapping),
  * and Player B has a codebook. Tap duration determines dot or dash.
- * Players must transmit the message 'LOVE ETERNAL'.
+ * Players must transmit the message 'LOVE'.
  */
 
 import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
+import { puzzleImages } from '$lib/assets/images';
 
 export const BELL_CODES_PUZZLE_ID = 'room2_bell_codes';
+
+// Visual assets for this puzzle
+export const BELL_CODES_ASSETS = {
+	// Codebook for Player B (analyst)
+	codebook: puzzleImages.codebook,
+
+	// Mysterious symbols for morse code visualization
+	symbols: puzzleImages.mysteriousGlyphs,
+
+	// Telegraph key / vintage machinery aesthetic
+	keyVisual: puzzleImages.antiqueKeys,
+
+	// Decorative frame for the puzzle
+	ornateFrame: puzzleImages.victorianOrnament,
+
+	// Background texture
+	background: puzzleImages.puzzleTexture,
+
+	// Hourglass for timing visual
+	timingIndicator: puzzleImages.hourglass
+} as const;
 
 // Morse code mapping
 export const MORSE_CODE: Record<string, string> = {

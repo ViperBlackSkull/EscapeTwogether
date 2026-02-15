@@ -8,8 +8,30 @@
  */
 
 import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
+import { puzzleImages } from '$lib/assets/images';
 
 export const WINDUP_KEY_PUZZLE_ID = 'room2_windup_key';
+
+// Visual assets for this puzzle
+export const WINDUP_KEY_ASSETS = {
+	// Antique keys for key visuals
+	keys: puzzleImages.antiqueKeys,
+
+	// Vintage lock for lock mechanism
+	lock: puzzleImages.vintageLock,
+
+	// Hourglass for timing/sync visualization
+	timing: puzzleImages.hourglass,
+
+	// Compass for rotation direction
+	direction: puzzleImages.compass,
+
+	// Ornate frame
+	ornateFrame: puzzleImages.victorianOrnament,
+
+	// Background texture
+	background: puzzleImages.puzzleTexture
+} as const;
 
 export type RotationDirection = 'cw' | 'ccw' | 'none';
 

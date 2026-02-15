@@ -8,8 +8,30 @@
  */
 
 import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
+import { puzzleImages } from '$lib/assets/images';
 
 export const CLOCK_FACE_PUZZLE_ID = 'room2_clock_face';
+
+// Visual assets for this puzzle
+export const CLOCK_FACE_ASSETS = {
+	// Compass for clock face visual
+	clockFace: puzzleImages.compass,
+
+	// Hourglass for time theme
+	hourglass: puzzleImages.hourglass,
+
+	// Cipher wheel can be used for clock hand rotation visual
+	handRotation: puzzleImages.cipherWheel,
+
+	// Ornate frame for clock
+	ornateFrame: puzzleImages.victorianOrnament,
+
+	// Background texture
+	background: puzzleImages.puzzleTexture,
+
+	// Decorative candle for lighting atmosphere
+	candlelight: puzzleImages.candleHolder
+} as const;
 
 export interface ClockTime {
 	hours: number; // 0-11 or 0-23

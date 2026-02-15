@@ -5,6 +5,28 @@
  */
 
 import type { PuzzleDefinition, PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
+import { puzzleImages } from '$lib/assets/images';
+
+// Visual assets for this puzzle
+export const TRELLIS_ASSETS = {
+	// Ornate frame for trellis structure
+	trellisFrame: puzzleImages.victorianOrnament,
+
+	// Garden/nature themed background
+	gardenBackground: puzzleImages.treasureMap,
+
+	// Mysterious glyphs for vine symbols
+	vineSymbols: puzzleImages.mysteriousGlyphs,
+
+	// Compass for direction hints
+	directionGuide: puzzleImages.compass,
+
+	// Texture for trellis wood
+	trellisTexture: puzzleImages.puzzleTexture,
+
+	// Candlelight for garden atmosphere
+	atmosphere: puzzleImages.candleHolder
+} as const;
 
 // Position type
 export interface Position {

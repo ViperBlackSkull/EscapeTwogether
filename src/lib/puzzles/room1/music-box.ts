@@ -5,6 +5,26 @@
 
 import type { PuzzleState, PuzzleHint, PuzzleDefinition, PlayerRole } from '$lib/types';
 import { ROOM1_PUZZLE_IDS } from './ids';
+import { puzzleImages } from '$lib/assets/images';
+
+// Visual assets for this puzzle
+export const MUSIC_BOX_ASSETS = {
+	// Background/scene images
+	musicBoxBackground: puzzleImages.puzzleTexture,
+	ornateFrame: puzzleImages.victorianOrnament,
+
+	// Gear-related imagery (cipher wheel can represent gears visually)
+	gearVisual: puzzleImages.cipherWheel,
+
+	// Reference materials
+	diagramBackground: puzzleImages.codebook,
+
+	// Decorative elements
+	candlelight: puzzleImages.candleHolder,
+
+	// Tool indicators
+	magnifyingGlass: puzzleImages.magnifyingGlass
+} as const;
 
 // Gear definition
 export interface Gear {

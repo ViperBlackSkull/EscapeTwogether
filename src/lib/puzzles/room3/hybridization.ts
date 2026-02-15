@@ -5,6 +5,28 @@
  */
 
 import type { PuzzleDefinition, PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
+import { puzzleImages } from '$lib/assets/images';
+
+// Visual assets for this puzzle
+export const HYBRIDIZATION_ASSETS = {
+	// Mysterious glyphs for plant symbols
+	plantSymbols: puzzleImages.mysteriousGlyphs,
+
+	// Treasure map for garden layout
+	gardenLayout: puzzleImages.treasureMap,
+
+	// Cipher wheel for breeding combinations
+	breedingWheel: puzzleImages.cipherWheel,
+
+	// Clue photograph for plant images
+	plantReference: puzzleImages.cluePhotograph,
+
+	// Ornate frame
+	ornateFrame: puzzleImages.victorianOrnament,
+
+	// Magnifying glass for plant inspection
+	inspection: puzzleImages.magnifyingGlass
+} as const;
 
 // Parent plant types
 export interface ParentPlant {

@@ -252,6 +252,112 @@ export class PuzzleRenderer {
 	}
 
 	/**
+	 * Load a generated PNG asset from /assets/images/puzzles/
+	 * @param imageKey - The key from puzzleImages (e.g., 'cipherWheel', 'treasureMap')
+	 */
+	async loadGeneratedAsset(imageKey: PuzzleImageKey): Promise<PuzzleAsset | null> {
+		const url = puzzleImages[imageKey];
+
+		// Check if already loaded
+		const existingAsset = this.assets.get(imageKey);
+		if (existingAsset?.loaded && existingAsset.texture) {
+			return existingAsset;
+		}
+
+		try {
+			const texture = await Assets.load(url);
+
+			const puzzleAsset: PuzzleAsset = {
+				id: imageKey,
+				url,
+				texture,
+				loaded: true
+			};
+
+			this.assets.set(imageKey, puzzleAsset);
+			return puzzleAsset;
+		} catch (error) {
+			console.warn(`Failed to load generated asset: ${imageKey}`, error);
+			return null;
+		}
+	}
+
+	/**
+	 * Load multiple generated assets at once
+	 * @param imageKeys - Array of puzzle image keys to load
+	 */
+	async loadGeneratedAssets(imageKeys: PuzzleImageKey[]): Promise<Map<PuzzleImageKey, PuzzleAsset>> {
+		const results = new Map<PuzzleImageKey, PuzzleAsset>();
+
+		await Promise.all(
+			imageKeys.map(async (key) => {
+				const asset = await this.loadGeneratedAsset(key);
+				if (asset) {
+					results.set(key, asset);
+				}
+			})
+		);
+
+		return results;
+	}
+
+	/**
+	 * Get puzzle-specific asset recommendations based on puzzle ID
+	 */
+	getPuzzleAssetMapping(puzzleId: string): PuzzleImageKey[] {
+		const mapping: Record<string, PuzzleImageKey[]> = {
+			'torn-photographs': ['cluePhotograph'],
+			'love-letter-cipher': ['clueLetter', 'candleHolder'],
+			'secret-message': ['clueNote', 'magnifyingGlass', 'treasureMap'],
+			'trunk-lock': ['vintageLock', 'antiqueKeys'],
+			'music-box': ['codebook', 'mysteriousGlyphs'],
+			'clock-face': ['hourglass', 'compass'],
+			'gear-alignment': ['cipherWheel'],
+			'pendulum': ['hourglass'],
+			'midnight-chime': ['hourglass'],
+			'bell-codes': ['codebook', 'mysteriousGlyphs'],
+			'windup-key': ['antiqueKeys'],
+			'seed-packets': ['treasureMap'],
+			'light-spectrum': ['mysteriousGlyphs'],
+			'water-flow': ['treasureMap'],
+			'bloom-timing': ['hourglass'],
+			'hybridization': ['codebook'],
+			'trellis': ['victorianOrnament'],
+			'final-bloom': ['cluePhotograph', 'victorianOrnament']
+		};
+
+		return mapping[puzzleId] || [];
+	}
+
+	/**
+	 * Create a sprite from a generated asset
+	 */
+	createSpriteFromAsset(
+		imageKey: PuzzleImageKey,
+		options?: { width?: number; height?: number; x?: number; y?: number }
+	): Sprite | null {
+		const asset = this.assets.get(imageKey);
+		if (!asset?.texture) {
+			console.warn(`Asset not loaded: ${imageKey}`);
+			return null;
+		}
+
+		const sprite = new Sprite(asset.texture);
+
+		if (options?.width && options?.height) {
+			sprite.width = options.width;
+			sprite.height = options.height;
+		}
+
+		sprite.anchor.set(0.5);
+
+		if (options?.x !== undefined) sprite.x = options.x;
+		if (options?.y !== undefined) sprite.y = options.y;
+
+		return sprite;
+	}
+
+	/**
 	 * Register a custom asset
 	 */
 	registerAsset(id: string, url: string): void {
@@ -439,6 +545,19 @@ export class PuzzleRenderer {
 		const data = state.data as Record<string, unknown>;
 		const fragments = (data.fragments as Array<{ id: string; x: number; y: number; rotation: number }>) || [];
 
+		// Add background using generated photograph asset
+		const photoBg = this.createSpriteFromAsset('cluePhotograph', {
+			width: this.width * 0.7,
+			height: this.height * 0.6,
+			x: this.width / 2,
+			y: this.height / 2
+		});
+
+		if (photoBg) {
+			photoBg.alpha = 0.3; // Subtle background
+			this.piecesContainer.addChildAt(photoBg, 0);
+		}
+
 		// Render each photograph fragment
 		fragments.forEach((fragment, index) => {
 			this.addPiece({
@@ -495,6 +614,18 @@ export class PuzzleRenderer {
 		const data = state.data as Record<string, unknown>;
 		const letters = (data.letters as Array<{ char: string; position: number }>) || [];
 
+		// Add background using generated letter asset
+		const letterBg = this.createSpriteFromAsset('clueLetter', {
+			width: this.width * 0.8,
+			height: this.height * 0.7,
+			x: this.width / 2,
+			y: this.height / 2
+		});
+
+		if (letterBg) {
+			this.piecesContainer.addChild(letterBg);
+		}
+
 		// Render cipher grid
 		letters.forEach((letter, index) => {
 			const row = Math.floor(index / 10);
@@ -516,6 +647,18 @@ export class PuzzleRenderer {
 		const data = state.data as Record<string, unknown>;
 		const clues = (data.clues as Array<{ id: string; revealed: boolean }>) || [];
 
+		// Add background using generated treasure map asset
+		const mapBg = this.createSpriteFromAsset('treasureMap', {
+			width: this.width * 0.9,
+			height: this.height * 0.8,
+			x: this.width / 2,
+			y: this.height / 2
+		});
+
+		if (mapBg) {
+			this.piecesContainer.addChildAt(mapBg, 0);
+		}
+
 		clues.forEach((clue, index) => {
 			this.addPiece({
 				id: clue.id,
@@ -533,6 +676,18 @@ export class PuzzleRenderer {
 	private renderTrunkLock(state: PuzzleState): void {
 		const data = state.data as Record<string, unknown>;
 		const dials = (data.dials as Array<{ id: string; position: number; value: string }>) || [];
+
+		// Add background using generated lock asset
+		const lockBg = this.createSpriteFromAsset('vintageLock', {
+			width: this.width * 0.6,
+			height: this.height * 0.5,
+			x: this.width / 2,
+			y: this.height / 2
+		});
+
+		if (lockBg) {
+			this.piecesContainer.addChildAt(lockBg, 0);
+		}
 
 		dials.forEach((dial, index) => {
 			this.addPiece({

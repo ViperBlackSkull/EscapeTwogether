@@ -536,3 +536,59 @@ This document provides a comprehensive analysis of all puzzles in EscapeTwogethe
 8. **Hybridization (Room 3)**
    - Increased minimum show duration from 2 to 3 seconds
    - Gives players more time to memorize parent plants
+
+---
+
+## Visual Asset Integration
+
+### Assets Available (in `/static/assets/images/puzzles/`)
+
+| Asset | Filename | Best Used For |
+|-------|----------|---------------|
+| Cipher Wheel | `cipher-wheel.png` | Rotation-based cipher puzzles, decoding |
+| Codebook | `codebook.png` | Bell Codes puzzle, reference materials |
+| Mysterious Glyphs | `mysterious-glyphs.png` | Symbol matching, rune decoding |
+| Treasure Map | `treasure-map.png` | Navigation, exploration puzzles |
+| Compass | `compass.png` | Direction-based puzzles, Clock Face |
+| Vintage Lock | `vintage-lock.png` | Trunk Lock puzzle background |
+| Antique Keys | `antique-keys.png` | Key matching, lock puzzles |
+| Secret Compartment | `secret-compartment.png` | Hidden object puzzles |
+| Clue Letter | `clue-letter.png` | Love Letter Cipher background |
+| Clue Note | `clue-note.png` | Secret Message puzzle |
+| Clue Photograph | `clue-photograph.png` | Torn Photographs puzzle |
+| Magnifying Glass | `magnifying-glass.png` | Investigation tools |
+| Hourglass | `hourglass.png` | Timed puzzles, Clock Tower |
+| Victorian Ornament | `victorian-ornament.png` | UI frames, decorative borders |
+| Puzzle Texture | `puzzle-texture.png` | Background textures |
+| Candle Holder | `candle-holder.png` | Love Letter Cipher light source |
+
+### Puzzle-to-Asset Mapping (Room 1 - Already Implemented)
+
+| Puzzle | Component | Assets Used |
+|--------|-----------|-------------|
+| Torn Photographs | `TornPhotographsPuzzle.svelte` | `cluePhotograph` |
+| Love Letter Cipher | `LoveLetterCipherPuzzle.svelte` | `clueLetter`, `candleHolder` |
+| Trunk Lock | `TrunkLockPuzzle.svelte` | `vintageLock`, `antiqueKeys` |
+| Secret Message | `SecretMessagePuzzle.svelte` | `clueNote`, `magnifyingGlass`, `treasureMap` |
+
+### Puzzle-to-Asset Mapping (Room 2 - Components Needed)
+
+| Puzzle | Suggested Assets |
+|--------|------------------|
+| Bell Codes | `codebook`, `mysteriousGlyphs` |
+| Clock Face | `hourglass`, `compass` |
+| Gear Alignment | `cipherWheel` (gears visual) |
+| Windup Keys | `antiqueKeys` |
+| Pendulum Maze | `compass`, `hourglass` |
+| Midnight Chime | `hourglass` |
+
+### Puzzle-to-Asset Mapping (Room 3 - Components Needed)
+
+| Puzzle | Suggested Assets |
+|--------|------------------|
+| Seed Packets | `treasureMap` (garden layout) |
+| Water Flow | `compass` (valve indicators) |
+| Light Spectrum | `cipherWheel` (prism rotation) |
+| Hybridization | `mysteriousGlyphs` (plant symbols) |
+| Trellis | `victorianOrnament` (trellis frame) |
+| Final Bloom | `clueLetter` (love letter reveal) |

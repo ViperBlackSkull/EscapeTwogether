@@ -3,12 +3,34 @@
  *
  * A cooperation puzzle where Player A sees the front of gears (teeth visible),
  * and Player B sees the back (alignment marks). Players must communicate
- * to align all marks simultaneously for 2 seconds.
+ * to align all marks simultaneously for 1.5 seconds.
  */
 
 import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
+import { puzzleImages } from '$lib/assets/images';
 
 export const GEAR_ALIGNMENT_PUZZLE_ID = 'room2_gear_alignment';
+
+// Visual assets for this puzzle
+export const GEAR_ALIGNMENT_ASSETS = {
+	// Cipher wheel for gear visuals
+	gearVisual: puzzleImages.cipherWheel,
+
+	// Vintage keys for key/lock theming
+	mechanicalElements: puzzleImages.antiqueKeys,
+
+	// Ornate frame
+	ornateFrame: puzzleImages.victorianOrnament,
+
+	// Background texture
+	background: puzzleImages.puzzleTexture,
+
+	// Compass for direction indicators
+	directionGuide: puzzleImages.compass,
+
+	// Hourglass for timing visual
+	timingIndicator: puzzleImages.hourglass
+} as const;
 
 export interface Gear {
 	id: string;
