@@ -12,8 +12,8 @@ export interface Gear {
 	teeth: number; // Number of teeth on the gear
 	material: 'brass' | 'steel' | 'wood';
 	size: 'small' | 'medium' | 'large';
+	soundProfile: 'bright_tick' | 'clear_chime' | 'warm_hum' | 'dull_thud' | 'harsh_screech'; // Sound when tried
 	isCorrect: boolean; // Whether this gear is part of the solution
-	isDistractor: boolean; // Distractor gears cannot be placed
 }
 
 // Slot definition
@@ -42,49 +42,49 @@ export interface MusicBoxState {
 	isPlaying: boolean;
 }
 
-// Available gears (3 correct, 2 distractors)
+// Available gears (3 correct, 2 incorrect but placeable)
 const GEARS: Gear[] = [
-	// Correct gears
+	// Correct gears - each has a distinct sound profile matching the diagram
 	{
 		id: 'gear-small-brass',
 		teeth: 12,
 		material: 'brass',
 		size: 'small',
-		isCorrect: true,
-		isDistractor: false
+		soundProfile: 'bright_tick',
+		isCorrect: true
 	},
 	{
 		id: 'gear-medium-steel',
 		teeth: 18,
 		material: 'steel',
 		size: 'medium',
-		isCorrect: true,
-		isDistractor: false
+		soundProfile: 'clear_chime',
+		isCorrect: true
 	},
 	{
 		id: 'gear-large-wood',
 		teeth: 24,
 		material: 'wood',
 		size: 'large',
-		isCorrect: true,
-		isDistractor: false
+		soundProfile: 'warm_hum',
+		isCorrect: true
 	},
-	// Distractor gears
+	// Incorrect gears - can be placed but make wrong sounds
 	{
 		id: 'gear-small-wood',
 		teeth: 10,
 		material: 'wood',
 		size: 'small',
-		isCorrect: false,
-		isDistractor: true
+		soundProfile: 'dull_thud',
+		isCorrect: false
 	},
 	{
 		id: 'gear-medium-brass',
 		teeth: 16,
 		material: 'brass',
 		size: 'medium',
-		isCorrect: false,
-		isDistractor: true
+		soundProfile: 'harsh_screech',
+		isCorrect: false
 	}
 ];
 
@@ -111,17 +111,17 @@ const MELODY_PATTERN: MelodyNote[] = [
 const HINTS: PuzzleHint[] = [
 	{
 		tier: 1,
-		text: 'Look at the assembly diagram carefully. It shows the exact specifications for each gear slot.',
+		text: 'Listen to the sounds each gear makes when you hover over it. The assembly diagram shows what sound each slot needs.',
 		triggerAttempts: 3
 	},
 	{
 		tier: 2,
-		text: 'Small gears have 12 teeth, medium have 18, and large have 24. Match the materials too - brass, steel, and wood.',
+		text: 'Small gears make high-pitched ticks, medium make mid-tone clicks, and large make deep tocks. Match the pitch to the slot description.',
 		triggerAttempts: 6
 	},
 	{
 		tier: 3,
-		text: 'Slot 1 needs small brass (12 teeth), Slot 2 needs medium steel (18 teeth), Slot 3 needs large wood (24 teeth). Some gears are wrong and wont fit!',
+		text: 'Slot 1 needs a bright brass sound (small), Slot 2 needs a clear metallic ring (medium), Slot 3 needs a warm wooden tone (large). Try gears until the sounds match!',
 		triggerAttempts: 10
 	}
 ];
@@ -149,11 +149,23 @@ export function createInitialState(): MusicBoxState {
 
 // Check if a gear can be placed in a slot
 export function canPlaceGear(gear: Gear, slot: GearSlot): boolean {
-	if (gear.isDistractor) return false;
+	// All gears can be placed, but only correct ones work
+	// Incorrect gears will fit but make the wrong sound
 	if (gear.teeth !== slot.requiredTeeth) return false;
 	if (gear.material !== slot.requiredMaterial) return false;
 	if (gear.size !== slot.requiredSize) return false;
 	return true;
+}
+
+// Check if a gear makes the correct sound for a slot (for puzzle completion)
+export function gearMakesCorrectSound(gear: Gear, slotPosition: number): boolean {
+	// Each slot expects a specific sound profile
+	const expectedSounds: Record<number, string> = {
+		0: 'bright_tick',   // Slot 0 needs bright tick
+		1: 'clear_chime',   // Slot 1 needs clear chime
+		2: 'warm_hum'       // Slot 2 needs warm hum
+	};
+	return gear.soundProfile === expectedSounds[slotPosition];
 }
 
 // Place a gear in a slot
@@ -244,9 +256,8 @@ export function getPlayerView(state: MusicBoxState, role: PlayerRole): {
 	diagram?: {
 		slots: Array<{
 			position: number;
-			requiredTeeth: number;
-			requiredMaterial: string;
-			requiredSize: string;
+			requiredSound: string; // Sound description instead of exact specs
+			pitchHint: string; // High/Medium/Low hint
 		}>;
 	};
 	melodyPattern: MelodyNote[];
@@ -254,23 +265,29 @@ export function getPlayerView(state: MusicBoxState, role: PlayerRole): {
 } {
 	if (role === 'explorer') {
 		// Player A sees gears and slots to place them
+		// Now shows ALL gears (including ones that might not work)
 		return {
 			view: 'gears',
-			gears: state.gears.filter(g => !g.isDistractor),
+			gears: state.gears, // Show all gears, let player discover which work
 			slots: state.slots,
 			melodyPattern: state.completed ? state.melodyPattern : [],
 			completed: state.completed
 		};
 	} else {
-		// Player B sees the assembly diagram with specifications
+		// Player B sees the assembly diagram with SOUND descriptions
+		// Not exact specifications - requires communication
+		const soundDescriptions = [
+			{ requiredSound: 'A bright, ringing tone like a tiny bell', pitchHint: 'High pitch - listen for a quick tick' },
+			{ requiredSound: 'A clear, resonant chime that sustains', pitchHint: 'Medium pitch - a steady tock' },
+			{ requiredSound: 'A warm, mellow hum like a cello string', pitchHint: 'Low pitch - a deep, slow tone' }
+		];
 		return {
 			view: 'diagram',
 			diagram: {
 				slots: state.slots.map(s => ({
 					position: s.position,
-					requiredTeeth: s.requiredTeeth,
-					requiredMaterial: s.requiredMaterial,
-					requiredSize: s.requiredSize
+					requiredSound: soundDescriptions[s.position].requiredSound,
+					pitchHint: soundDescriptions[s.position].pitchHint
 				}))
 			},
 			melodyPattern: state.completed ? state.melodyPattern : [],

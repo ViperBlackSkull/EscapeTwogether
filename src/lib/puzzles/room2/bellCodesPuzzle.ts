@@ -94,7 +94,7 @@ function messageToMorse(message: string): string {
 }
 
 export function createInitialBellCodesState(): BellCodesPuzzleData {
-	const targetMessage = 'LOVE ETERNAL';
+	const targetMessage = 'LOVE'; // Shortened for better pacing
 	return {
 		targetMessage,
 		targetMorse: messageToMorse(targetMessage),
@@ -105,8 +105,8 @@ export function createInitialBellCodesState(): BellCodesPuzzleData {
 		taps: [],
 		isKeyDown: false,
 		keyDownTimestamp: null,
-		dotThreshold: 250,
-		dashThreshold: 400,
+		dotThreshold: 200,   // Widened from 250ms
+		dashThreshold: 500,  // Widened from 400ms
 		lastTapTimestamp: null,
 		charGapThreshold: 800,
 		messageComplete: false,
@@ -220,17 +220,17 @@ export function getCurrentTargetInfo(data: BellCodesPuzzleData): {
 export const BELL_CODES_HINTS: PuzzleHint[] = [
 	{
 		tier: 1,
-		text: "One player taps the telegraph key, the other reads the codebook. Short taps are dots, long taps are dashes.",
+		text: "One player taps the telegraph key, the other reads the codebook. Short taps (under 200ms) are dots, long taps (over 500ms) are dashes.",
 		triggerAttempts: 3,
 	},
 	{
 		tier: 2,
-		text: "The codebook shows: dot = < 250ms, dash = > 400ms. The message is 'LOVE ETERNAL'. Look up each letter in the codebook.",
+		text: "The message is four letters: a word that means everything. Look up each letter in the codebook and tap the pattern together.",
 		triggerAttempts: 6,
 	},
 	{
 		tier: 3,
-		text: "L = .-.. | O = --- | V = ...- | E = . | (space) | E = . | T = - | E = . | R = .-. | N = -. | A = .- | L = .-..",
+		text: "The word is LOVE. L = .-.. | O = --- | V = ...- | E = . Work together - the codebook reader should call out the pattern!",
 		triggerAttempts: 10,
 	},
 ];

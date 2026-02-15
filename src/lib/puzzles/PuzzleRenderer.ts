@@ -1,6 +1,8 @@
 /**
  * PuzzleRenderer - Visual puzzle rendering system for EscapeTwogether
  * Handles SVG asset loading, PixiJS rendering, and animations for puzzles
+ *
+ * Supports both SVG assets from /puzzles/assets/ and PNG assets from /assets/images/puzzles/
  */
 
 import {
@@ -16,6 +18,7 @@ import {
 	Ticker
 } from 'pixi.js';
 import type { PuzzleState, RoomId } from '$lib/types';
+import { puzzleImages, type PuzzleImageKey } from '$lib/assets/images';
 
 // ============================================
 // Type Definitions

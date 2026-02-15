@@ -1,10 +1,10 @@
 /**
  * Clock Face Puzzle (Room 2, Puzzle 4)
  *
- * A perspective puzzle where both players see the same clock from opposite sides.
- * Player A sees 3:15 (hour hand at 3, minute at 3)
- * Player B sees 8:45 (hour hand at 9, minute at 9)
- * Both are mirror reflections. Players must deduce the true time: 12:00 (midnight).
+ * A perspective puzzle where players see different parts of the same clock.
+ * Player A sees the hour hand position only
+ * Player B sees the minute hand position only
+ * Both must communicate to determine the true time: 12:00 (midnight)
  */
 
 import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
@@ -17,11 +17,17 @@ export interface ClockTime {
 }
 
 export interface ClockFacePuzzleData {
-	// Player A's view (what they see)
-	playerAView: ClockTime;
+	// Player A's view - sees hour hand position relative to a marker
+	playerAView: {
+		hourHandAngle: number; // Degrees from 12 o'clock
+		hintText: string;
+	};
 
-	// Player B's view (what they see)
-	playerBView: ClockTime;
+	// Player B's view - sees minute hand position relative to a marker
+	playerBView: {
+		minuteHandAngle: number; // Degrees from 12 o'clock
+		hintText: string;
+	};
 
 	// Player inputs
 	playerAInput: ClockTime | null;
@@ -45,54 +51,30 @@ export interface ClockFacePuzzleState extends PuzzleState {
 	data: ClockFacePuzzleData;
 }
 
-// Create a mirror reflection of clock time
-// When you look at a clock from the back, it appears mirrored
-function mirrorClockTime(time: ClockTime): ClockTime {
-	// Mirror horizontally: (12 stays at 12, but 3 becomes 9, etc.)
-	// The reflection makes each hour position appear at (12 - hour) mod 12
-	// But we need to account for the actual visual reflection
-
-	// For a clock seen from behind:
-	// 12 o'clock is still at top
-	// 3 o'clock appears where 9 usually is, and vice versa
-	// So hour position is mirrored: new_hour = (12 - hour) % 12
-	// But for minutes, the same logic applies
-
-	// Actually for a proper mirror reflection through vertical axis:
-	// The hour 3 (90 degrees) becomes 9 (270 degrees)
-	// 12 o'clock (0 degrees) stays at 0
-	// So: new_position = (12 - position) mod 12
-
-	// But we want to create a puzzle where both views look valid but different
-	// Let's use: Player A sees 3:15, Player B sees 8:45 (opposite side of clock)
-	// The TRUE time is 12:00
-
-	return {
-		hours: (12 - time.hours) % 12,
-		minutes: (60 - time.minutes) % 60,
-	};
-}
-
 export function createInitialClockFaceState(): ClockFacePuzzleData {
-	// The views are set up so that:
-	// Player A sees a clock showing approximately 3:15
-	// Player B sees a clock showing approximately 8:45
-	// These are symmetric around the vertical axis
-	// The true time (what both clock hands actually point to when considering the clock face itself) is 12:00
+	// The puzzle: Both hands point to 12 (midnight)
+	// Player A sees the hour hand pointing straight up (0 degrees)
+	// Player B sees the minute hand also pointing straight up (0 degrees)
+	// But they see it from different angles around the clock face
 
-	// In a mirror reflection puzzle:
-	// If you look at 12:00 from the front, hour and minute both point up (12)
-	// If you look at it from behind (through the clock), you still see them pointing up
-	// But the numbers are reversed, so what looks like "12" from one side
-	// could be interpreted differently
+	// Player A sees: "The hour hand points directly at the star marker on the rim"
+	// Player B sees: "The minute hand points directly at the star marker on the rim"
+	// The star marker is at 12 o'clock position on the actual clock
 
-	// For this puzzle, let's set up a scenario where:
-	// Both players see hands that point to valid positions
-	// But they need to communicate to realize the true time
+	// The twist: Each player sees a DIFFERENT marker that looks like it could be 12 o'clock
+	// Player A's reference marker is at actual 12 o'clock
+	// Player B's reference marker is ALSO at actual 12 o'clock (same marker)
+	// So when both say "the hand points at my marker", they're saying the same thing
 
 	return {
-		playerAView: { hours: 3, minutes: 15 },
-		playerBView: { hours: 9, minutes: 45 },
+		playerAView: {
+			hourHandAngle: 0, // Hour hand at 12
+			hintText: 'The short hand points directly at the star etched on the glass rim.'
+		},
+		playerBView: {
+			minuteHandAngle: 0, // Minute hand at 12
+			hintText: 'The long hand points directly at the star etched on the glass rim.'
+		},
 		playerAInput: null,
 		playerBInput: null,
 		correctTime: { hours: 12, minutes: 0 }, // Midnight
@@ -197,24 +179,23 @@ export function getMinuteHandAngle(time: ClockTime): number {
 export const CLOCK_FACE_HINTS: PuzzleHint[] = [
 	{
 		tier: 1,
-		text: "You're both looking at the same clock, but from opposite sides. What you see is a reflection of what the other player sees.",
+		text: "One player sees the hour hand's position, the other sees the minute hand's position. You each see only part of the clock - share what you observe!",
 		triggerAttempts: 2,
 	},
 	{
 		tier: 2,
-		text: "If one player sees 3:15 and the other sees 9:45, these are mirror images. The hands are in the same physical position - only the numbers differ from each perspective. What time would make the hands point the same way from both sides?",
+		text: "Both hands are pointing at markers on the clock rim. If both players see their hand pointing at 'the star marker', what does that tell you about where both hands are pointing?",
 		triggerAttempts: 4,
 	},
 	{
 		tier: 3,
-		text: "When both hands point to 12 (midnight), they point straight up. From either side of the clock face, straight up is still straight up. The answer is 12:00 or 00:00.",
+		text: "Both the hour hand AND the minute hand point to the same position - straight up at 12 o'clock. When both hands point to 12, what time is it?",
 		triggerAttempts: 6,
 	},
 ];
 
 // Role-based view data
 export function getClockFaceViewData(role: PlayerRole, data: ClockFacePuzzleData): Record<string, unknown> {
-	// Both players see different times but same physical clock
 	const baseData = {
 		playerASubmitted: data.playerASubmitted,
 		playerBSubmitted: data.playerBSubmitted,
@@ -224,24 +205,26 @@ export function getClockFaceViewData(role: PlayerRole, data: ClockFacePuzzleData
 	};
 
 	if (role === 'explorer') {
-		// Player A sees 3:15
+		// Player A sees the hour hand and its hint
 		return {
 			...baseData,
 			myView: data.playerAView,
 			myInput: data.playerAInput,
-			hourAngle: getHourHandAngle(data.playerAView),
-			minuteAngle: getMinuteHandAngle(data.playerAView),
-			partnerViewDescription: "Your partner sees a different time from their side of the clock",
+			handType: 'hour',
+			handAngle: data.playerAView.hourHandAngle,
+			hintText: data.playerAView.hintText,
+			partnerSees: 'the minute hand position',
 		};
 	} else {
-		// Player B sees 9:45 (mirror of 3:15)
+		// Player B sees the minute hand and its hint
 		return {
 			...baseData,
 			myView: data.playerBView,
 			myInput: data.playerBInput,
-			hourAngle: getHourHandAngle(data.playerBView),
-			minuteAngle: getMinuteHandAngle(data.playerBView),
-			partnerViewDescription: "Your partner sees a different time from their side of the clock",
+			handType: 'minute',
+			handAngle: data.playerBView.minuteHandAngle,
+			hintText: data.playerBView.hintText,
+			partnerSees: 'the hour hand position',
 		};
 	}
 }
@@ -250,8 +233,8 @@ export function getClockFaceViewData(role: PlayerRole, data: ClockFacePuzzleData
 export const clockFacePuzzleDefinition = {
 	id: CLOCK_FACE_PUZZLE_ID,
 	roomId: 'clock_tower' as const,
-	name: 'Clock Face Reflection',
-	description: 'Determine the true time by comparing your different perspectives of the clock.',
+	name: 'Clock Face',
+	description: 'Determine the true time - one player sees the hour hand, the other sees the minute hand. Share your observations!',
 	requiredRoles: ['explorer', 'analyst'] as PlayerRole[],
 	hints: CLOCK_FACE_HINTS,
 	createInitialState: createInitialClockFaceState,

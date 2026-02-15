@@ -769,8 +769,12 @@
 		initPuzzleRenderer(roomId as RoomId, currentPuzzleId);
 	}
 
+	// Track last room to prevent unnecessary redraws
+	let lastRenderedRoom: string | null = null;
+
 	// Watch for room changes to update background
-	$: if (isInitialized && app && currentRoom) {
+	$: if (isInitialized && app && currentRoom && lastRenderedRoom !== currentRoom) {
+		lastRenderedRoom = currentRoom;
 		redrawGameElements().catch(console.error);
 	}
 

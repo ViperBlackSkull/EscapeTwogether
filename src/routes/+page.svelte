@@ -170,10 +170,10 @@
 		</div>
 
 		<!-- Main Card -->
-		<div class="card card-premium stagger-3" style="width: 100%; background: linear-gradient(145deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.9) 100%); border-radius: 20px; padding: 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(212, 175, 55, 0.1), inset 0 1px 0 rgba(255,255,255,0.05); border: 1px solid rgba(212, 175, 55, 0.15); backdrop-filter: blur(12px);">
+		<div class="card card-premium card-hover-lift stagger-3" style="width: 100%; background: linear-gradient(145deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.9) 100%); border-radius: 20px; padding: 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(212, 175, 55, 0.1), inset 0 1px 0 rgba(255,255,255,0.05); border: 1px solid rgba(212, 175, 55, 0.15); backdrop-filter: blur(12px);">
 			<!-- Error Message -->
 			{#if errorMessage}
-				<div class="error-message shake-error" role="alert" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 12px 16px; border-radius: 10px; font-size: 0.9rem; margin-bottom: 20px;">
+				<div class="error-message shake-error" role="alert" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 12px 16px; border-radius: 10px; font-size: 0.9rem; margin-bottom: 20px; animation: errorSlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);">
 					<svg class="error-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" style="width: 18px; height: 18px; flex-shrink: 0;">
 						<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
 					</svg>
@@ -275,6 +275,28 @@
 			0% { transform: rotate(0deg); }
 			100% { transform: rotate(360deg); }
 		}
+
+		@keyframes errorSlideIn {
+			from {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.card-hover-lift {
+			transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+		}
+
+		.card-hover-lift:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.1);
+			border-color: rgba(212, 175, 55, 0.25);
+		}
+
 		input:focus {
 			border-color: #d4af37 !important;
 			box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15), 0 0 20px rgba(212, 175, 55, 0.1) !important;
@@ -282,12 +304,71 @@
 		input::placeholder {
 			color: rgba(255,255,255,0.35);
 		}
-		button:hover:not(:disabled) {
-			transform: translateY(-2px);
+
+		/* Primary button with enhanced effects */
+		button[type="button"]:first-of-type {
+			position: relative;
+			overflow: hidden;
 		}
+
+		button[type="button"]:first-of-type::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		button[type="button"]:first-of-type:hover:not(:disabled) {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(212, 175, 55, 0.45), 0 4px 12px rgba(0, 0, 0, 0.2);
+		}
+
+		button[type="button"]:first-of-type:hover:not(:disabled)::before {
+			opacity: 1;
+		}
+
+		button[type="button"]:first-of-type:active:not(:disabled) {
+			transform: translateY(0);
+		}
+
+		/* Secondary button with enhanced effects */
+		button[type="button"]:last-of-type {
+			position: relative;
+		}
+
+		button[type="button"]:last-of-type:hover:not(:disabled) {
+			transform: translateY(-2px);
+			background: rgba(255, 255, 255, 0.08);
+			border-color: rgba(255, 255, 255, 0.25);
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+		}
+
+		button[type="button"]:last-of-type:active:not(:disabled) {
+			transform: translateY(0);
+		}
+
 		button:disabled {
 			opacity: 0.7;
 			cursor: not-allowed;
+		}
+
+		/* Enhanced focus states */
+		button:focus-visible {
+			outline: 2px solid #d4af37;
+			outline-offset: 3px;
+			box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+		}
+
+		/* Status dot animation */
+		.status-dot.connected {
+			animation: statusPulse 2s ease-in-out infinite;
+		}
+
+		@keyframes statusPulse {
+			0%, 100% { opacity: 1; transform: scale(1); }
+			50% { opacity: 0.7; transform: scale(0.9); }
 		}
 	</style>
 </main>

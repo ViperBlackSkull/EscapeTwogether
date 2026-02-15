@@ -4,6 +4,12 @@
 	import { browser } from '$app/environment';
 	import GameCanvas from '$lib/components/GameCanvas.svelte';
 	import Chat from '$lib/components/Chat.svelte';
+	import HintModal from '$lib/components/HintModal.svelte';
+	import RoomTransition from '$lib/components/RoomTransition.svelte';
+	import DefeatScreen from '$lib/components/DefeatScreen.svelte';
+	import StoryNarrative from '$lib/components/StoryNarrative.svelte';
+	import VictoryScreen from '$lib/components/VictoryScreen.svelte';
+	import RoleIndicator from '$lib/components/RoleIndicator.svelte';
 	import {
 		currentRoom,
 		players,
@@ -16,6 +22,9 @@
 	} from '$lib/socket';
 	import type { Player } from '$lib/socket';
 	import { soundManager } from '$lib/audio';
+	import { gameState, useHint } from '$lib/stores/gameState';
+	import { currentPlayerRole, performRoleSwap } from '$lib/stores/roles';
+	import type { PuzzleHint } from '$lib/types';
 
 	// Inventory state
 	let inventory: { id: string; name: string; icon: string; description: string }[] = [];
@@ -26,6 +35,33 @@
 	let showMobileSheet = false;
 	let mobileSheetTab: 'players' | 'chat' | 'inventory' = 'players';
 	let isMobile = false;
+
+	// Hint system state
+	let showHintModal = false;
+	let currentPuzzleName = 'The Music Box';
+	let currentPuzzleHints: PuzzleHint[] = [
+		{ tier: 1, text: 'Have you tried matching the gear sizes to the diagram?', triggerAttempts: 2 },
+		{ tier: 2, text: 'The small gear goes on the left spindle. The large gear connects to the main mechanism.', triggerAttempts: 4 },
+		{ tier: 3, text: 'Place small-left, medium-center, large-right. Then turn the key clockwise three times.', triggerAttempts: 6 }
+	];
+	let currentAttempts = 0;
+	let hintsRemaining = 3;
+
+	// Room transition state
+	let showRoomTransition = false;
+	let transitionFromRoom = '';
+	let transitionToRoom = '';
+	let currentRoomId = 'attic';
+
+	// Story narrative state
+	let showStoryNarrative = false;
+	let storyNarrativeType: 'intro' | 'discovery' | 'completion' = 'intro';
+	let storyRoomId = 'attic';
+
+	// Victory/Defeat state
+	let showVictoryScreen = false;
+	let showDefeatScreen = false;
+	let defeatReason: 'timeout' | 'disconnected' | 'abandoned' = 'timeout';
 
 	// Timer state
 	let elapsedSeconds = 0;
@@ -181,6 +217,93 @@
 	function getPlayerInitial(name: string): string {
 		return name.charAt(0).toUpperCase();
 	}
+
+	// Hint system functions
+	function openHintModal() {
+		soundManager.playClick();
+		showHintModal = true;
+	}
+
+	function handleHintRequested(event: CustomEvent) {
+		const { tier } = event.detail;
+		useHint();
+		hintsRemaining--;
+		soundManager.playNotification();
+		console.log(`Hint tier ${tier} requested. ${hintsRemaining} hints remaining.`);
+	}
+
+	// Room transition functions
+	function triggerRoomTransition(fromRoom: string, toRoom: string) {
+		transitionFromRoom = fromRoom;
+		transitionToRoom = toRoom;
+		showRoomTransition = true;
+		soundManager.play('room-transition');
+	}
+
+	function handleRoomTransitionContinue() {
+		showRoomTransition = false;
+		currentRoomId = transitionToRoom;
+
+		// Show story narrative for new room
+		storyNarrativeType = 'intro';
+		storyRoomId = transitionToRoom;
+		showStoryNarrative = true;
+	}
+
+	// Story narrative functions
+	function handleStoryContinue() {
+		showStoryNarrative = false;
+	}
+
+	// Puzzle completion handler
+	function handlePuzzleSolved() {
+		// Swap player roles
+		performRoleSwap();
+
+		// Show discovery narrative
+		storyNarrativeType = 'discovery';
+		storyRoomId = currentRoomId;
+		showStoryNarrative = true;
+
+		soundManager.playPuzzleSolved();
+	}
+
+	// Victory/Defeat handlers
+	function triggerVictory() {
+		showVictoryScreen = true;
+		soundManager.playVictory();
+	}
+
+	function triggerDefeat(reason: 'timeout' | 'disconnected' | 'abandoned') {
+		defeatReason = reason;
+		showDefeatScreen = true;
+		soundManager.playDefeat();
+	}
+
+	function handleRestart() {
+		showVictoryScreen = false;
+		showDefeatScreen = false;
+		elapsedSeconds = 0;
+		hintsRemaining = 3;
+		currentAttempts = 0;
+		// Reset game state...
+	}
+
+	function handleReturnToLobby() {
+		showVictoryScreen = false;
+		showDefeatScreen = false;
+		leaveGame();
+	}
+
+	// Demo: Auto-show intro narrative on mount
+	onMount(() => {
+		// Show room intro after a delay
+		setTimeout(() => {
+			storyNarrativeType = 'intro';
+			storyRoomId = currentRoomId;
+			showStoryNarrative = true;
+		}, 1500);
+	});
 </script>
 
 <svelte:head>
@@ -373,7 +496,7 @@
 			</section>
 
 			<!-- Hints Button -->
-			<button class="hints-button btn-premium">
+			<button class="hints-button btn-premium" on:click={openHintModal}>
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<circle cx="12" cy="12" r="10"/>
 					<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
@@ -381,6 +504,9 @@
 				</svg>
 				<span>Request Hint</span>
 			</button>
+
+			<!-- Role Indicator -->
+			<RoleIndicator showCapabilities={true} />
 		</aside>
 	</main>
 
@@ -407,7 +533,7 @@
 			</svg>
 			<span>Items</span>
 		</button>
-		<button class="mobile-nav-btn hints">
+		<button class="mobile-nav-btn hints" on:click={openHintModal}>
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 				<circle cx="12" cy="12" r="10"/>
 				<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
@@ -495,6 +621,58 @@
 				</div>
 			</div>
 		</div>
+	{/if}
+
+	<!-- Hint Modal -->
+	<HintModal
+		bind:isOpen={showHintModal}
+		puzzleName={currentPuzzleName}
+		hints={currentPuzzleHints}
+		currentAttempts={currentAttempts}
+		hintsRemaining={hintsRemaining}
+		on:hintRequested={handleHintRequested}
+		on:close={() => showHintModal = false}
+	/>
+
+	<!-- Room Transition -->
+	<RoomTransition
+		bind:isOpen={showRoomTransition}
+		fromRoom={transitionFromRoom}
+		toRoom={transitionToRoom}
+		on:continue={handleRoomTransitionContinue}
+	/>
+
+	<!-- Story Narrative -->
+	<StoryNarrative
+		bind:isOpen={showStoryNarrative}
+		roomId={storyRoomId}
+		narrativeType={storyNarrativeType}
+		on:continue={handleStoryContinue}
+	/>
+
+	<!-- Victory Screen -->
+	{#if showVictoryScreen}
+		<VictoryScreen
+			totalPlayTime={elapsedSeconds * 1000}
+			hintsUsed={3 - hintsRemaining}
+			roomsCompleted={3}
+			playerNames={{ playerA: playerList[0]?.name || 'Player 1', playerB: playerList[1]?.name || 'Player 2' }}
+			onRestart={handleRestart}
+			onReturnToLobby={handleReturnToLobby}
+		/>
+	{/if}
+
+	<!-- Defeat Screen -->
+	{#if showDefeatScreen}
+		<DefeatScreen
+			totalPlayTime={elapsedSeconds * 1000}
+			roomsCompleted={0}
+			puzzlesSolved={0}
+			playerNames={{ playerA: playerList[0]?.name || 'Player 1', playerB: playerList[1]?.name || 'Player 2' }}
+			{defeatReason}
+			onRestart={handleRestart}
+			onReturnToLobby={handleReturnToLobby}
+		/>
 	{/if}
 </div>
 
@@ -1475,5 +1653,313 @@
 		clip: rect(0, 0, 0, 0);
 		white-space: nowrap;
 		border-width: 0;
+	}
+
+
+	/* ========================================
+	   ENHANCED INTERACTIONS
+	   ======================================== */
+
+	/* Inventory item hover effect */
+	.inventory-item {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.inventory-item::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.inventory-item:hover::before {
+		opacity: 1;
+	}
+
+	.inventory-item:hover {
+		background: rgba(212, 175, 55, 0.08);
+		border-color: rgba(212, 175, 55, 0.25);
+		transform: translateY(-3px) scale(1.02);
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+	}
+
+	.inventory-item:active {
+		transform: translateY(-1px) scale(1);
+	}
+
+	/* Panel header hover effect */
+	.panel-header.clickable {
+		position: relative;
+	}
+
+	.panel-header.clickable::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.panel-header.clickable:hover::after {
+		opacity: 1;
+	}
+
+	/* Mobile nav button active state */
+	.mobile-nav-btn {
+		position: relative;
+	}
+
+	.mobile-nav-btn::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%) scaleX(0);
+		width: 24px;
+		height: 2px;
+		background: var(--accent-gold);
+		border-radius: 1px;
+		transition: transform 0.25s ease;
+	}
+
+	.mobile-nav-btn.active::after {
+		transform: translateX(-50%) scaleX(1);
+	}
+
+	/* Hints button pulse effect */
+	.hints-button {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.hints-button::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.hints-button:hover::before {
+		opacity: 1;
+	}
+
+	.hints-button::after {
+		content: '';
+		position: absolute;
+		inset: -2px;
+		border-radius: inherit;
+		border: 2px solid transparent;
+		pointer-events: none;
+		transition: border-color 0.3s ease;
+	}
+
+	.hints-button:focus-visible::after {
+		border-color: rgba(255, 255, 255, 0.3);
+	}
+
+
+	/* ========================================
+	   TOGGLE BUTTON STYLES
+	   ======================================== */
+
+	.toggle-btn {
+		position: relative;
+		overflow: hidden;
+		min-width: 50px;
+		transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.toggle-btn::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: rgba(74, 222, 128, 0.15);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.toggle-btn.active {
+		background: rgba(74, 222, 128, 0.15);
+		border-color: rgba(74, 222, 128, 0.35);
+		color: #4ade80;
+	}
+
+	.toggle-btn:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	}
+
+
+	/* ========================================
+	   MODAL ENHANCEMENTS
+	   ======================================== */
+
+	.modal-overlay {
+		animation: overlayFadeIn 0.3s ease-out;
+	}
+
+	@keyframes overlayFadeIn {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
+
+	.settings-modal {
+		animation: modalSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	@keyframes modalSlideUp {
+		from {
+			opacity: 0;
+			transform: translate(-50%, -50%) translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translate(-50%, -50%) translateY(0);
+		}
+	}
+
+	.close-btn {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.close-btn::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: rgba(239, 68, 68, 0.1);
+		opacity: 0;
+		transition: opacity 0.2s ease;
+	}
+
+	.close-btn:hover {
+		background: rgba(239, 68, 68, 0.1);
+		border-color: rgba(239, 68, 68, 0.3);
+		color: #ef4444;
+		transform: rotate(90deg);
+	}
+
+	.close-btn:hover::before {
+		opacity: 1;
+	}
+
+
+	/* ========================================
+	   MOBILE SHEET ENHANCEMENTS
+	   ======================================== */
+
+	.mobile-sheet {
+		animation: sheetSlideUpEnhanced 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	@keyframes sheetSlideUpEnhanced {
+		from {
+			transform: translateY(100%);
+			opacity: 0.8;
+		}
+		65% {
+			transform: translateY(-2%);
+		}
+		100% {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+
+	.sheet-handle {
+		position: relative;
+		overflow: hidden;
+		cursor: grab;
+	}
+
+	.sheet-handle::before,
+	.sheet-handle::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		width: 2px;
+		height: 4px;
+		background: rgba(212, 175, 55, 0.3);
+		border-radius: 1px;
+	}
+
+	.sheet-handle::before {
+		left: 6px;
+	}
+
+	.sheet-handle::after {
+		right: 6px;
+	}
+
+
+	/* ========================================
+	   LOADING STATE ANIMATIONS
+	   ======================================== */
+
+	.player-item.placeholder {
+		position: relative;
+	}
+
+	.player-item.placeholder::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			90deg,
+			transparent 0%,
+			rgba(255, 255, 255, 0.05) 50%,
+			transparent 100%
+		);
+		background-size: 200% 100%;
+		animation: shimmer 2s ease-in-out infinite;
+	}
+
+	@keyframes shimmer {
+		0% { background-position: 200% 0; }
+		100% { background-position: -200% 0; }
+	}
+
+
+	/* ========================================
+	   PLAYER AVATAR ANIMATION
+	   ======================================== */
+
+	.player-avatar {
+		transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.player-item:hover .player-avatar {
+		transform: scale(1.05);
+	}
+
+
+	/* ========================================
+	   CONNECTION STATUS ENHANCEMENT
+	   ======================================== */
+
+	.connection-status {
+		transition: all 0.3s ease;
+	}
+
+	.connection-status:not(.connected) {
+		animation: connectionPulse 1.5s ease-in-out infinite;
+	}
+
+	@keyframes connectionPulse {
+		0%, 100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.7;
+		}
 	}
 </style>

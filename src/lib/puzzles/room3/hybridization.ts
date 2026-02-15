@@ -260,9 +260,10 @@ export function startRound(state: HybridizationState): HybridizationState {
 	const shownParents = getParentsForOffspring(targetOffspring, state.data.parentPlants);
 
 	// Increase difficulty with each round (shorter show time)
+	// BUT keep minimum at 3 seconds for fairness
 	const baseDuration = 5000; // 5 seconds base
 	const roundNumber = state.data.successfulCrosses.length;
-	const showDuration = Math.max(2000, baseDuration - (roundNumber * 500));
+	const showDuration = Math.max(3000, baseDuration - (roundNumber * 500)); // Min 3 seconds
 
 	return {
 		...state,

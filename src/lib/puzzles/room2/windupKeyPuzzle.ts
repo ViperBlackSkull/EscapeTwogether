@@ -3,8 +3,8 @@
  *
  * A coordination puzzle where both players turn keys at the same speed and direction.
  * Player A controls the left key, Player B controls the right key.
- * Both must turn at the same speed (within 15% tolerance) and same direction.
- * Must maintain synchronization for 5 seconds to complete.
+ * Both must turn at the same speed (within 25% tolerance) and same direction.
+ * Must maintain synchronization for 3 seconds to complete.
  */
 
 import type { PuzzleState, PuzzleHint, PlayerRole } from '$lib/types';
@@ -28,8 +28,8 @@ export interface WindupKeyPuzzleData {
 	playerBKey: KeyState;
 
 	// Synchronization settings
-	speedTolerance: number; // 15% difference allowed
-	requiredSyncDuration: number; // 5000ms
+	speedTolerance: number; // 25% difference allowed
+	requiredSyncDuration: number; // 3000ms
 
 	// Sync tracking
 	isSynchronized: boolean;
@@ -60,8 +60,8 @@ export function createInitialWindupKeyState(): WindupKeyPuzzleData {
 			speed: 0,
 			lastUpdateTimestamp: now,
 		},
-		speedTolerance: 0.15, // 15%
-		requiredSyncDuration: 5000, // 5 seconds
+		speedTolerance: 0.25, // Increased to 25% for better playability
+		requiredSyncDuration: 3000, // Reduced to 3 seconds
 		isSynchronized: false,
 		syncStartTime: null,
 		syncedDuration: 0,
@@ -241,12 +241,12 @@ export const WINDUP_KEY_HINTS: PuzzleHint[] = [
 	},
 	{
 		tier: 2,
-		text: "Choose clockwise or counter-clockwise together. Then adjust your speeds to match within 15% of each other. A progress bar will show when you're synchronized.",
+		text: "Choose clockwise or counter-clockwise together. Then adjust your speeds to match within 25% of each other. A progress bar will show when you're synchronized.",
 		triggerAttempts: 6,
 	},
 	{
 		tier: 3,
-		text: "Stay synchronized for 5 full seconds. The progress bar fills as you maintain sync. If it resets, you lost sync - communicate your speed numbers to match precisely!",
+		text: "Stay synchronized for 3 full seconds. The progress bar fills as you maintain sync. If it resets, you lost sync - communicate your speed numbers to match precisely!",
 		triggerAttempts: 10,
 	},
 ];

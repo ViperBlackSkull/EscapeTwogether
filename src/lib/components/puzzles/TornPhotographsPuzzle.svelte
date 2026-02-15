@@ -9,6 +9,7 @@
 		FrameOutline
 	} from '$lib/puzzles/room1/torn-photographs';
 	import { tornPhotograph } from '$lib/assets/puzzles/room1';
+	import { puzzleImages } from '$lib/assets/images';
 
 	// Import the sub-components
 	import PuzzleContainer from './PuzzleContainer.svelte';
@@ -60,7 +61,17 @@
 		</svg>
 	`;
 
-	// Piece SVG template with index
+	// Piece SVG template with index - uses generated photograph asset as background
+	function getPieceStyle(index: number): { backgroundImage: string; overlayColor: string } {
+		const colors = ['#d4a574', '#c4956a', '#b38b60', '#c9a87c', '#bfa070'];
+		const overlayColor = colors[index % colors.length];
+		return {
+			backgroundImage: `url(${puzzleImages.cluePhotograph})`,
+			overlayColor
+		};
+	}
+
+	// Legacy SVG fallback for pieces
 	function getPieceSvg(index: number, description: string): string {
 		const colors = ['#d4a574', '#c4956a', '#b38b60', '#c9a87c', '#bfa070'];
 		const color = colors[index % colors.length];

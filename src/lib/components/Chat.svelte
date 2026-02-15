@@ -209,4 +209,92 @@
 	.chat-messages {
 		scroll-behavior: smooth;
 	}
+
+	/* Message animations */
+	.message-wrapper {
+		animation: messageSlideIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	@keyframes messageSlideIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Message bubble hover effect */
+	.message-bubble {
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.message-bubble:hover {
+		transform: scale(1.01);
+	}
+
+	/* Send button enhanced */
+	.send-button {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.send-button::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+		opacity: 0;
+		transition: opacity 0.2s ease;
+	}
+
+	.send-button:hover:not(:disabled) {
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(244, 164, 96, 0.3);
+	}
+
+	.send-button:hover:not(:disabled)::before {
+		opacity: 1;
+	}
+
+	.send-button:active:not(:disabled) {
+		transform: translateY(0);
+	}
+
+	/* Input focus animation */
+	.chat-input input {
+		transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.chat-input input:focus {
+		transform: scale(1.01);
+		box-shadow: 0 0 0 3px rgba(244, 164, 96, 0.15);
+	}
+
+	/* Empty state animation */
+	.empty-state {
+		animation: fadeInScale 0.4s ease-out;
+	}
+
+	@keyframes fadeInScale {
+		from {
+			opacity: 0;
+			transform: scale(0.95);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+
+	/* Header icon pulse */
+	.chat-header svg {
+		transition: transform 0.3s ease;
+	}
+
+	.chat-header:hover svg {
+		transform: scale(1.1);
+	}
 </style>

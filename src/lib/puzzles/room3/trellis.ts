@@ -87,9 +87,17 @@ const HINTS: PuzzleHint[] = [
 	}
 ];
 
-// Create the trellis grid
+// Create the trellis grid with FIXED post heights (not random) for solvability
 function createTrellisGrid(): TrellisCell[][] {
 	const grid: TrellisCell[][] = [];
+
+	// Fixed post height layout for consistent solvability
+	// Heights: 0 = front, 1 = middle, 2 = back
+	const postHeights: Record<string, number> = {
+		'0,0': 0, '2,0': 1, '4,0': 2, '6,0': 1,
+		'0,2': 1, '2,2': 2, '4,2': 0, '6,2': 2,
+		'0,4': 2, '2,4': 0, '4,4': 1, '6,4': 0
+	};
 
 	for (let y = 0; y < GRID_HEIGHT; y++) {
 		const row: TrellisCell[] = [];
@@ -99,10 +107,11 @@ function createTrellisGrid(): TrellisCell[][] {
 			// Create wires between posts
 			const isWire = !isPost && (x % 2 === 0 || y % 2 === 0);
 
+			const key = `${x},${y}`;
 			row.push({
 				position: { x, y },
 				type: isPost ? 'post' : isWire ? 'wire' : 'empty',
-				height: isPost ? Math.floor(Math.random() * GRID_DEPTH) : undefined
+				height: isPost ? (postHeights[key] ?? 1) : undefined
 			});
 		}
 		grid.push(row);

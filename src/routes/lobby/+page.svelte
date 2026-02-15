@@ -318,32 +318,188 @@
 		40% { transform: scale(1); opacity: 1; }
 	}
 
+	@keyframes fadeInSlide {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes pulseGlow {
+		0%, 100% {
+			box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+		}
+		50% {
+			box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+		}
+	}
+
+	/* Card hover lift effect */
+	.card-premium {
+		transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.card-premium:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+	}
+
 	/* Hover effects */
+	.copy-btn {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.copy-btn::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
 	.copy-btn:hover {
 		background: rgba(212, 175, 55, 0.15) !important;
 		border-color: rgba(212, 175, 55, 0.35) !important;
-		transform: translateY(-1px);
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	.copy-btn:hover::before {
+		opacity: 1;
+	}
+
+	.copy-btn.success {
+		animation: successPop 0.3s ease-out;
+	}
+
+	@keyframes successPop {
+		0% { transform: scale(1); }
+		50% { transform: scale(1.05); }
+		100% { transform: scale(1); }
+	}
+
+	.start-btn {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.start-btn::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
 	}
 
 	.start-btn:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 30px rgba(212, 175, 55, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+		transform: translateY(-3px);
+		box-shadow: 0 12px 35px rgba(212, 175, 55, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+	}
+
+	.start-btn:hover::before {
+		opacity: 1;
+	}
+
+	.start-btn:active {
+		transform: translateY(-1px);
+	}
+
+	.leave-btn {
+		position: relative;
+		overflow: hidden;
 	}
 
 	.leave-btn:hover {
-		background: rgba(255, 255, 255, 0.05) !important;
-		border-color: rgba(255, 255, 255, 0.2) !important;
-		color: rgba(255, 255, 255, 0.8) !important;
+		background: rgba(239, 68, 68, 0.1) !important;
+		border-color: rgba(239, 68, 68, 0.3) !important;
+		color: #ef4444 !important;
+		transform: translateY(-1px);
+	}
+
+	.player-card {
+		transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	.player-card:hover {
 		background: rgba(255, 255, 255, 0.04) !important;
 		border-color: rgba(255, 255, 255, 0.1) !important;
+		transform: translateX(4px);
+	}
+
+	/* Empty slot pulse */
+	.empty-slot {
+		animation: emptySlotPulse 2s ease-in-out infinite;
+	}
+
+	@keyframes emptySlotPulse {
+		0%, 100% {
+			border-color: rgba(255, 255, 255, 0.12);
+			background: rgba(255, 255, 255, 0.02);
+		}
+		50% {
+			border-color: rgba(255, 255, 255, 0.18);
+			background: rgba(255, 255, 255, 0.04);
+		}
+	}
+
+	/* Ready state animation */
+	.ready-indicator {
+		animation: readyBounce 1s ease-out;
+	}
+
+	@keyframes readyBounce {
+		0% { transform: scale(0); }
+		50% { transform: scale(1.2); }
+		100% { transform: scale(1); }
+	}
+
+	/* Partner notification slide */
+	.partner-notification {
+		animation: slideInFromTop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	@keyframes slideInFromTop {
+		from {
+			opacity: 0;
+			transform: translateY(-10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Connection pulse */
+	.status-pulse.connected {
+		animation: statusPulse 2s ease-in-out infinite;
+	}
+
+	@keyframes statusPulse {
+		0%, 100% { opacity: 1; transform: scale(1); }
+		50% { opacity: 0.7; transform: scale(0.9); }
+	}
+
+	/* Focus states */
+	button:focus-visible {
+		outline: 2px solid #d4af37;
+		outline-offset: 3px;
+		box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
 	}
 
 	/* Responsive */
 	@media (max-width: 480px) {
 		.header-title { font-size: 1.875rem !important; }
 		.room-code-value { font-size: 1.75rem !important; }
+
+		.card-premium {
+			padding: 1.5rem !important;
+		}
 	}
 </style>

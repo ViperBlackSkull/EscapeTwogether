@@ -82,8 +82,8 @@ export function createInitialGearAlignmentState(): GearAlignmentPuzzleData {
 		playerBSelectedGear: null,
 		rotationSpeed: 5,
 		allAlignedStartTime: null,
-		requiredAlignmentTime: 2000,
-		alignmentTolerance: 15, // degrees
+		requiredAlignmentTime: 1500, // Reduced from 2000ms to 1500ms
+		alignmentTolerance: 20, // Increased from 15 to 20 degrees
 	};
 }
 
@@ -218,12 +218,12 @@ export const GEAR_ALIGNMENT_HINTS: PuzzleHint[] = [
 	},
 	{
 		tier: 2,
-		text: "Each gear has a mark that needs to point upward (12 o'clock position). The marks are at different positions on each gear. Tell your partner how much to rotate each gear.",
+		text: "Each gear has a mark that needs to point upward (12 o'clock position). The marks are at different positions on each gear. Tell your partner how much to rotate each gear. Marks are aligned within 20 degrees.",
 		triggerAttempts: 6,
 	},
 	{
 		tier: 3,
-		text: "All marks must be at the top simultaneously for 2 seconds. Connected gears rotate together but at different speeds based on their teeth count. Start from the largest gear and work outward.",
+		text: "All marks must be at the top simultaneously for 1.5 seconds. Connected gears rotate together but at different speeds based on their teeth count. Start from the largest gear and work outward.",
 		triggerAttempts: 10,
 	},
 ];

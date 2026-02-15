@@ -122,8 +122,8 @@
 		{/if}
 
 		<!-- Main card -->
-		<div class="w-full max-w-lg">
-			<div class="bg-deep-navy/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-dusty-rose/10">
+		<div class="w-full max-w-lg page-slide-in">
+			<div class="card-premium bg-deep-navy/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-dusty-rose/10 transition-all duration-300 hover:shadow-3xl">
 				<!-- Room code section -->
 				<div class="text-center mb-8">
 					<p class="text-sm text-dusty-rose/60 mb-4 uppercase tracking-widest font-medium">
@@ -134,8 +134,9 @@
 					<div class="flex items-center justify-center gap-2 md:gap-3 mb-4">
 						{#each roomCodeChars as char, i}
 							<div
-								class="w-14 h-16 md:w-16 md:h-20 bg-soft-black/60 border-2 border-antique-gold/40 rounded-lg
+								class="room-code-char w-14 h-16 md:w-16 md:h-20 bg-soft-black/60 border-2 border-antique-gold/40 rounded-lg
 									flex items-center justify-center shadow-lg"
+								style="animation-delay: {i * 0.1}s;"
 							>
 								<span class="text-3xl md:text-4xl font-display font-bold text-antique-gold">
 									{char}
@@ -240,3 +241,99 @@
 		</div>
 	</div>
 </main>
+
+<style>
+	/* Page entrance animation */
+	.page-slide-in {
+		animation: slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+	}
+
+	@keyframes slideIn {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Card hover effect */
+	.card-premium:hover {
+		border-color: rgba(212, 175, 55, 0.2);
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(212, 175, 55, 0.08);
+	}
+
+	/* Room code character animation */
+	.room-code-char {
+		animation: charPop 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+		transition: all 0.25s ease;
+	}
+
+	.room-code-char:hover {
+		transform: translateY(-4px) scale(1.05);
+		border-color: rgba(139, 115, 85, 0.6);
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+	}
+
+	@keyframes charPop {
+		from {
+			opacity: 0;
+			transform: scale(0.8) translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1) translateY(0);
+		}
+	}
+
+	/* Copy button enhanced transitions */
+	button {
+		position: relative;
+		overflow: hidden;
+	}
+
+	button::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	button:hover::before {
+		opacity: 1;
+	}
+
+	/* Partner notification animation */
+	.fixed.top-4 {
+		animation: notifySlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	@keyframes notifySlideIn {
+		from {
+			opacity: 0;
+			transform: translateX(-50%) translateY(-20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
+	}
+
+	/* Focus states for accessibility */
+	button:focus-visible {
+		outline: 2px solid #d4af37;
+		outline-offset: 3px;
+		box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+	}
+
+	/* Touch targets for mobile */
+	@media (pointer: coarse) {
+		button {
+			min-height: 44px;
+		}
+	}
+</style>

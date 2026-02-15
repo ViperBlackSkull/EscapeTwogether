@@ -91,34 +91,34 @@ const PHOTO_PIECES: Omit<PhotoPiece, 'placed'>[] = [
 	}
 ];
 
-// Frame clues for Player B
+// Frame clues for Player B - cryptic, requiring interpretation
 const FRAME_CLUES: string[] = [
-	'Curtains & Light',      // 0
-	'Dark Hair & Flower',    // 1
-	'Frame Edge',            // 2
-	'Fan & Hand',            // 3
-	'Smile & Hope',          // 4
-	'Dress & Pearls',        // 5
-	'Chair & Embroidery',    // 6
-	'Floral Skirt',          // 7
-	'Rug Pattern'            // 8
+	'Where morning first touches the room',      // 0 - Curtains & Light (implied by position and lighting)
+	'Adorned for a special evening',             // 1 - Dark Hair & Flower (implied by decoration)
+	'Framed by the hands of time',               // 2 - Frame Edge (implied by boundary)
+	'A gesture of gentle grace',                 // 3 - Fan & Hand (implied by movement)
+	'The light that shines from within',         // 4 - Smile & Hope (implied by emotion)
+	'Finery for a treasured occasion',           // 5 - Dress & Pearls (implied by adornment)
+	'Skilled hands at rest',                     // 6 - Chair & Embroidery (implied by craft)
+	'Nature woven into fabric',                  // 7 - Floral Skirt (implied by pattern)
+	'Beneath her feet, a tapestry of home'       // 8 - Rug Pattern (implied by floor)
 ];
 
 // Hints for the puzzle
 const HINTS: PuzzleHint[] = [
 	{
 		tier: 1,
-		text: 'Look at the descriptions carefully. Some pieces mention specific objects that match the frame clues.',
+		text: 'Player A: Describe the objects and textures you see, not just their names. Player B: Interpret the poetic clues literally.',
 		triggerAttempts: 3
 	},
 	{
 		tier: 2,
-		text: 'The center piece is the most important - it shows the person in the photograph. Match the smile to "Smile & Hope".',
+		text: 'The center piece shows the person\'s face - "the light that shines from within." Corner pieces are boundaries: morning light, framing hands, skilled hands, and the tapestry below.',
 		triggerAttempts: 6
 	},
 	{
 		tier: 3,
-		text: 'Corner pieces go in corners, edge pieces in edges. Match: Top-left=Curtain, Top-right=Frame, Bottom-left=Chair, Bottom-right=Rug.',
+		text: 'Match by position: Top-left needs light, Top-center needs something decorative, Top-right is a boundary. Middle row: hand gesture, face, finery. Bottom: craft, nature pattern, floor covering.',
 		triggerAttempts: 10
 	}
 ];
