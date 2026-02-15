@@ -1,218 +1,281 @@
-# EscapeTogether
+# EscapeTwogether 🎮
 
-A cooperative puzzle escape room game designed for couples. Two players work together to solve puzzles that require genuine communication, trust, and teamwork. Inspired by "Keep Talking and Nobody Explodes" and "We Were Here" series, but with a romantic, intimate atmosphere.
+A cooperative multiplayer escape room game built with SvelteKit, PixiJS, and Socket.IO. Work together with a partner to solve puzzles and escape mysterious rooms in real-time!
 
-## Game Overview
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Svelte](https://img.shields.io/badge/Svelte-4.2.0-orange)](https://svelte.dev/)
+[![Node](https://img.shields.io/badge/Node-20%2B-green)](https://nodejs.org/)
 
-In EscapeTogether, each player sees things the other cannot. The core gameplay loop is:
-1. **See** - Each player observes different information
-2. **Describe** - Communicate what you see to your partner
-3. **Understand** - Work together to comprehend the puzzle
-4. **Act Together** - Coordinate to solve and progress
+## ✨ Features
 
-### The Three Rooms
+### Core Gameplay
+- 🎭 **Asymmetric Roles** - Each player has unique abilities and perspectives
+- 🧩 **Interactive Puzzles** - Drag-and-drop puzzles with real-time synchronization
+- 🎨 **Beautiful Graphics** - PixiJS-powered canvas rendering with particle effects
+- 🎵 **Immersive Audio** - Dynamic soundscapes and puzzle feedback
 
-1. **The Attic** - Grandmother's Love Letters & Lost Memories
-   - Discover a locked trunk with decades of encoded love letters
-   - 5 puzzles, ~20 minutes playtime
-   - Theme: Warm, nostalgic, filled with golden light
+### Multiplayer
+- 🌐 **Real-time Sync** - WebSocket-based state synchronization
+- 💬 **In-Game Chat** - Coordinate with your partner
+- 🔄 **Auto-Reconnect** - Seamless reconnection if connection drops
+- 📱 **Mobile Support** - Touch-optimized controls and responsive design
 
-2. **The Clock Tower** - Time & Connection Across Distance
-   - A century-old story of separated lovers
-   - 6 puzzles, ~30 minutes playtime
-   - Theme: Romantic, mysterious, moonlit
+### Accessibility
+- ♿ **WCAG 2.1 AA** - Comprehensive accessibility support
+- 🎹 **Full Keyboard Nav** - Complete keyboard accessibility
+- 🔊 **Screen Reader Support** - Enhanced ARIA labels and announcements
+- 🎨 **High Contrast Mode** - Improved visibility options
 
-3. **The Garden Conservatory** - Growth & New Beginnings
-   - Help a rare flower bloom through light, water, and care
-   - 7 puzzles, ~35 minutes playtime
-   - Theme: Hopeful, alive, growing
+### Performance
+- ⚡ **Lazy Loading** - Code splitting and on-demand loading
+- 🖼️ **Image Optimization** - WebP conversion and responsive images
+- 🎯 **Bundle Optimization** - Tree-shaking and minification
+- 📊 **Performance Monitoring** - Built-in health checks and metrics
 
-## Features
-
-- **Asymmetric Information** - Each player sees different aspects of puzzles
-- **Role Rotation** - Players switch between Explorer and Analyst roles
-- **Real-time Communication** - Built-in chat system (or use external voice chat)
-- **AI-Powered Hints** - Adaptive hint system based on player behavior
-- **Mobile Support** - Touch controls, pinch-to-zoom, responsive design
-- **Particle Effects** - Ambient dust motes, sparkles, and celebration effects
-- **Sound Design** - Atmospheric music and interaction sounds
-
-## Tech Stack
-
-| Category | Technology |
-|----------|------------|
-| Frontend Framework | SvelteKit |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4 |
-| Game Rendering | PixiJS v8 |
-| Real-time Communication | Socket.IO |
-| Backend | Express + Node.js |
-| Containerization | Docker |
-
-## Project Structure
-
-```
-EscapeTwogether/
-├── src/
-│   ├── lib/
-│   │   ├── components/       # Svelte UI components
-│   │   │   ├── Chat.svelte   # In-game chat
-│   │   │   ├── GameCanvas.svelte  # PixiJS game canvas
-│   │   │   └── ParticleEffects.svelte
-│   │   ├── effects/          # Particle system
-│   │   │   └── ParticleSystem.ts
-│   │   ├── puzzles/          # Puzzle definitions by room
-│   │   │   ├── room1/        # The Attic puzzles
-│   │   │   ├── room2/        # Clock Tower puzzles
-│   │   │   └── room3/        # Garden Conservatory puzzles
-│   │   ├── audio.ts          # Sound management
-│   │   ├── socket.ts         # WebSocket client
-│   │   └── types.ts          # TypeScript type definitions
-│   └── routes/
-│       ├── +page.svelte      # Landing page
-│       ├── lobby/            # Waiting room
-│       └── game/             # Main game view
-├── server/
-│   ├── src/
-│   │   ├── index.ts          # Express + Socket.IO server
-│   │   └── RoomManager.ts    # Room state management
-│   └── package.json
-├── static/                   # Static assets
-├── tests/                    # E2E tests with Playwright
-├── Dockerfile
-└── docker-compose.yml
-```
-
-## Setup Instructions
+## 🚀 Quick Start
 
 ### Prerequisites
+- Node.js 20+ LTS
+- npm or yarn package manager
 
-- Node.js 18+
-- npm 9+
+### Installation
 
-### Quick Start
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/ViperBlackSkull/EscapeTwogether.git
-   cd EscapeTwogether
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   cd server && npm install && cd ..
-   ```
-
-3. Start both servers:
-   ```bash
-   ./init.sh
-   ```
-
-   Or manually in separate terminals:
-   ```bash
-   # Terminal 1 - Backend Server
-   cd server && npm run dev
-
-   # Terminal 2 - Frontend Dev Server
-   npm run dev
-   ```
-
-4. Open http://localhost:5173 in your browser
-
-### Docker Setup
-
+1. **Clone the repository:**
 ```bash
-docker-compose up --build
+git clone https://github.com/yourusername/escapetogether.git
+cd escapetogether
 ```
 
-- Frontend: http://localhost:80
-- Backend: http://localhost:3001
+2. **Install dependencies:**
+```bash
+npm install
+```
 
-## How to Play
+3. **Start development servers:**
+```bash
+# Terminal 1: Frontend
+npm run dev
 
-1. **Create a Room** - One player creates a room and gets a 4-character code
-2. **Share the Code** - Share the room code with your partner
-3. **Join the Room** - Your partner enters the code to join
-4. **Communicate** - Describe what you see to each other
-5. **Solve Puzzles** - Work together to solve each room's puzzles
-6. **Escape Together** - Complete all three rooms to finish the game!
+# Terminal 2: Backend
+cd server
+npm run dev
+```
 
-### Controls
+4. **Open your browser:**
+Navigate to `http://localhost:5173`
 
-| Action | Desktop | Mobile |
-|--------|---------|--------|
-| Move/Interact | Click | Tap |
-| Pan Camera | Click + Drag | Touch + Drag |
-| Zoom | Scroll Wheel | Pinch |
-| Open Chat | Type in chat box | Tap chat button |
+## 📖 Documentation
 
-## Development
+- **[Deployment Guide](./DEPLOYMENT.md)** - Production deployment instructions
+- **[Player Guide](./docs/PLAYER_GUIDE.md)** - How to play the game
+- **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
+
+## 🛠️ Development
 
 ### Available Scripts
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run preview  # Preview production build
-npm run check    # Type-check with svelte-check
-npm run lint     # Run ESLint
-npm run format   # Format with Prettier
+# Development
+npm run dev              # Start development server
+npm run build           # Build for production
+npm run preview         # Preview production build
+
+# Testing
+npm run test            # Run all tests
+npm run test:unit       # Unit tests
+npm run test:e2e        # End-to-end tests
+npm run test:coverage   # Test coverage report
+
+# Code Quality
+npm run lint            # Lint code
+npm run format          # Format code with Prettier
+npm run check           # Type checking with Svelte
+
+# Performance
+npm run build:analyze   # Analyze bundle size
+npm run lighthouse      # Run Lighthouse audit
+npm run optimize:images # Optimize images
+
+# Docker
+npm run docker:build    # Build Docker containers
+npm run docker:up       # Start containers
+npm run docker:down     # Stop containers
 ```
 
-### Adding New Puzzles
+### Project Structure
 
-1. Create a new file in `src/lib/puzzles/room{X}/`
-2. Export a `PuzzleDefinition` object with:
-   - `id`: Unique puzzle identifier
-   - `roomId`: Which room ('attic', 'clock_tower', 'garden_conservatory')
-   - `name`: Display name
-   - `description`: Player-facing description
-   - `requiredRoles`: Which roles can interact
-   - `solutionValidator`: Function to check if solved
-   - `hints`: Array of hint tiers
+```
+escapetogether/
+├── src/
+│   ├── lib/
+│   │   ├── components/     # Reusable components
+│   │   ├── puzzles/        # Puzzle components
+│   │   ├── stores/         # Svelte stores
+│   │   ├── utils/          # Utility functions
+│   │   ├── effects/        # Particle effects
+│   │   └── audio/          # Audio system
+│   ├── routes/             # SvelteKit routes
+│   └── app.html            # HTML template
+├── static/                 # Static assets
+├── server/                 # Socket.IO backend
+├── tests/                  # Test files
+├── docs/                   # Documentation
+└── scripts/                # Build scripts
+```
 
-### Code Style
+## 🎯 Game Mechanics
 
-- Use TypeScript for all new files
-- Follow existing ESLint/Prettier configuration
-- Write descriptive comments for complex logic
-- Add JSDoc comments for public functions
+### Puzzle System
 
-## Testing
+The game features multiple puzzle types:
+
+- **Matching Puzzles** - Match items based on visual characteristics
+- **Sequence Puzzles** - Enter correct orders and patterns
+- **Logic Puzzles** - Deductive reasoning challenges
+- **Coordination Puzzles** - Real-time collaborative tasks
+
+### Role System
+
+**Explorer:**
+- Can interact with room objects
+- Examines details up close
+- Manipulates puzzle pieces
+
+**Analyst:**
+- Access to codes and clues
+- Research capabilities
+- Strategy coordination
+
+### Rooms
+
+1. **The Attic** - Introduction puzzles
+2. **The Clock Tower** - Timing challenges
+3. **The Garden Conservatory** - Complex puzzles
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file:
 
 ```bash
-# Run all tests
-npm test
+# Frontend
+VITE_BACKEND_URL=http://localhost:3001
 
-# Run E2E tests
-npx playwright test
-
-# Run tests in UI mode
-npx playwright test --ui
+# Backend
+PORT=3001
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:5173
+SESSION_SECRET=your-secret-key
 ```
 
-## Contributing
+### Accessibility Settings
 
-Contributions are welcome! Please:
+Configure accessibility features in `src/lib/stores/accessibility.ts`:
+
+```typescript
+export const accessibilitySettings = {
+    highContrast: false,
+    reducedMotion: false,
+    largeText: false,
+    screenReaderMode: false,
+    focusIndicators: true
+};
+```
+
+## 🐳 Docker Deployment
+
+### Quick Start
+
+```bash
+# Build and start containers
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop containers
+docker-compose down
+```
+
+### Production
+
+```bash
+# Use production compose file
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+## 📊 Performance
+
+### Target Metrics
+
+- **Lighthouse Score:** >90
+- **Initial Load:** <3 seconds on 4G
+- **First Contentful Paint:** <1.5 seconds
+- **Time to Interactive:** <3 seconds
+- **No FPS drops** during gameplay
+
+### Optimization
+
+- Code splitting and lazy loading
+- Image optimization (WebP, responsive sizes)
+- Tree-shaking and dead code elimination
+- Gzip/Brotli compression
+- CDN-ready static assets
+
+## 🧪 Testing
+
+### Unit Tests
+
+```bash
+npm run test:unit
+```
+
+### E2E Tests
+
+```bash
+npm run test:e2e
+```
+
+### Test Coverage
+
+```bash
+npm run test:coverage
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see our [Contributing Guidelines](./CONTRIBUTING.md) for details.
+
+### Development Workflow
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Write tests
+5. Submit a pull request
 
-### Guidelines
+## 📝 License
 
-- Write meaningful commit messages
-- Add tests for new features
-- Update documentation as needed
-- Follow the existing code style
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-## License
+## 🙏 Acknowledgments
 
-MIT License - see LICENSE file for details
+- Svelte team for the amazing framework
+- PixiJS for the powerful graphics library
+- Socket.IO for real-time communication
+- The open-source community
 
-## Credits
+## 📞 Support
 
-Built with love for couples who enjoy solving puzzles together.
+- **Issues:** [GitHub Issues](https://github.com/yourusername/escapetogether/issues)
+- **Discord:** [Join our Discord](https://discord.gg/escapetogether)
+- **Email:** support@escapetogether.com
+
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/escapetogether&type=Date)](https://star-history.com/#yourusername/escapetogether&Date)
+
+---
+
+**Built with ❤️ by the EscapeTwogether team**

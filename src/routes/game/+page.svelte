@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import GameCanvas from '$lib/components/GameCanvas.svelte';
+	import ActivePuzzle from '$lib/components/ActivePuzzle.svelte';
 	import Chat from '$lib/components/Chat.svelte';
 	import HintModal from '$lib/components/HintModal.svelte';
 	import RoomTransition from '$lib/components/RoomTransition.svelte';
@@ -10,6 +11,9 @@
 	import StoryNarrative from '$lib/components/StoryNarrative.svelte';
 	import VictoryScreen from '$lib/components/VictoryScreen.svelte';
 	import RoleIndicator from '$lib/components/RoleIndicator.svelte';
+	import RoleBadge from '$lib/components/RoleBadge.svelte';
+	import RolePrompt from '$lib/components/RolePrompt.svelte';
+	import AudioSettings from '$lib/components/AudioSettings.svelte';
 	import {
 		currentRoom,
 		players,
@@ -22,8 +26,12 @@
 	} from '$lib/socket';
 	import type { Player } from '$lib/socket';
 	import { soundManager } from '$lib/audio';
-	import { gameState, useHint } from '$lib/stores/gameState';
-	import { currentPlayerRole, performRoleSwap } from '$lib/stores/roles';
+	import { gameState, useHint, setGamePhase, setCurrentRoom, completeRoom, isGameCompleted } from '$lib/stores/gameState';
+	import { getGameFlowCoordinator } from '$lib/gameFlowCoordinator';
+	import { currentPlayerRole, performRoleSwap, roleNotification } from '$lib/stores/roles';
+	import { preferences, difficultyDescription } from '$lib/stores/preferences';
+	import { narrativeManager, currentNarrative } from '$lib/utils/narrativeManager';
+	import { getHintsForPuzzle } from '$lib/data/hints';
 	import type { PuzzleHint } from '$lib/types';
 
 	// Inventory state
@@ -35,15 +43,13 @@
 	let showMobileSheet = false;
 	let mobileSheetTab: 'players' | 'chat' | 'inventory' = 'players';
 	let isMobile = false;
+	let showRolePrompt = false;
 
 	// Hint system state
 	let showHintModal = false;
-	let currentPuzzleName = 'The Music Box';
-	let currentPuzzleHints: PuzzleHint[] = [
-		{ tier: 1, text: 'Have you tried matching the gear sizes to the diagram?', triggerAttempts: 2 },
-		{ tier: 2, text: 'The small gear goes on the left spindle. The large gear connects to the main mechanism.', triggerAttempts: 4 },
-		{ tier: 3, text: 'Place small-left, medium-center, large-right. Then turn the key clockwise three times.', triggerAttempts: 6 }
-	];
+	let currentPuzzleName = 'Select a Puzzle';
+	let currentPuzzleId = '';
+	let currentPuzzleHints: PuzzleHint[] = [];
 	let currentAttempts = 0;
 	let hintsRemaining = 3;
 
@@ -57,6 +63,7 @@
 	let showStoryNarrative = false;
 	let storyNarrativeType: 'intro' | 'discovery' | 'completion' = 'intro';
 	let storyRoomId = 'attic';
+	let storyNarrativeText = '';
 
 	// Victory/Defeat state
 	let showVictoryScreen = false;
@@ -67,14 +74,30 @@
 	let elapsedSeconds = 0;
 	let timerInterval: ReturnType<typeof setInterval>;
 
+	// Game Loop state
+	let activePuzzleId: string | null = null;
+	let isGameActive = false;
+	let bothPlayersReady = false;
+
 	// Session data
 	let roomCode = '';
 	let playerName = '';
 	let hasJoinedRoom = false;
 
+	// Game flow coordinator
+	let gameFlowCoordinator = getGameFlowCoordinator();
+
 	$: room = $currentRoom;
 	$: playerList = $players;
 	$: connected = $isConnected;
+
+	// Subscribe to narrative manager
+	$: if ($currentNarrative) {
+		showStoryNarrative = $currentNarrative.text !== '';
+		storyNarrativeText = $currentNarrative.text;
+		storyRoomId = $currentNarrative.roomId;
+		storyNarrativeType = $currentNarrative.type;
+	}
 
 	// Format timer as MM:SS
 	$: timerDisplay = formatTime(elapsedSeconds);
@@ -148,6 +171,51 @@
 	$: if ($lastGameAction) {
 		console.log('Received game action from other player:', $lastGameAction);
 		handleRemoteGameAction($lastGameAction);
+	}
+
+	// Monitor player count for game initialization
+	$: if ($players.length === 2 && !isGameActive && !bothPlayersReady) {
+		bothPlayersReady = true;
+		initializeGameplay();
+	}
+
+	// Subscribe to game completion
+	$: if ($isGameCompleted && isGameActive) {
+		isGameActive = false;
+		handleGameCompletion();
+	}
+
+	function initializeGameplay() {
+		if (!bothPlayersReady) return;
+
+		console.log('Initializing gameplay with both players');
+		isGameActive = true;
+
+		// Initialize game flow coordinator
+		gameFlowCoordinator.initializeGame();
+
+		// Set game phase to playing
+		setGamePhase('playing');
+
+		// Start gameplay sounds
+		soundManager.playGameStart();
+
+		// Show intro narrative for current room
+		storyNarrativeType = 'intro';
+		storyRoomId = currentRoomId;
+		showStoryNarrative = true;
+	}
+
+	function handleGameCompletion() {
+		const progress = gameFlowCoordinator.getGameProgress();
+
+		if (progress.rooms.completed === progress.rooms.total) {
+			// Victory!
+			triggerVictory();
+		} else {
+			// Defeat (timeout or other)
+			triggerDefeat('timeout');
+		}
 	}
 
 	function handleRemoteGameAction(action: { action: string; payload: any }) {
@@ -244,15 +312,23 @@
 		showRoomTransition = false;
 		currentRoomId = transitionToRoom;
 
+		// Update game state room
+		setCurrentRoom(transitionToRoom as any);
+
 		// Show story narrative for new room
 		storyNarrativeType = 'intro';
 		storyRoomId = transitionToRoom;
 		showStoryNarrative = true;
+
+		// Play room-specific audio
+		soundManager.handleRoomChange(transitionToRoom as any);
 	}
 
 	// Story narrative functions
 	function handleStoryContinue() {
+		soundManager.playClick();
 		showStoryNarrative = false;
+		narrativeManager.closeNarrative();
 	}
 
 	// Puzzle completion handler
@@ -260,12 +336,20 @@
 		// Swap player roles
 		performRoleSwap();
 
+		// Notify game flow coordinator
+		if (activePuzzleId) {
+			gameFlowCoordinator.handlePuzzleCompleted(activePuzzleId);
+		}
+
 		// Show discovery narrative
 		storyNarrativeType = 'discovery';
 		storyRoomId = currentRoomId;
 		showStoryNarrative = true;
 
 		soundManager.playPuzzleSolved();
+
+		// Clear active puzzle
+		activePuzzleId = null;
 	}
 
 	// Victory/Defeat handlers
@@ -303,7 +387,74 @@
 			storyRoomId = currentRoomId;
 			showStoryNarrative = true;
 		}, 1500);
+
+		// Show role collaboration prompt after game starts
+		setTimeout(() => {
+			showRolePrompt = true;
+		}, 5000);
 	});
+
+	// Game Loop Functions
+	function startGameplay() {
+		if (!bothPlayersReady) {
+			console.log('Waiting for both players');
+			return;
+		}
+
+		isGameActive = true;
+		setGamePhase('playing');
+		soundManager.play('game-start');
+		console.log('Gameplay started');
+	}
+
+	function handlePuzzleStart(event: CustomEvent) {
+		const { puzzleId, puzzleName } = event.detail;
+		activePuzzleId = puzzleId;
+		currentPuzzleId = puzzleId;
+		currentPuzzleName = puzzleName || 'Puzzle';
+
+		// Load hints for this puzzle
+		currentPuzzleHints = getHintsForPuzzle(puzzleId);
+		currentAttempts = 0;
+		hintsRemaining = 3;
+
+		console.log('Starting puzzle:', puzzleId);
+		soundManager.play('puzzle-select');
+	}
+
+	function handlePuzzleSolvedEvent(event: CustomEvent) {
+		const { puzzleId } = event.detail;
+		activePuzzleId = null;
+
+		// Swap player roles
+		performRoleSwap();
+
+		// Show discovery narrative
+		storyNarrativeType = 'discovery';
+		storyRoomId = currentRoomId;
+		showStoryNarrative = true;
+
+		soundManager.playPuzzleSolved();
+
+		// Check if room is complete
+		checkRoomCompletion();
+	}
+
+	function checkRoomCompletion() {
+		// This would check if all puzzles in current room are solved
+		// For now, just show a completion message
+		console.log('Checking room completion for:', currentRoomId);
+	}
+
+	function handlePuzzleRequestHint() {
+		openHintModal();
+	}
+
+	function handleActivePuzzleReady() {
+		console.log('Active puzzle ready');
+	}
+
+
 </script>
 
 <svelte:head>
@@ -333,6 +484,9 @@
 					<span class="room-value">{room.code}</span>
 				</div>
 			{/if}
+
+			<!-- Role Badge (prominent display) -->
+			<RoleBadge role={$currentPlayerRole} size="medium" showLabel={true} animated={true} />
 		</div>
 
 		<div class="top-bar-center">
@@ -343,6 +497,15 @@
 					<polyline points="12 6 12 12 16 14"/>
 				</svg>
 				<span class="timer-value">{timerDisplay}</span>
+			</div>
+
+			<!-- Difficulty Tier Indicator -->
+			<div class="difficulty-indicator" title={$difficultyDescription}>
+				{#each Array($preferences.difficultyTier) as _}
+					<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="star-icon">
+						<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+					</svg>
+				{/each}
 			</div>
 		</div>
 
@@ -389,7 +552,13 @@
 
 			<div class="canvas-frame game-frame-premium" style="flex: 1; display: flex; flex-direction: column; min-height: 0; max-height: 700px; overflow: hidden;">
 				<div class="canvas-inner" style="width: 100%; height: 100%; flex: 1; min-height: 0;">
-					<GameCanvas
+					<ActivePuzzle
+						bind:puzzleId={activePuzzleId}
+						roomId={currentRoomId}
+						on:start={handlePuzzleStart}
+						on:solved={handlePuzzleSolvedEvent}
+						on:requestHint={handlePuzzleRequestHint}
+						on:ready={handleActivePuzzleReady}
 						on:interact={handleGameInteraction}
 						on:tap={handleTouchTap}
 					/>
@@ -429,9 +598,16 @@
 								</div>
 								<div class="player-info">
 									<span class="player-name">{player.name}</span>
-									{#if player.isHost}
-										<span class="player-badge">Host</span>
-									{/if}
+									<div class="player-badges">
+										{#if player.isHost}
+											<span class="player-badge host">Host</span>
+										{/if}
+										{#if player.role}
+											<span class="player-badge role" class:explorer={player.role === 'explorer'} class:analyst={player.role === 'analyst'}>
+												{player.role === 'explorer' ? '🧭 Explorer' : '🔍 Analyst'}
+											</span>
+										{/if}
+									</div>
 								</div>
 							</li>
 						{:else}
@@ -607,17 +783,26 @@
 				</button>
 			</div>
 			<div class="modal-content">
+				<!-- Audio Settings -->
+				<div class="audio-settings-section">
+					<h3>Audio Settings</h3>
+					<AudioSettings />
+				</div>
+
+				<hr class="settings-divider" />
+
+				<!-- Game Settings -->
 				<div class="setting-item">
-					<span>Sound Effects</span>
-					<button class="toggle-btn">ON</button>
+					<span>Notifications</span>
+					<button class="toggle-btn active">ON</button>
 				</div>
 				<div class="setting-item">
-					<span>Music</span>
-					<button class="toggle-btn">OFF</button>
+					<span>Show Role Prompts</span>
+					<button class="toggle-btn active">ON</button>
 				</div>
 				<div class="setting-item">
 					<span>Vibration</span>
-					<button class="toggle-btn">ON</button>
+					<button class="toggle-btn active">ON</button>
 				</div>
 			</div>
 		</div>
@@ -626,6 +811,7 @@
 	<!-- Hint Modal -->
 	<HintModal
 		bind:isOpen={showHintModal}
+		puzzleId={currentPuzzleId}
 		puzzleName={currentPuzzleName}
 		hints={currentPuzzleHints}
 		currentAttempts={currentAttempts}
@@ -647,6 +833,7 @@
 		bind:isOpen={showStoryNarrative}
 		roomId={storyRoomId}
 		narrativeType={storyNarrativeType}
+		customText={storyNarrativeText}
 		on:continue={handleStoryContinue}
 	/>
 
@@ -674,6 +861,9 @@
 			onReturnToLobby={handleReturnToLobby}
 		/>
 	{/if}
+
+	<!-- Role Collaboration Prompt -->
+	<RolePrompt bind:show={showRolePrompt} autoHide={true} delay={8000} />
 </div>
 
 <style>
@@ -824,6 +1014,25 @@
 		min-width: 60px;
 		text-align: center;
 		text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+	}
+
+	/* Difficulty Indicator */
+	.difficulty-indicator {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+		margin-left: 0.75rem;
+		padding: 0.25rem 0.5rem;
+		background: rgba(212, 175, 55, 0.08);
+		border: 1px solid rgba(212, 175, 55, 0.2);
+		border-radius: 6px;
+	}
+
+	.difficulty-indicator .star-icon {
+		width: 12px;
+		height: 12px;
+		color: var(--accent-gold);
+		filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
 	}
 
 	/* Connection Status */
@@ -1186,8 +1395,8 @@
 
 	.player-info {
 		display: flex;
-		align-items: center;
-		gap: 0.5rem;
+		flex-direction: column;
+		gap: 0.25rem;
 	}
 
 	.player-name {
@@ -1195,15 +1404,41 @@
 		color: var(--white);
 	}
 
+	.player-badges {
+		display: flex;
+		gap: 0.25rem;
+		flex-wrap: wrap;
+	}
+
 	.player-badge {
 		font-size: 0.625rem;
 		font-weight: 600;
-		color: var(--antique-gold);
 		padding: 0.125rem 0.375rem;
 		background: rgba(139, 115, 85, 0.2);
 		border-radius: 4px;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
+	}
+
+	.player-badge.host {
+		color: var(--antique-gold);
+		background: rgba(139, 115, 85, 0.2);
+	}
+
+	.player-badge.role {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	.player-badge.role.explorer {
+		color: #3B82F6;
+		background: rgba(59, 130, 246, 0.15);
+	}
+
+	.player-badge.role.analyst {
+		color: #F97316;
+		background: rgba(249, 115, 22, 0.15);
 	}
 
 	/* Chat Panel */
@@ -1535,6 +1770,26 @@
 
 	.modal-content {
 		padding: 1rem 1.5rem;
+	}
+
+	.audio-settings-section {
+		margin-bottom: 1.5rem;
+	}
+
+	.audio-settings-section h3 {
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--accent-gold);
+		margin: 0 0 1rem 0;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.settings-divider {
+		border: none;
+		height: 1px;
+		background: rgba(255, 255, 255, 0.1);
+		margin: 1.5rem 0;
 	}
 
 	.setting-item {

@@ -22,6 +22,14 @@
 
 	const dispatch = createEventDispatcher();
 
+	// Visual assets for enhanced immersion
+	const PUZZLE_ASSETS = {
+		photograph: puzzleImages.cluePhotograph,
+		ornateFrame: puzzleImages.victorianOrnament,
+		texture: puzzleImages.puzzleTexture,
+		magnifyingGlass: puzzleImages.magnifyingGlass
+	};
+
 	// Internal state
 	let selectedPiece: string | null = null;
 	let selectedFrame: string | null = null;
@@ -66,7 +74,7 @@
 		const colors = ['#d4a574', '#c4956a', '#b38b60', '#c9a87c', '#bfa070'];
 		const overlayColor = colors[index % colors.length];
 		return {
-			backgroundImage: `url(${puzzleImages.cluePhotograph})`,
+			backgroundImage: `url(${PUZZLE_ASSETS.photograph})`,
 			overlayColor
 		};
 	}
@@ -181,7 +189,12 @@
 	}
 
 	onMount(() => {
-		// Initialize any animations or setup
+		// Preload visual assets for smoother experience
+		const images = Object.values(PUZZLE_ASSETS);
+		images.forEach(src => {
+			const img = new Image();
+			img.src = src;
+		});
 	});
 </script>
 
@@ -335,13 +348,13 @@
 			{/if}
 		</div>
 
-		<!-- Communication hint -->
+		<!-- Communication hint with visual assets -->
 		<div class="communication-hint">
 			{#if isExplorer}
-				<span class="hint-icon">💡</span>
+				<img src={PUZZLE_ASSETS.magnifyingGlass} alt="Examine" class="hint-asset-icon" />
 				<span>Describe your pieces to help the Analyst find the right frame!</span>
 			{:else}
-				<span class="hint-icon">💡</span>
+				<img src={PUZZLE_ASSETS.ornateFrame} alt="Match" class="hint-asset-icon" />
 				<span>Listen to the Explorer's descriptions and match them to frame clues!</span>
 			{/if}
 		</div>
@@ -695,7 +708,7 @@
 	.communication-hint {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.75rem;
 		padding: 0.75rem 1rem;
 		background: rgba(255, 183, 77, 0.1);
 		border: 1px solid rgba(255, 183, 77, 0.2);
@@ -706,6 +719,14 @@
 
 	.hint-icon {
 		font-size: 1.25rem;
+	}
+
+	.hint-asset-icon {
+		width: 32px;
+		height: 32px;
+		object-fit: contain;
+		filter: sepia(0.3) brightness(1.1);
+		opacity: 0.9;
 	}
 
 	/* Responsive */

@@ -19,6 +19,17 @@
 
 	const dispatch = createEventDispatcher();
 
+	// Visual assets for immersive experience
+	const PUZZLE_ASSETS = {
+		clueNote: puzzleImages.clueNote,
+		magnifyingGlass: puzzleImages.magnifyingGlass,
+		treasureMap: puzzleImages.treasureMap,
+		ornateFrame: puzzleImages.victorianOrnament,
+		texture: puzzleImages.puzzleTexture,
+		secretCompartment: puzzleImages.secretCompartment,
+		compass: puzzleImages.compass
+	};
+
 	// Internal state
 	let firstNameInput: string = '';
 	let secondNameInput: string = '';
@@ -79,12 +90,8 @@
 	}
 
 	onMount(() => {
-		// Preload images
-		const images = [
-			puzzleImages.clueNote,
-			puzzleImages.magnifyingGlass,
-			puzzleImages.treasureMap
-		];
+		// Preload all visual assets
+		const images = Object.values(PUZZLE_ASSETS);
 		images.forEach(src => {
 			const img = new Image();
 			img.src = src;
@@ -116,7 +123,7 @@
 				<div class="room-view">
 					<!-- Room background -->
 					<div class="room-background">
-						<img src={puzzleImages.treasureMap} alt="Attic room" class="room-image" />
+						<img src={PUZZLE_ASSETS.treasureMap} alt="Attic room" class="room-image" />
 					</div>
 
 					<!-- Object layer -->
@@ -146,7 +153,7 @@
 
 					<!-- Magnifying glass indicator -->
 					<div class="tool-indicator">
-						<img src={puzzleImages.magnifyingGlass} alt="Magnifying glass" class="tool-icon" />
+						<img src={PUZZLE_ASSETS.magnifyingGlass} alt="Magnifying glass" class="tool-icon" />
 						<span>Click objects to examine them</span>
 					</div>
 
@@ -195,7 +202,7 @@
 
 					<!-- Clue note visual -->
 					<div class="clue-visual">
-						<img src={puzzleImages.clueNote} alt="Mysterious note" class="clue-image" />
+						<img src={PUZZLE_ASSETS.clueNote} alt="Mysterious note" class="clue-image" />
 						<p class="clue-hint">Match the hints to objects in the room</p>
 					</div>
 				</div>

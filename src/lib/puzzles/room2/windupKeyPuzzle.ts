@@ -60,6 +60,8 @@ export interface WindupKeyPuzzleData {
 
 	// Completion
 	puzzleComplete: boolean;
+	// Index signature for compatibility
+	[key: string]: unknown;
 }
 
 export interface WindupKeyPuzzleState extends PuzzleState {

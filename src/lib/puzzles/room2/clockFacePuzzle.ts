@@ -20,8 +20,8 @@ export const CLOCK_FACE_ASSETS = {
 	// Hourglass for time theme
 	hourglass: puzzleImages.hourglass,
 
-	// Cipher wheel can be used for clock hand rotation visual
-	handRotation: puzzleImages.cipherWheel,
+	// Dedicated clock hands image for hand rotation visual
+	handRotation: puzzleImages.clockHands,
 
 	// Ornate frame for clock
 	ornateFrame: puzzleImages.victorianOrnament,
@@ -66,6 +66,8 @@ export interface ClockFacePuzzleData {
 
 	// Completion
 	puzzleComplete: boolean;
+	// Index signature for compatibility
+	[key: string]: unknown;
 }
 
 export interface ClockFacePuzzleState extends PuzzleState {

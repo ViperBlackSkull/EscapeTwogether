@@ -13,8 +13,8 @@ export const MUSIC_BOX_ASSETS = {
 	musicBoxBackground: puzzleImages.puzzleTexture,
 	ornateFrame: puzzleImages.victorianOrnament,
 
-	// Gear-related imagery (cipher wheel can represent gears visually)
-	gearVisual: puzzleImages.cipherWheel,
+	// Gear-related imagery (dedicated gears collection image)
+	gearVisual: puzzleImages.gearsCollection,
 
 	// Reference materials
 	diagramBackground: puzzleImages.codebook,

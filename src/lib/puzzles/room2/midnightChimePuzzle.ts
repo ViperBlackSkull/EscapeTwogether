@@ -45,6 +45,8 @@ export interface MidnightChimePuzzleData {
 
 	// Completion
 	puzzleComplete: boolean;
+	// Index signature for compatibility
+	[key: string]: unknown;
 }
 
 export interface MidnightChimePuzzleState extends PuzzleState {

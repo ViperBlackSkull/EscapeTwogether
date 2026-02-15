@@ -2,7 +2,7 @@
  * PuzzleRenderer - Visual puzzle rendering system for EscapeTwogether
  * Handles SVG asset loading, PixiJS rendering, and animations for puzzles
  *
- * Supports both SVG assets from /puzzles/assets/ and PNG assets from /assets/images/puzzles/
+ * Supports both SVG assets from /assets/puzzles/ and PNG assets from /assets/images/puzzles/
  */
 
 import {
@@ -185,7 +185,7 @@ export class PuzzleRenderer {
 	 */
 	async loadPuzzleAssets(room: string, puzzleId: string): Promise<void> {
 		const roomKey = this.getRoomKey(room);
-		const assetBasePath = `/puzzles/assets/${roomKey}/${puzzleId}`;
+		const assetBasePath = `/assets/puzzles/${roomKey}/${puzzleId}`;
 
 		// Define standard puzzle assets
 		const assetManifest = this.getAssetManifest(roomKey, puzzleId);

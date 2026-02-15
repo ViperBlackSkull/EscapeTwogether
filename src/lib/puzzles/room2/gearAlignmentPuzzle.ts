@@ -13,8 +13,8 @@ export const GEAR_ALIGNMENT_PUZZLE_ID = 'room2_gear_alignment';
 
 // Visual assets for this puzzle
 export const GEAR_ALIGNMENT_ASSETS = {
-	// Cipher wheel for gear visuals
-	gearVisual: puzzleImages.cipherWheel,
+	// Dedicated gears collection for gear visuals
+	gearVisual: puzzleImages.gearsCollection,
 
 	// Vintage keys for key/lock theming
 	mechanicalElements: puzzleImages.antiqueKeys,
@@ -54,6 +54,8 @@ export interface GearAlignmentPuzzleData {
 	requiredAlignmentTime: number; // ms (2000)
 	// Alignment tolerance (degrees)
 	alignmentTolerance: number;
+	// Index signature for compatibility
+	[key: string]: unknown;
 }
 
 export interface GearAlignmentPuzzleState extends PuzzleState {

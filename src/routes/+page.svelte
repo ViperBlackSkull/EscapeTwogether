@@ -4,6 +4,8 @@
 	import { browser } from '$app/environment';
 	import { createRoom, joinRoom, connectSocket, isConnected } from '$lib/socket';
 	import { soundManager } from '$lib/audio';
+	import PreferencesQuiz from '$lib/components/PreferencesQuiz.svelte';
+	import { preferences, hasCompletedQuiz, primaryPlayerName } from '$lib/stores/preferences';
 
 	// Form state
 	let playerName = '';
@@ -11,6 +13,10 @@
 	let isLoading = false;
 	let errorMessage = '';
 	let connected = false;
+
+	// Preferences quiz state
+	let showPreferencesQuiz = false;
+	let shouldAutoShowQuiz = false;
 
 	// Room code validation (4 characters, alphanumeric)
 	const ROOM_CODE_REGEX = /^[A-Za-z0-9]{4}$/;
@@ -20,6 +26,23 @@
 		const unsubscribe = isConnected.subscribe((value) => {
 			connected = value;
 		});
+
+		// Pre-fill player name from preferences if available
+		if ($primaryPlayerName) {
+			playerName = $primaryPlayerName;
+		}
+
+		// Auto-show quiz on first visit if no preferences exist
+		if (!$hasCompletedQuiz) {
+			shouldAutoShowQuiz = true;
+			// Delay to let the page render first
+			setTimeout(() => {
+				if (shouldAutoShowQuiz) {
+					showPreferencesQuiz = true;
+				}
+			}, 1500);
+		}
+
 		return unsubscribe;
 	});
 
@@ -122,6 +145,27 @@
 			}
 		}
 	}
+
+	// Open preferences quiz
+	function openPreferencesQuiz() {
+		shouldAutoShowQuiz = false; // Cancel auto-show if user manually opens
+		soundManager.playClick();
+		showPreferencesQuiz = true;
+	}
+
+	// Handle preferences save
+	function handlePreferencesSave(event: CustomEvent) {
+		const { playerNames } = event.detail;
+		// Update the player name input with the saved name
+		if (playerNames.playerA) {
+			playerName = playerNames.playerA;
+		}
+	}
+
+	// Handle preferences close
+	function handlePreferencesClose() {
+		showPreferencesQuiz = false;
+	}
 </script>
 
 <svelte:head>
@@ -149,7 +193,20 @@
 	<!-- Main content container -->
 	<div class="container" style="width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; gap: 28px; position: relative; z-index: 1;">
 		<!-- Hero Section -->
-		<section class="hero stagger-1" style="text-align: center;">
+		<section class="hero stagger-1" style="text-align: center; position: relative;">
+			<!-- Settings Button (top right of hero) -->
+			<button
+				class="settings-btn"
+				on:click={openPreferencesQuiz}
+				aria-label="Open preferences"
+				title="Game Preferences"
+			>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/>
+					<path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+				</svg>
+			</button>
+
 			<div class="title-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 16px;">
 				<div class="title-icon" style="width: 48px; height: 48px; color: #d4af37; filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.5));" aria-hidden="true">
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 100%; height: 100%;">
@@ -269,6 +326,14 @@
 			<p style="font-size: 0.9rem; color: rgba(255,255,255,0.4); margin: 0; letter-spacing: 0.02em;">A cooperative puzzle game for two players</p>
 		</footer>
 	</div>
+
+	<!-- Preferences Quiz Modal -->
+	<PreferencesQuiz
+		bind:isOpen={showPreferencesQuiz}
+		initialPlayerName={playerName}
+		on:save={handlePreferencesSave}
+		on:close={handlePreferencesClose}
+	/>
 
 	<style>
 		@keyframes spin {
@@ -492,6 +557,41 @@
 	/* Hero Section */
 	.hero {
 		text-align: center;
+		position: relative;
+	}
+
+	/* Settings Button */
+	.settings-btn {
+		position: absolute;
+		top: 0;
+		right: -12px;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 10px;
+		color: rgba(255, 255, 255, 0.6);
+		cursor: pointer;
+		transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.settings-btn:hover {
+		background: rgba(212, 175, 55, 0.15);
+		border-color: rgba(212, 175, 55, 0.3);
+		color: #d4af37;
+		transform: rotate(45deg) scale(1.05);
+	}
+
+	.settings-btn:active {
+		transform: rotate(45deg) scale(0.95);
+	}
+
+	.settings-btn svg {
+		width: 20px;
+		height: 20px;
 	}
 
 	.title-wrapper {

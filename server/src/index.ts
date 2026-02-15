@@ -380,6 +380,211 @@ io.on('connection', (socket: PlayerSocket) => {
       console.error('Error handling message:', error);
     }
   });
+
+  // Handle cursor movement - broadcast to other players
+  socket.on('cursor:move', (data: { roomCode: string; x: number; y: number }) => {
+    try {
+      const { roomCode, x, y } = data;
+
+      if (!socket.playerId || !socket.playerName) {
+        return;
+      }
+
+      const room = roomManager.getRoom(roomCode);
+      if (!room) {
+        return;
+      }
+
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        return;
+      }
+
+      // Broadcast to other players (not sender)
+      socket.to(roomCode).emit('cursor:move', {
+        playerId: socket.playerId,
+        playerName: socket.playerName,
+        x,
+        y,
+        timestamp: Date.now()
+      });
+    } catch (error) {
+      console.error('Error handling cursor move:', error);
+    }
+  });
+
+  // Handle cursor ping - highlight location for attention
+  socket.on('cursor:ping', (data: { roomCode: string; x: number; y: number; message?: string }) => {
+    try {
+      const { roomCode, x, y, message } = data;
+
+      if (!socket.playerId || !socket.playerName) {
+        return;
+      }
+
+      const room = roomManager.getRoom(roomCode);
+      if (!room) {
+        return;
+      }
+
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        return;
+      }
+
+      console.log(`Cursor ping in room ${roomCode} from ${socket.playerName}`);
+
+      // Broadcast to all players (including sender for confirmation)
+      io.to(roomCode).emit('cursor:ping', {
+        playerId: socket.playerId,
+        playerName: socket.playerName,
+        x,
+        y,
+        message,
+        timestamp: Date.now()
+      });
+    } catch (error) {
+      console.error('Error handling cursor ping:', error);
+    }
+  });
+
+  // Handle puzzle state update - broadcast puzzle progress
+  socket.on('puzzle:state', (data: { roomCode: string; puzzleId: string; state: any }) => {
+    try {
+      const { roomCode, puzzleId, state } = data;
+
+      if (!socket.playerId) {
+        return;
+      }
+
+      const room = roomManager.getRoom(roomCode);
+      if (!room) {
+        return;
+      }
+
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        return;
+      }
+
+      console.log(`Puzzle state update for ${puzzleId} in room ${roomCode}`);
+
+      // Broadcast to other players (not sender)
+      socket.to(roomCode).emit('puzzle:state', {
+        playerId: socket.playerId,
+        puzzleId,
+        state,
+        timestamp: Date.now()
+      });
+    } catch (error) {
+      console.error('Error handling puzzle state:', error);
+    }
+  });
+
+  // Handle photo share - share completed puzzle pieces
+  socket.on('photo:share', (data: { roomCode: string; photoId: string; photoData: any }) => {
+    try {
+      const { roomCode, photoId, photoData } = data;
+
+      if (!socket.playerId || !socket.playerName) {
+        return;
+      }
+
+      const room = roomManager.getRoom(roomCode);
+      if (!room) {
+        return;
+      }
+
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        return;
+      }
+
+      console.log(`Photo share for ${photoId} in room ${roomCode} from ${socket.playerName}`);
+
+      // Broadcast to other players (not sender)
+      socket.to(roomCode).emit('photo:share', {
+        playerId: socket.playerId,
+        playerName: socket.playerName,
+        photoId,
+        photoData,
+        timestamp: Date.now()
+      });
+    } catch (error) {
+      console.error('Error handling photo share:', error);
+    }
+  });
+
+  // Handle player action broadcast - "Player X is examining..."
+  socket.on('player:action', (data: { roomCode: string; action: string; target?: string }) => {
+    try {
+      const { roomCode, action, target } = data;
+
+      if (!socket.playerId || !socket.playerName) {
+        return;
+      }
+
+      const room = roomManager.getRoom(roomCode);
+      if (!room) {
+        return;
+      }
+
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        return;
+      }
+
+      console.log(`Player action in room ${roomCode}: ${socket.playerName} is ${action}`);
+
+      // Broadcast to other players (not sender)
+      socket.to(roomCode).emit('player:action', {
+        playerId: socket.playerId,
+        playerName: socket.playerName,
+        action,
+        target,
+        timestamp: Date.now()
+      });
+    } catch (error) {
+      console.error('Error handling player action:', error);
+    }
+  });
+
+  // Handle reconnection state sync - provide current state to reconnecting player
+  socket.on('sync:request', (data: { roomCode: string }, callback) => {
+    try {
+      const { roomCode } = data;
+
+      if (!socket.playerId) {
+        callback?.({ success: false, error: 'Not authenticated' });
+        return;
+      }
+
+      const room = roomManager.getRoom(roomCode);
+      if (!room) {
+        callback?.({ success: false, error: 'Room not found' });
+        return;
+      }
+
+      const isPlayerInRoom = room.players.some(p => p.id === socket.playerId);
+      if (!isPlayerInRoom) {
+        callback?.({ success: false, error: 'Not in room' });
+        return;
+      }
+
+      console.log(`State sync request for room ${roomCode} from ${socket.playerId}`);
+
+      // Notify other players to send their state
+      socket.to(roomCode).emit('sync:request', {
+        playerId: socket.playerId,
+        timestamp: Date.now()
+      });
+
+      callback?.({ success: true });
+    } catch (error) {
+      console.error('Error handling sync request:', error);
+      callback?.({ success: false, error: 'Sync request failed' });
+    }
+  });
 });
 
 // Start server - listen on all interfaces for local network access

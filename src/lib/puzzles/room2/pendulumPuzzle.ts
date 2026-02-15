@@ -54,6 +54,9 @@ export interface PendulumPuzzleData {
 
 	// Sequence tracking
 	lastDirectionChange: number;
+
+	// Index signature for compatibility
+	[key: string]: unknown;
 }
 
 export interface PendulumPuzzleState extends PuzzleState {

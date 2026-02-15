@@ -4,8 +4,11 @@
 	import { backOut, quintOut } from 'svelte/easing';
 	import { soundManager } from '$lib/audio';
 	import type { PuzzleHint } from '$lib/types';
+	import { hintTracking, hasHintBeenUsed, getHintsUsedForPuzzle, formatPenalty } from '$lib/stores';
+	import { getCompletionNarrative } from '$lib/data/hints';
 
 	export let isOpen = false;
+	export let puzzleId = '';
 	export let puzzleName = '';
 	export let hints: PuzzleHint[] = [];
 	export let currentAttempts = 0;
@@ -16,8 +19,10 @@
 
 	// Determine which hint tier to show based on attempts
 	$: currentTier = getCurrentTier();
-	$: availableHints = hints.filter(h => currentAttempts >= h.triggerAttempts);
+	$: availableHints = hints.filter(h => currentAttempts >= h.triggerAttempts && !hasHintBeenUsed(puzzleId, h.tier));
 	$: canRequestHint = availableHints.length > 0 && hintsRemaining > 0;
+	$: usedHints = getHintsUsedForPuzzle(puzzleId);
+	$: totalPenalty = usedHints.length * 2;
 
 	function getCurrentTier(): number {
 		if (currentAttempts >= 6) return 3;
@@ -49,8 +54,12 @@
 
 		soundManager.playClick();
 		const tier = Math.min(currentTier, 3);
+
+		// Track hint usage
+		hintTracking.useHint(puzzleId, tier);
+
 		onHintUsed(tier);
-		dispatch('hintRequested', { tier, attempts: currentAttempts });
+		dispatch('hintRequested', { tier, attempts: currentAttempts, penalty: 2 });
 	}
 
 	function closeModal() {
@@ -59,23 +68,13 @@
 		dispatch('close');
 	}
 
-	// Track used hints for history display
-	let hintsUsed: { tier: number; text: string }[] = [];
-
-	$: {
-		// Reset history when puzzle changes
-		if (puzzleName) {
-			hintsUsed = [];
-		}
-	}
-
 	function handleRequestHint() {
 		if (!canRequestHint) return;
 
 		const tier = Math.min(currentTier, 3);
 		const hint = hints.find(h => h.tier === tier);
 		if (hint) {
-			hintsUsed = [...hintsUsed, { tier: hint.tier, text: hint.text }];
+			// Hint tracking is handled in requestHint()
 		}
 		requestHint();
 	}
@@ -118,6 +117,11 @@
 				<div class="status-item">
 					<span class="status-label">Hints Remaining</span>
 					<span class="status-value">{hintsRemaining}/3</span>
+				</div>
+				<div class="status-divider"></div>
+				<div class="status-item">
+					<span class="status-label">Time Penalty</span>
+					<span class="status-value penalty">{formatPenalty(totalPenalty)}</span>
 				</div>
 			</div>
 
@@ -190,11 +194,11 @@
 			</div>
 
 			<!-- Hint History -->
-			{#if hintsUsed && hintsUsed.length > 0}
+			{#if usedHints && usedHints.length > 0}
 				<div class="hint-history">
 					<h3>Previously Revealed Hints</h3>
 					<div class="history-list">
-						{#each hintsUsed as hint, i}
+						{#each usedHints as hint, i}
 							<div class="history-item">
 								<span class="history-tier" style="color: {getTierColor(hint.tier)}">
 									{getTierName(hint.tier)}
@@ -331,6 +335,11 @@
 		font-weight: 700;
 		color: #D4AF37;
 		font-family: 'JetBrains Mono', monospace;
+	}
+
+	.status-value.penalty {
+		color: #E57373;
+		font-size: 1.1rem;
 	}
 
 	.status-divider {

@@ -75,7 +75,15 @@
 				<div class="swap-text">
 					<span class="swap-title">Roles Swapped!</span>
 					<span class="swap-detail">
-						You are now the <strong>{notification.newRole.charAt(0).toUpperCase() + notification.newRole.slice(1)}</strong>
+						{#if notification.previousRole}
+							<span class="previous-role">
+								{notification.previousRole === 'explorer' ? '🧭 Explorer' : '🔍 Analyst'}
+							</span>
+							<span class="swap-arrow">→</span>
+						{/if}
+						<span class="new-role">
+							<strong>{notification.newRole === 'explorer' ? '🧭 Explorer' : '🔍 Analyst'}</strong>
+						</span>
 					</span>
 				</div>
 			</div>
@@ -84,7 +92,7 @@
 				on:click={() => roleNotification.hide()}
 				aria-label="Dismiss notification"
 			>
-				&times;
+				×
 			</button>
 			<div class="notification-progress" style="animation-duration: 3s;"></div>
 		</div>
@@ -220,6 +228,31 @@
 	}
 
 	.swap-detail strong {
+		color: #fbbf24;
+	}
+
+	.previous-role, .new-role {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.25rem 0.5rem;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 6px;
+		font-size: 0.75rem;
+	}
+
+	.previous-role {
+		color: rgba(255, 255, 255, 0.6);
+	}
+
+	.swap-arrow {
+		margin: 0 0.5rem;
+		color: #fbbf24;
+		font-weight: bold;
+	}
+
+	.new-role {
+		background: rgba(251, 191, 36, 0.2);
 		color: #fbbf24;
 	}
 

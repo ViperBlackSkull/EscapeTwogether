@@ -19,8 +19,8 @@ export const BELL_CODES_ASSETS = {
 	// Mysterious symbols for morse code visualization
 	symbols: puzzleImages.mysteriousGlyphs,
 
-	// Telegraph key / vintage machinery aesthetic
-	keyVisual: puzzleImages.antiqueKeys,
+	// Dedicated telegraph key image for tapping visual
+	keyVisual: puzzleImages.telegraphKey,
 
 	// Decorative frame for the puzzle
 	ornateFrame: puzzleImages.victorianOrnament,
@@ -100,6 +100,8 @@ export interface BellCodesPuzzleData {
 
 	// Completion
 	messageComplete: boolean;
+	// Index signature for compatibility
+	[key: string]: unknown;
 }
 
 export interface BellCodesPuzzleState extends PuzzleState {

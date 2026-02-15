@@ -9,6 +9,11 @@ import {
 	setGamePhase
 } from '$lib/stores/gameState';
 import type { GameState } from '$lib/types';
+import {
+	initializeMultiplayerHandlers,
+	cleanupMultiplayerHandlers,
+	removeRemoteCursor
+} from '$lib/utils/multiplayer';
 
 export interface Player {
 	id: string;
@@ -63,6 +68,9 @@ function initializeSocketHandlers(): void {
 			connectionStatus.set('connected');
 			reconnectAttempts = 0;
 
+			// Initialize multiplayer handlers
+			initializeMultiplayerHandlers();
+
 			// Auto-rejoin room if we were in one
 			if (pendingRejoin && playerName) {
 				console.log('Attempting to rejoin room after reconnection:', pendingRejoin.roomCode);
@@ -73,6 +81,9 @@ function initializeSocketHandlers(): void {
 		socket.on('disconnect', (reason) => {
 			console.log('Disconnected from server:', reason);
 			isConnected.set(false);
+
+			// Cleanup multiplayer handlers
+			cleanupMultiplayerHandlers();
 
 			// Save room info for rejoining
 			const room = get(currentRoom);
@@ -142,6 +153,9 @@ function initializeSocketHandlers(): void {
 		socket.on('player-left', (data: { playerId: string; playerName: string }) => {
 			console.log('Player left:', data.playerName);
 			players.update((current) => current.filter((p) => p.id !== data.playerId));
+
+			// Remove their cursor
+			removeRemoteCursor(data.playerId);
 
 			currentRoom.update((room) => {
 				if (room) {

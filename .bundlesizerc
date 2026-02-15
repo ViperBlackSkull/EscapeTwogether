@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "path": "./build/_app/immutable/chunks/*.js",
+      "maxSize": "100 kB"
+    },
+    {
+      "path": "./build/_app/immutable/chunks/index.*.js",
+      "maxSize": "50 kB"
+    },
+    {
+      "path": "./build/_app/immutable/nodes/*.js",
+      "maxSize": "25 kB"
+    }
+  ]
+}

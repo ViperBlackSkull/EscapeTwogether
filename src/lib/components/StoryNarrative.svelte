@@ -13,21 +13,23 @@
 	const dispatch = createEventDispatcher();
 
 	// Narrative content for each room and moment
+	// Story Theme: Estranged siblings Lily and James, separated by a family curse 25 years ago,
+	// must work together to break the spell binding Blackwood Manor.
 	const narratives: Record<string, { intro: string; discovery: string; completion: string }> = {
 		attic: {
-			intro: "Dust motes dance in the golden light filtering through the attic window. Before you lies a trunk that hasn't been opened in decades. Grandmother's secrets wait within...",
-			discovery: "A faded photograph slips from between the pages. Two young lovers smile up at you from a time long past. Their initials are carved into the trunk's lid...",
-			completion: "The trunk reveals its final secret: a locket containing two intertwined strands of hair. Love, preserved across generations, has guided you here."
+			intro: "Twenty-five years have passed since you last saw each other. Lily, you were just a child when James was sent away. Now, a mysterious letter has brought you both back to Blackwood Manor. The family curse that separated you can only be broken by working together. Your grandmother's trunk in this attic holds the first clues...",
+			discovery: "Among the dusty photographs, you find your grandparents' love letters - written during a time when their own love was forbidden. The hidden messages reveal their secret wedding: June 15, 1947. This date holds power over the curse.",
+			completion: "The trunk opens, revealing a silver locket and a cryptic message: 'Together at midnight in the clock tower, you'll find what you seek. Time is running out.' The bond between you strengthens as you feel the curse's grip loosening, just slightly."
 		},
 		clock_tower: {
-			intro: "The clock tower's gears click in rhythmic precision. Moonlight streams through the massive clock face, casting silver shadows. Somewhere in this mechanism lies a message from the past...",
-			discovery: "You find initials carved into a brass gear: 'E + R'. Elizabeth and Robert, the clockmaker and his beloved. They built this tower together, hiding their story in its workings...",
-			completion: "The clocks chime as one, and a hidden compartment springs open. Inside: a ring, crafted from a clock's spring. Time has kept their promise safe."
+			intro: "The clock tower stands frozen at 11:47 - thirteen minutes before midnight, the moment the curse took hold. Your grandparents built this tower as a testament to their love, hiding its secrets in the intricate mechanism. The gears await your touch, siblings bound by blood and magic.",
+			discovery: "Each puzzle solved reveals another piece of your grandmother Stella's story. She was the clockmaker's apprentice, defying her family to marry your grandfather. The bells spell her name - meaning 'star.' Like the stars, their love guided them through darkness.",
+			completion: "At the stroke of midnight, the tower comes alive. The melody you've played - 'Edelweiss,' their wedding song - echoes through the night. A hidden passage opens, leading to the garden conservatory where the final test awaits."
 		},
 		garden_conservatory: {
-			intro: "Rain patters gently against the glass ceiling of the conservatory. Exotic flowers bloom in the humid air, their colors vibrant in the dawn light. Each petal holds a clue...",
-			discovery: "A leather journal lies open on the potting bench. Sketches of hybrid flowers fill its pages, each one a product of patient love and careful tending...",
-			completion: "The final flower blooms, its petals forming a perfect heart shape. In nature, as in love, patience and care create the most beautiful things."
+			intro: "Dawn breaks as you enter the conservatory, where your grandparents created their masterpiece - a garden of hybrid flowers, each one a symbol of their enduring love. The Love Lily at its center blooms only when two souls, torn apart by darkness, work together to nurture it back to life.",
+			discovery: "The journal entries describe how they crossbred roses and lilies, creating flowers that thrived against all odds. 'Just as our love bloomed in darkness,' Stella wrote, 'so too can the bond between siblings survive any separation.'",
+			completion: "The Love Lily blooms in brilliant crimson and gold as your fingers touch its petals simultaneously. The curse shatters like glass, and for the first time in 25 years, you see each other clearly. The manor's shadows lift. You are free - and together."
 		}
 	};
 

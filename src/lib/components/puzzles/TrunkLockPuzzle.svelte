@@ -20,6 +20,15 @@
 
 	const dispatch = createEventDispatcher();
 
+	// Visual assets for enhanced immersion
+	const PUZZLE_ASSETS = {
+		lock: puzzleImages.vintageLock,
+		keys: puzzleImages.antiqueKeys,
+		ornateFrame: puzzleImages.victorianOrnament,
+		texture: puzzleImages.puzzleTexture,
+		secretCompartment: puzzleImages.secretCompartment
+	};
+
 	// Computed values
 	$: isExplorer = playerRole === 'explorer';
 	$: dials = puzzleState?.dials || [];
@@ -57,8 +66,8 @@
 	}
 
 	onMount(() => {
-		// Preload images
-		const images = [puzzleImages.vintageLock, puzzleImages.antiqueKeys];
+		// Preload all visual assets
+		const images = Object.values(PUZZLE_ASSETS);
 		images.forEach(src => {
 			const img = new Image();
 			img.src = src;
@@ -78,7 +87,7 @@
 	<div class="trunk-lock-puzzle">
 		<!-- Lock Visual with Background -->
 		<div class="lock-visual">
-			<img src={puzzleImages.vintageLock} alt="Antique trunk lock" class="lock-image" />
+			<img src={PUZZLE_ASSETS.lock} alt="Antique trunk lock" class="lock-image" />
 
 			<!-- Dial Overlay -->
 			<div class="dials-overlay">
@@ -165,7 +174,7 @@
 
 		<!-- Keys Display -->
 		<div class="keys-display">
-			<img src={puzzleImages.antiqueKeys} alt="Antique keys" class="keys-image" />
+			<img src={PUZZLE_ASSETS.keys} alt="Antique keys" class="keys-image" />
 			<p class="keys-hint">Find the right combination...</p>
 		</div>
 

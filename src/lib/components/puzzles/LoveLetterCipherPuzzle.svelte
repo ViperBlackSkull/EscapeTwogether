@@ -18,6 +18,16 @@
 
 	const dispatch = createEventDispatcher();
 
+	// Visual assets for immersive experience
+	const PUZZLE_ASSETS = {
+		letterBackground: puzzleImages.clueLetter,
+		candleHolder: puzzleImages.candleHolder,
+		ornateFrame: puzzleImages.victorianOrnament,
+		texture: puzzleImages.puzzleTexture,
+		magnifyingGlass: puzzleImages.magnifyingGlass,
+		hourglass: puzzleImages.hourglass
+	};
+
 	// Internal state
 	let answerInput: string = '';
 	let showSubmitFeedback: boolean = false;
@@ -77,11 +87,8 @@
 	}
 
 	onMount(() => {
-		// Preload images
-		const images = [
-			puzzleImages.clueLetter,
-			puzzleImages.candleHolder
-		];
+		// Preload all visual assets
+		const images = Object.values(PUZZLE_ASSETS);
 		images.forEach(src => {
 			const img = new Image();
 			img.src = src;
@@ -111,7 +118,7 @@
 			<div class="letter-container">
 				<!-- Background letter image -->
 				<div class="letter-background">
-					<img src={puzzleImages.clueLetter} alt="Antique love letter" class="letter-image" />
+					<img src={PUZZLE_ASSETS.letterBackground} alt="Antique love letter" class="letter-image" />
 				</div>
 
 				<!-- Letter text overlay -->
@@ -177,10 +184,10 @@
 					aria-pressed={lightActive}
 				>
 					{#if isExplorer}
-						<img src={puzzleImages.candleHolder} alt="Candle" class="light-icon" />
+						<img src={PUZZLE_ASSETS.candleHolder} alt="Candle" class="light-icon" />
 						<span>{lightActive ? 'Candle Lit' : 'Light Candle'}</span>
 					{:else}
-						<span class="uv-icon">\uD83D\uDCA1</span>
+						<img src={PUZZLE_ASSETS.magnifyingGlass} alt="UV Light" class="light-icon" />
 						<span>{lightActive ? 'UV Light On' : 'Turn On UV Light'}</span>
 					{/if}
 				</button>

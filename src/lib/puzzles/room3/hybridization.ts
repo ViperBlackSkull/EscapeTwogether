@@ -9,8 +9,8 @@ import { puzzleImages } from '$lib/assets/images';
 
 // Visual assets for this puzzle
 export const HYBRIDIZATION_ASSETS = {
-	// Mysterious glyphs for plant symbols
-	plantSymbols: puzzleImages.mysteriousGlyphs,
+	// Dedicated botanical illustration for plant symbols
+	plantSymbols: puzzleImages.botanicalIllustration,
 
 	// Treasure map for garden layout
 	gardenLayout: puzzleImages.treasureMap,
