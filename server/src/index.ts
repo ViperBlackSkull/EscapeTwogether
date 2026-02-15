@@ -5,15 +5,22 @@ import { RoomManager } from './RoomManager';
 
 const app = express();
 const httpServer = createServer(app);
+
+// Enhanced CORS configuration for local network play
 const io = new Server(httpServer, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
+    origin: true, // Allow all origins including local network IPs
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
+  },
+  allowEIO3: true, // Support older clients
+  transports: ['websocket', 'polling']
 });
 
 const roomManager = new RoomManager();
 const PORT = 3001;
+const HOST = '0.0.0.0'; // Listen on all network interfaces for local network play
 
 // Middleware
 app.use(express.json());
@@ -375,9 +382,10 @@ io.on('connection', (socket: PlayerSocket) => {
   });
 });
 
-// Start server
-httpServer.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Start server - listen on all interfaces for local network access
+httpServer.listen(Number(PORT), HOST, () => {
+  console.log(`Server running on http://${HOST}:${PORT}`);
+  console.log(`Accessible from local network at port ${PORT}`);
 });
 
 export { app, io, roomManager };
