@@ -1,0 +1,44 @@
+services:
+  escapetwogether:
+    build: .
+    image: escapetwogether:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - AI_ENABLED=${AI_ENABLED:-true}
+      - AI_NARRATIVE_ENABLED=${AI_NARRATIVE_ENABLED:-true}
+      - AI_HINTS_ENABLED=${AI_HINTS_ENABLED:-true}
+      - AI_IMAGES_ENABLED=${AI_IMAGES_ENABLED:-true}
+      - AI_RATE_LIMIT_RPM=${AI_RATE_LIMIT_RPM:-10}
+      - ANTHROPIC_AUTH_TOKEN=${ANTHROPIC_AUTH_TOKEN:-}
+      - ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL:-https://api.z.ai/api/anthropic}
+      - ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-claude-sonnet-4-20250514}
+      - COMFYUI_URL=${COMFYUI_URL:-}
+    env_file:
+      - .env
+    volumes:
+      - escapetwogether-assets:/app/assets
+      - escapetwogether-sessions:/app/sessions
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1'
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>{process.exit(r.ok?0:1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  escapetwogether-assets:
+  escapetwogether-sessions:

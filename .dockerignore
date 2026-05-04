@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+.git
+*.md
+.vscode
+.idea
+*.png
+assets
+Auto Run Docs

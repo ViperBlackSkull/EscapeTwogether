@@ -1,0 +1,36 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev.server
+    ports:
+      - "3001:3001"
+      - "9229:9229"  # Node.js inspector
+    volumes:
+      - ./server/src:/app/server/src
+      - ./shared:/app/shared
+      - ./client/dist:/app/client/dist
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - AI_ENABLED=${AI_ENABLED:-true}
+      - AI_NARRATIVE_ENABLED=${AI_NARRATIVE_ENABLED:-true}
+      - AI_HINTS_ENABLED=${AI_HINTS_ENABLED:-true}
+      - AI_IMAGES_ENABLED=${AI_IMAGES_ENABLED:-true}
+      - AI_RATE_LIMIT_RPM=${AI_RATE_LIMIT_RPM:-10}
+    env_file:
+      - .env
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev.client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client/src:/app/client/src
+      - ./client/index.html:/app/client/index.html
+      - ./client/public:/app/client/public
+      - ./shared:/app/shared
+    environment:
+      - CHOKIDAR_USEPOLLING=true

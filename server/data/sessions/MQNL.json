@@ -1,0 +1,379 @@
+{
+  "room": {
+    "id": "MQNL",
+    "players": [
+      {
+        "id": "059b8489-75ba-42aa-96f5-0a9cc08846fd",
+        "name": "Player1",
+        "socketId": "o35ch6Mc96lQbC6cAAAB",
+        "currentRoom": "MQNL"
+      },
+      {
+        "id": "1b557480-1203-4575-9898-e0061d7079f1",
+        "name": "Player2",
+        "socketId": "4TgmEShp98ZVxamXAAAD",
+        "currentRoom": "MQNL"
+      }
+    ],
+    "state": "playing",
+    "puzzles": {
+      "cipher-lock": {
+        "id": "cipher-lock",
+        "type": "cipher-lock",
+        "solved": true,
+        "data": {
+          "encodedMessage": "H-J-K-D",
+          "cipherKey": {
+            "A": 1,
+            "B": 0,
+            "C": 2,
+            "D": 8,
+            "E": 6,
+            "F": 3,
+            "G": 7,
+            "H": 9,
+            "J": 4,
+            "K": 5
+          },
+          "currentDigits": [
+            9,
+            4,
+            5,
+            8
+          ],
+          "roles": {
+            "059b8489-75ba-42aa-96f5-0a9cc08846fd": "decoder",
+            "1b557480-1203-4575-9898-e0061d7079f1": "lock-holder"
+          },
+          "hintLevel": 0
+        }
+      },
+      "split-screen": {
+        "id": "split-screen",
+        "type": "split-screen",
+        "solved": false,
+        "data": {
+          "fullGrid": [
+            [
+              {
+                "symbol": "▲",
+                "color": "#264653"
+              },
+              {
+                "symbol": "■",
+                "color": "#ef4444"
+              },
+              {
+                "symbol": "✦",
+                "color": "#e76f51"
+              },
+              {
+                "symbol": "♥",
+                "color": "#e76f51"
+              }
+            ],
+            [
+              {
+                "symbol": "★",
+                "color": "#264653"
+              },
+              {
+                "symbol": "◆",
+                "color": "#264653"
+              },
+              {
+                "symbol": "♥",
+                "color": "#264653"
+              },
+              {
+                "symbol": "●",
+                "color": "#2a9d8f"
+              }
+            ],
+            [
+              {
+                "symbol": "▲",
+                "color": "#e9c46a"
+              },
+              {
+                "symbol": "♥",
+                "color": "#f4a261"
+              },
+              {
+                "symbol": "♥",
+                "color": "#3b82f6"
+              },
+              {
+                "symbol": "●",
+                "color": "#f4a261"
+              }
+            ],
+            [
+              {
+                "symbol": "✦",
+                "color": "#a855f7"
+              },
+              {
+                "symbol": "◆",
+                "color": "#f4a261"
+              },
+              {
+                "symbol": "▲",
+                "color": "#f4a261"
+              },
+              {
+                "symbol": "●",
+                "color": "#264653"
+              }
+            ]
+          ],
+          "playerAView": [
+            [
+              {
+                "symbol": "▲",
+                "color": "#264653"
+              },
+              {
+                "symbol": "■",
+                "color": "#ef4444"
+              },
+              null,
+              null
+            ],
+            [
+              {
+                "symbol": "★",
+                "color": "#264653"
+              },
+              {
+                "symbol": "◆",
+                "color": "#264653"
+              },
+              null,
+              null
+            ],
+            [
+              {
+                "symbol": "▲",
+                "color": "#e9c46a"
+              },
+              {
+                "symbol": "♥",
+                "color": "#f4a261"
+              },
+              null,
+              null
+            ],
+            [
+              {
+                "symbol": "✦",
+                "color": "#a855f7"
+              },
+              {
+                "symbol": "◆",
+                "color": "#f4a261"
+              },
+              null,
+              null
+            ]
+          ],
+          "playerBView": [
+            [
+              null,
+              null,
+              {
+                "symbol": "✦",
+                "color": "#e76f51"
+              },
+              {
+                "symbol": "♥",
+                "color": "#e76f51"
+              }
+            ],
+            [
+              null,
+              null,
+              {
+                "symbol": "♥",
+                "color": "#264653"
+              },
+              {
+                "symbol": "●",
+                "color": "#2a9d8f"
+              }
+            ],
+            [
+              null,
+              null,
+              {
+                "symbol": "♥",
+                "color": "#3b82f6"
+              },
+              {
+                "symbol": "●",
+                "color": "#f4a261"
+              }
+            ],
+            [
+              null,
+              null,
+              {
+                "symbol": "▲",
+                "color": "#f4a261"
+              },
+              {
+                "symbol": "●",
+                "color": "#264653"
+              }
+            ]
+          ],
+          "playerAPlacements": [
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ]
+          ],
+          "playerBPlacements": [
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ]
+          ],
+          "communicationLog": [],
+          "roles": {
+            "059b8489-75ba-42aa-96f5-0a9cc08846fd": "player-a",
+            "1b557480-1203-4575-9898-e0061d7079f1": "player-b"
+          },
+          "hintLevel": 0
+        }
+      },
+      "wire-connection": {
+        "id": "wire-connection",
+        "type": "wire-connection",
+        "solved": false,
+        "data": {
+          "wires": [
+            {
+              "color": "purple",
+              "outputIndex": 2
+            },
+            {
+              "color": "blue",
+              "outputIndex": 6
+            },
+            {
+              "color": "red",
+              "outputIndex": 1
+            },
+            {
+              "color": "yellow",
+              "outputIndex": 3
+            },
+            {
+              "color": "green",
+              "outputIndex": 5
+            },
+            {
+              "color": "orange",
+              "outputIndex": 4
+            }
+          ],
+          "playerAColors": [
+            "purple",
+            "blue",
+            "red",
+            "yellow",
+            "green",
+            "orange"
+          ],
+          "playerBOutputs": [
+            2,
+            6,
+            1,
+            3,
+            5,
+            4
+          ],
+          "connections": {
+            "1": null,
+            "2": null,
+            "3": null,
+            "4": null,
+            "5": null,
+            "6": null
+          },
+          "communicationLog": [],
+          "roles": {
+            "059b8489-75ba-42aa-96f5-0a9cc08846fd": "player-a",
+            "1b557480-1203-4575-9898-e0061d7079f1": "player-b"
+          },
+          "hintLevel": 0
+        }
+      }
+    },
+    "createdAt": 1777896051784,
+    "startedAt": 1777896148581,
+    "completedAt": null,
+    "puzzleSolveTimes": {
+      "cipher-lock": 256184
+    },
+    "currentRoomIndex": 1,
+    "roomPausedAt": null,
+    "totalPausedMs": 3575
+  },
+  "players": [
+    {
+      "id": "059b8489-75ba-42aa-96f5-0a9cc08846fd",
+      "name": "Player1",
+      "disconnectedAt": null
+    },
+    {
+      "id": "1b557480-1203-4575-9898-e0061d7079f1",
+      "name": "Player2",
+      "disconnectedAt": null
+    }
+  ],
+  "savedAt": 1777896448891,
+  "chatHistory": [],
+  "cumulativeScore": 130
+}

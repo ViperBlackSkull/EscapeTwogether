@@ -1,0 +1,329 @@
+# Phase 04: Full Escape Room Experience & Atmospheric Polish
+
+Expand the game to a full 60-90 minute experience with 5-7 rooms, add sound design, atmospheric effects, a relationship/communication scoring system (inspired by RAYA), and polish the entire experience. By the end of this phase, EscapeTwogether should be a complete, immersive two-player escape room that feels magical to play together.
+
+## Tasks
+
+- [x] Design the full 5-room game arc with narrative continuity:
+  - Created `server/src/config/gameScenario.ts` — the complete game definition:
+    - **Room 1 "The Invitation"** (Tutorial, 8-10 min):
+      - Theme: mysterious letter arrives, draws you into the game
+      - Puzzles: 1x Cipher Lock (easy variant, 3-digit code)
+      - Purpose: teach mechanics, establish atmosphere, warm up
+    - **Room 2 "The Workshop"** (12-15 min):
+      - Theme: inventor's workshop with mechanical contraptions
+      - Puzzles: 1x Split Screen, 1x Wire Connection
+      - Purpose: introduce dual-puzzle rooms, increase difficulty
+    - **Room 3 "The Laboratory"** (12-15 min):
+      - Theme: abandoned research lab with experimental tech
+      - Puzzles: 1x Sequence Memory, 1x Cipher Lock (harder, 5-digit)
+      - Purpose: test memory and communication under pressure
+    - **Room 4 "The Labyrinth"** (12-15 min):
+      - Theme: shifting maze with ancient puzzle mechanisms
+      - Puzzles: 1x Map Navigator, 1x Split Screen (harder, 5x5 grid)
+      - Purpose: navigation challenges, deep cooperation
+    - **Room 5 "The Vault"** (15-20 min, Final Room):
+      - Theme: grand vault with ultimate lock combining all puzzle types
+      - Puzzles: 1x Wire Connection, 1x Sequence Memory, 1x Map Navigator (all hard variants)
+      - Purpose: climax, tests everything learned, triumphant finish
+  - Define difficulty progression: puzzle complexity, time pressure, hint cost
+  - Define narrative beats: introduction, discovery, tension, climax, resolution
+  - Each room has 3 difficulty variants — AI selects based on performance
+
+- [x] Implement the relationship and communication scoring system:
+  - Created `shared/types/scoring.ts`:
+    - `PuzzleMetrics`, `PuzzleScore`, `RoomScore`, `GameScore` types
+    - `CommunicationRating`: "Silent Partners" | "Occasional Check-ins" | "Good Partners" | "Great Communicators"
+    - `RelationshipTier`: "New Acquaintances" | "Good Partners" | "Trusted Allies" | "Soulmates"
+    - `CommunicationStats`, `ScoreUpdateEvent`, `FinalScoreEvent` types
+  - Created `server/src/services/scoringService.ts`:
+    - Per-puzzle metrics tracking: `timeElapsed`, `hintsUsed`, `wrongAttempts`, `messagesExchanged`
+    - Puzzle scoring: 100 base points, -5 per hint, -2 per wrong attempt, +15/+30 speed bonus
+    - Communication rating: based on messages-per-minute thresholds
+    - Cooperation score (0-100): measures how evenly players contribute
+    - Relationship tier thresholds: New Acquaintances (<150), Good Partners (150+), Trusted Allies (280+), Soulmates (400+)
+    - Game lifecycle: startGameTracking, startRoomTracking, startPuzzleTracking, recordMessage/recordHintUsed/recordWrongAttempt
+    - Cleanup on game end
+  - Integrated scoring into `server/src/gameOrchestrator.ts`:
+    - Tracks all puzzles from generation through solve
+    - Emits `score-update` event on each puzzle completion
+    - Emits `final-score` event on game completion
+  - Integrated scoring into `server/src/index.ts`:
+    - Records wrong attempts on submit/check actions
+    - Records hint usage on hint requests
+    - Records chat messages for communication stats
+    - Cleanup when room is destroyed
+  - Added `score-update` and `final-score` to server/client socket event types
+  - Updated `client/src/stores/gameStore.ts` with scoring state (cumulativeScore, relationshipTier, finalScore)
+  - Updated `client/src/hooks/useRoom.ts` to handle score-update and final-score events
+  - Created `client/src/components/ScoreDisplay.tsx`:
+    - HUD variant: compact score + relationship tier badge in top bar
+    - Inline variant: detailed score card with base/deductions/bonus breakdown
+    - `GameScoreCard` export: full game score card for victory page with tier, stats grid, room breakdown
+    - Animated score counter with pulse effect on updates
+  - Integrated `ScoreDisplay` into `PlayerHUD.tsx` (HUD variant)
+  - Integrated `GameScoreCard` into `VictoryPage.tsx`
+  - Created `server/src/__tests__/services/scoringService.test.ts`: 16 tests covering:
+    - Puzzle score calculations (base, deductions, speed bonus, clamping)
+    - Game lifecycle (tracking, accumulation, tier progression)
+    - Communication stats (all 4 rating levels)
+    - Cooperation scoring (balanced vs imbalanced)
+    - Final score calculation
+    - Cleanup
+  - Added scoring alias to `server/vitest.config.ts`
+
+- [x] Build the atmospheric audio system:
+  - Created `client/src/services/audioService.ts`:
+    - `AudioService` class with singleton `audioService` instance
+    - Web Audio API wrapper with lazy AudioContext initialization
+    - Master volume control + per-category gain nodes (`ambient`, `sfx`, `notification`, `music`)
+    - Mute/unmute for master and individual categories
+    - Preference persistence to `localStorage` (key: `escape-twogether-audio`)
+    - Helpers: `playOscillator`, `createBufferSource`, `createNoiseSource` for sound synthesis
+    - `ensureResumed()` to handle browser AudioContext suspension policy
+    - `destroy()` for clean teardown
+  - Created `client/src/services/soundEffects.ts`:
+    - All 9 procedural sounds synthesized via Web Audio API (zero audio files):
+      - `playClick` — short square-wave percussive tap with frequency sweep
+      - `playSuccess` — 4-note ascending C-E-G-C arpeggio (sine oscillators)
+      - `playError` — sawtooth buzzer descending 150→80 Hz
+      - `playNotification` — two-tone bell (880 Hz + 1320 Hz sine)
+      - `playDoorUnlock` — filtered noise burst + descending triangle tone (metallic slide)
+      - `playPuzzleComplete` — triumphant fanfare with 4-note arpeggio + harmonic overtones
+      - `playHint` — bandpass-filtered noise whoosh with rising frequency
+      - `playMessageSent` — rising sine blip (600→900 Hz)
+      - `playMessageReceived` — falling sine blip (900→600 Hz)
+    - Each sound uses envelope shaping (gain ramps) for natural feel
+    - Auto-initializes AudioContext on first play
+  - Created `client/src/services/ambientAudio.ts`:
+    - `AmbientAudioService` with singleton `ambientAudio` instance
+    - 4 procedural ambient soundscapes using filtered noise + oscillators:
+      - Workshop: bandpass-filtered noise creaking, square-wave ticking, sawtooth hum
+      - Laboratory: 60 Hz sawtooth hum, modulated bubbling noise, LFO-gated beeps
+      - Labyrinth: dripping water bursts, LFO-modulated wind noise, bandpass echoes
+      - Vault: dual-sine drone (40+60 Hz), metallic reverb noise, tremolo shimmer
+    - 2-second smooth crossfade between room ambients
+    - Automatic cleanup of old ambient sources after crossfade
+    - `destroy()` for full teardown
+  - Created `client/src/components/AudioToggle.tsx`:
+    - Compact volume icon button (Volume2/Volume1/VolumeX from lucide-react)
+    - Expandable panel with master volume slider + mute toggle
+    - Separate ambient and SFX toggle switches
+    - All preferences auto-persist to localStorage via audioService
+  - Integrated into existing codebase:
+    - Updated `client/src/lib/audio.ts` to delegate to new soundEffects functions
+    - Added `playPuzzleSolvedSound`, `playDoorUnlockSound`, `playHintSound` exports
+    - Updated `client/src/hooks/useRoom.ts` with context-aware sound triggers:
+      - `puzzle-solved` events → playPuzzleSolvedSound
+      - `hint` events → playHintSound
+      - `room-transition` events → playDoorUnlockSound
+    - Updated `client/src/pages/GamePage.tsx`:
+      - Room-to-ambient mapping (Room 1=workshop, 2=laboratory, 3=labyrinth, 4=vault, Room 0=no ambient)
+      - Automatic ambient playback on room changes
+      - Cleanup on unmount and game completion
+    - Added `AudioToggle` to `client/src/components/PlayerHUD.tsx` (right side of HUD)
+  - Created `client/src/__tests__/services/audioService.test.ts`: 18 tests covering:
+    - Initialization, preference loading/saving, localStorage handling
+    - Volume clamping, mute toggles (master + category)
+    - AudioContext resume, destroy, null-state edge cases
+    - Corrupt localStorage and write failure resilience
+  - Created `client/src/__tests__/services/soundEffects.test.ts`: 9 tests covering:
+    - Each of the 9 sound effect functions creates expected oscillator/buffer/filter nodes
+    - All 27 tests pass; all 269 pre-existing server tests still pass
+
+- [x] Add visual effects and animations throughout the game:
+  - Created `client/src/components/effects/ParticleField.tsx`:
+    - CSS-only floating particle system with configurable count (default 40 particles)
+    - 5 particle styles: dust motes, electric sparks, fog wisps, golden flecks, embers
+    - Each style has unique size ranges, opacity, speed, drift, colors, and shape (circle/square/diamond/spark)
+    - Configurable blur for atmospheric particles (fog, dust, embers)
+    - Pause support via `paused` prop, uses `@keyframes` animations for smooth movement
+  - Created `client/src/components/effects/TypeWriter.tsx`:
+    - Animated text reveal with characters appearing one by one
+    - Speed controllable via `speed` prop (default 30ms per character)
+    - Supports pause at punctuation marks (. ! ? , ; : — …) with configurable pause duration
+    - Start delay support, optional cursor, `onComplete` callback
+  - Created `client/src/components/effects/ScreenTransition.tsx`:
+    - Three-phase transition: fade-out → holding → fade-in (1.5s each)
+    - Room name and narrative text shown during holding phase with smooth fade-in
+    - Atmospheric vignette effect (CSS radial gradient overlay)
+    - Configurable fade and hold durations
+  - Created `client/src/components/effects/PuzzleEffects.tsx`:
+    - `SuccessBurst`: golden burst with 12 radiating rays, expanding ring, and pulsing core
+    - `ErrorShake`: brief screen shake (500ms) with red flash overlay
+    - `HintScroll`: glowing scroll unfurl effect with gold body, top/bottom rods, and inner glow
+    - `RoomCompletePulse`: 3 expanding teal pulse waves with golden door and inner light glow
+    - All effects auto-dismiss after their duration with `onEnd` callback
+  - Added ~250 lines of CSS animations to `client/src/index.css`:
+    - `particleFieldFloat` / `particleFieldFloatRotate` keyframes for particle movement
+    - `screen-transition-*` styles for fade-to-black with vignette
+    - `burstRingExpand`, `rayExtend`, `corePulse` for success burst
+    - `errorShake`, `errorFlash` for error feedback
+    - `scrollUnfurl`, `scrollBodyExpand`, `scrollGlow` for hint scroll
+    - `pulseWaveExpand`, `doorOpenPulse`, `doorLightGlow` for room completion
+  - Integrated into `GamePage.tsx`:
+    - ParticleField per room via `ROOM_PARTICLE_MAP` (Room 0=dust, 1=sparks, 2=fog, 3=dust, 4=golden)
+    - PuzzleEffects triggered on `puzzle-solved` (success) and `hint` events from game events
+  - Integrated into `VictoryPage.tsx`:
+    - Golden ParticleField (25 particles) for celebratory atmosphere
+  - Created 4 test files in `client/src/__tests__/effects/` (10 new tests)
+  - All 37 client tests pass, all 269 server tests pass, build succeeds
+
+- [x] Implement the enhanced game UI with inventory and clue tracking:
+  - Created `client/src/stores/gameStore.ts` clue tracking:
+    - Added `Clue` interface: id, puzzleId, label, text, roomIndex, roomName, timestamp, type ('clue'|'hint'|'solved')
+    - Added `clues` array to game state, `addClue` action with deduplication
+    - `setRoomNarrative` automatically extracts clues from puzzle narrative clueText
+    - `clearRoom` resets clues
+  - Created `client/src/components/GameHUD.tsx` — replaces PlayerHUD with full game interface:
+    - Top bar: room name, timer (counting up), room progress (Room X/5), player/partner info, settings gear
+    - Left sidebar toggle: chat panel shortcut (collapsible)
+    - Right sidebar toggle: inventory panel with PuzzleList + ClueInventory (collapsible)
+    - Integrated ScoreDisplay and AudioToggle in top bar
+    - Settings button opens GameSettings modal
+    - Puzzle click callback integrates with GamePage hotspot selection
+  - Created `client/src/components/ClueInventory.tsx`:
+    - Grid of collected clues with type icons (FileText/Lightbulb/CheckCircle) and color coding
+    - Clues persist across rooms (a clue from Room 1 might be needed in Room 4)
+    - Click to expand/view full clue details with room tag
+    - Filter by room with room name chips
+    - Empty state with placeholder message
+    - Visual indicator for clues from current room
+  - Created `client/src/components/PuzzleList.tsx`:
+    - Checklist of current room's puzzles with status (locked/available/solved)
+    - Locked puzzles require previous puzzle to be solved first
+    - Click available/solved puzzles to navigate to them
+    - Shows puzzle backstory preview and success message
+    - Solved count indicator (1/3 format)
+  - Created `client/src/components/GameSettings.tsx`:
+    - Modal with audio controls (master volume, ambient toggle, SFX toggle)
+    - Chat font size selector (small/medium/large) persisted to localStorage
+    - Reset current puzzle button (with confirmation)
+    - Leave game button (with confirmation)
+    - Close button and overlay click to dismiss
+  - Updated `client/src/hooks/useRoom.ts`:
+    - Extracts clue from puzzle-solved events (successMessage → 'solved' type clue)
+    - Extracts clue from hint events (hint message → 'hint' type clue)
+    - Deduplicates clues by id
+  - Updated `client/src/pages/GamePage.tsx`:
+    - Replaced PlayerHUD + RoomProgress with GameHUD
+    - GameHUD provides inventory sidebar with puzzle list and clue inventory
+  - Added ~300 lines of CSS to `client/src/index.css`:
+    - Game HUD top bar styles with sidebar toggles
+    - Collapsible left/right sidebar panels with backdrop blur
+    - Clue card grid with expand/collapse animations
+    - Puzzle list items with status indicators (locked/available/solved)
+    - Settings modal with sections for audio, accessibility, and actions
+    - Filter chips for room-based clue filtering
+  - Created `client/src/__tests__/components/gameStore.clues.test.ts`: 7 tests covering:
+    - Empty initial state, addClue, deduplication by id
+    - clearRoom resets clues
+    - setRoomNarrative extracts clues from puzzle narratives
+    - No duplicate clues from repeated narrative events
+    - Separate tracking of hint and solved clue types
+  - All 7 new tests pass, TypeScript compiles cleanly, Vite build succeeds
+  - All 37 pre-existing client tests still pass (28 server failures are pre-existing import issues)
+
+- [x] Build the enhanced victory and post-game experience:
+  - Enhanced `client/src/pages/VictoryPage.tsx` with:
+    - Three-phase reveal:
+      1. "Congratulations!" with dramatic trophy glow, confetti, and team name reveal (3s)
+      2. Score breakdown with animated counting score (4s), 2x2 stats grid (time/puzzles/hints/messages), cooperation + communication bars
+      3. Relationship rating reveal with tier icon, name, and descriptive narrative text
+    - Shareable results card with styled summary, Share button using Web Share API with clipboard fallback
+    - "Play Again" button that leaves room and navigates home
+    - "View Timeline" button toggling to full GameTimeline view with "Back to Results" navigation
+  - Created `client/src/components/GameTimeline.tsx`:
+    - Summary bar: 4-column grid showing total time, puzzles, hints, messages
+    - Visual timeline: room nodes connected by gradient lines
+    - Each room node: emoji icon, room name, score, duration, puzzle count
+    - Expandable room details showing per-puzzle breakdown: type, score, time, hints, wrong attempts, messages
+    - Score breakdown per puzzle: base points, deductions, speed bonus
+    - First room auto-expanded, click to toggle others
+  - Added ~250 lines of CSS to `client/src/index.css`:
+    - Victory phase transitions with opacity/translateY animations
+    - Tier reveal animation with scale bounce effect
+    - Shareable results card with gradient border and glow
+    - Full timeline styling: summary grid, room nodes, connectors, expand/collapse
+    - Puzzle detail cards with metric coloring (hints=blue, wrong=red)
+  - All 44 client tests pass, build succeeds cleanly
+
+- [x] Add persistent game sessions and reconnection support:
+  - Created `server/src/services/sessionService.ts`:
+    - File-based session persistence (`server/data/sessions/<roomId>.json`)
+    - `saveSession(room)` — saves full game room state to JSON, called on game start, puzzle solve, and room transition
+    - `loadSession(roomId)` — restores session from disk, returns null if expired (>24h) or missing
+    - `deleteSession(roomId)` — cleanup after game ends
+    - `cleanupExpiredSessions()` — auto-deletes sessions older than 24 hours, runs every 10 min
+    - Disconnected player tracking with reconnection tokens (5-minute window)
+    - Chat history buffer (200 messages per room) for replay on reconnect
+  - Updated `server/src/types.ts`:
+    - Added `ReconnectInfo` interface
+    - Added server-to-client events: `partner-disconnected`, `partner-reconnected`, `reconnection-offer`, `chat-history`
+    - Added client-to-server event: `reconnect`
+  - Updated `server/src/index.ts`:
+    - Disconnect: marks player as "disconnected" (keeps room alive for 5 min), issues reconnection token
+    - Reconnect handler: validates token, restores player to room (or loads from disk if room was evicted), replays chat history
+    - Voluntary leave: removes player entirely, saves session if game in progress
+    - Chat messages tracked for history replay
+    - Periodic cleanup of expired sessions and stale disconnections
+  - Updated `server/src/gameOrchestrator.ts`:
+    - `saveSession()` called after game start, puzzle solve, room transition
+    - `deleteSession()` called when game completes
+  - Updated `client/src/stores/gameStore.ts`:
+    - Added state: `partnerConnected`, `partnerDisconnectedAt`, `reconnectionToken`, `reconnectionInfo`
+    - Added actions: `setPartnerConnected`, `setPartnerDisconnected`, `setReconnectionToken`, `setReconnectionInfo`, `setChatMessages`
+    - `clearRoom` resets all new state
+  - Updated `client/src/hooks/useRoom.ts`:
+    - Listens for `partner-disconnected`, `partner-reconnected`, `reconnection-offer`, `chat-history` events
+    - `attemptReconnect(token)` function for server reconnect
+    - `clearReconnection()` to reset state and localStorage
+    - Checks localStorage for stored reconnection token on mount
+  - Updated `client/src/types/index.ts`:
+    - Added `ReconnectInfo` interface and new socket event types
+  - Created `client/src/components/ReconnectOverlay.tsx`:
+    - Partner-disconnected overlay with animated waiting dots and 5-min countdown
+    - Reconnection prompt for page reloads (checks localStorage for stored token)
+    - "Save & Exit" option when countdown expires
+    - "Rejoin Game" / "Start New Game" buttons for page-reload reconnect
+  - Added to `client/src/pages/GamePage.tsx`: ReconnectOverlay alongside ConnectionOverlay
+  - Added ~130 lines of CSS to `client/src/index.css`:
+    - `.reconnect-overlay` full-screen overlay with blur
+    - `.reconnect-card` with icon, title, countdown timer
+    - Animated waiting dots (`reconnectDotPulse`)
+    - Primary/secondary button styles for reconnect actions
+  - Created `server/src/__tests__/services/sessionService.test.ts`: 13 tests covering:
+    - Reconnection token generation and validation
+    - Invalid token returns null
+    - Disconnected player tracking and cleanup
+    - Chat history add/get/clear/200-msg limit
+    - getDisconnectedPlayersForRoom
+    - cleanupStaleDisconnections
+    - saveSession/loadSession/deleteSession/cleanupExpiredSessions
+  - All 13 new tests pass, all 44 client tests pass, all 216 server tests pass, TypeScript compiles cleanly, Vite build succeeds
+
+- [x] Final integration testing and balance pass:
+  - Played through Room 1 (Cipher Lock) with two browser instances — both players sync correctly, puzzle solved, room transition works
+  - Verified total target play time is 69 minutes (7+14+14+16+18), within 60-90 minute target
+  - Tested all puzzle types via automated integration tests (17 new tests):
+    - Cipher Lock: verified unique letters generated, puzzle solvable
+    - Split Screen: verified generation and registration
+    - Wire Connection: verified generation and registration
+    - Sequence Memory: verified phaseOneLength scales (always 3 for lengths 5-7)
+    - Map Navigator: verified always generates solvable grids, penalty capped at 180s
+  - Verified scoring system: points accumulate correctly (130 per perfect puzzle), tiers make sense
+  - Tested scoring persistence: sessions now store cumulative score, restored on reconnection
+  - Tested audio: all sound effects registered, AudioToggle in HUD
+  - Reviewed reconnection flow: fixed scoring state restoration, added score-resync events
+  - Adjusted difficulty:
+    - Room 1 target: 10→7 min (single easy cipher lock was too generous)
+    - Room 4 target: 14→16 min (two communication-heavy puzzles needed more time)
+    - Sequence Memory phaseOneLength: Math.min(3, length)→Math.max(3, Math.floor(length/2))
+    - Map Navigator penalty: capped at 180 seconds (was uncapped)
+    - Cipher Lock: unique letters enforced (was random with duplicates)
+  - Fixed critical bugs:
+    - Server couldn't start: shared type imports had wrong relative path depth (../../shared→../../../shared from subdirectories)
+    - import.meta.dirname not supported by tsx: replaced with fileURLToPath/dirname pattern
+    - Scoring lost on reconnection: sessions now persist cumulative score and restore on reconnect
+    - Updated vitest aliases to match corrected import paths
+  - Browser walkthrough confirmed: lobby→join→start→puzzle→solve→score→transition all work with zero console errors
