@@ -296,7 +296,5 @@ Use quick chat buttons for common messages:
 
 - **In-Game Hints:** Use the hint button (limited uses)
 - **FAQ:** Check our online FAQ
-- **Support:** Email support@escapetogether.com
-- **Community:** Join our Discord server
 
 **Good luck escaping!**

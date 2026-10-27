@@ -40,7 +40,6 @@ This guide helps resolve common issues with EscapeTwogether.
    - Try incognito/private mode
 
 4. **Server Status**
-   - Check @EscapeTogetherStatus on Twitter
    - Visit status.escapetogether.com
 
 ### Frequent Disconnections
@@ -376,9 +375,6 @@ When reporting issues, include:
 
 ### Support Channels
 
-- **Email:** support@escapetogether.com
-- **Discord:** discord.gg/escapetogether
-- **Twitter:** @EscapeTogether
 - **FAQ:** escapetogether.com/faq
 
 ### Community Help
@@ -408,4 +404,3 @@ When reporting issues, include:
 Found a new issue? Report it at:
 - GitHub Issues: github.com/escapetogether/issues
 - In-Game: Use report bug button in settings
-- Email: bugs@escapetogether.com

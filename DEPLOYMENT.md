@@ -376,4 +376,3 @@ pm2 restart escapetogether-api
 For issues and questions:
 - GitHub Issues: https://github.com/your-repo/issues
 - Documentation: https://docs.escapetogether.com
-- Email: support@escapetogether.com

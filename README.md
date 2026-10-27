@@ -269,8 +269,6 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 ## 📞 Support
 
 - **Issues:** [GitHub Issues](https://github.com/yourusername/escapetogether/issues)
-- **Discord:** [Join our Discord](https://discord.gg/escapetogether)
-- **Email:** support@escapetogether.com
 
 ## 🌟 Star History
 
